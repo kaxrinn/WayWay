@@ -12,7 +12,7 @@
         <!-- Header -->
         <tr>
             <td style="background:linear-gradient(135deg, #9eccdb 0%, #89b8c9 100%); padding:40px 30px; text-align:center; border-radius:20px 20px 0 0;">
-                <img src="https://raw.githubusercontent.com/kaxrinn/WayWay/main/public/assets/Logo/logodnnama.png" alt="WayWay Logo" style="max-width:180px; height:auto; margin-bottom:15px; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));">
+                <img src="https://github.com/kaxrinn/WayWay/blob/main/public/Assets/Logo/logodnnama.png?raw=true" alt="WayWay Logo" style="max-width:180px; height:auto; margin-bottom:15px; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));">
                 <h1 style="color:#fff; font-size:28px; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.1);">Atur Ulang Kata Sandi</h1>
             </td>
         </tr>
