@@ -49,7 +49,7 @@ class AuthController extends Controller
             } elseif ($user->role === 'pemilik_wisata') {
                 return redirect()->route('pemilik.dashboard');
             } else {
-                return redirect()->route('wisatawan.home');
+                return redirect()->route('wisatawan.beranda');
             }
         }
 
@@ -99,7 +99,7 @@ class AuthController extends Controller
         // Auto login setelah register
         Auth::login($user);
 
-        return redirect()->route('wisatawan.home')
+        return redirect()->route('auth.login')
             ->with('success', 'Registrasi berhasil! Selamat datang di Guide Me.');
     }
 
@@ -150,7 +150,7 @@ class AuthController extends Controller
             } elseif ($user->role === 'pemilik_wisata') {
                 return redirect()->route('pemilik.dashboard');
             } else {
-                return redirect()->route('wisatawan.home');
+                return redirect()->route('wisatawan.beranda');
             }
 
         } catch (\Exception $e) {
@@ -159,14 +159,14 @@ class AuthController extends Controller
         }
     }
 
-    // ========== LOGOUT ==========
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        
-        return redirect()->route('wisatawan.login')
-            ->with('success', 'Anda berhasil logout.');
-    }
+// ========== LOGOUT ==========
+public function logout(Request $request)
+{
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('beranda');
+}
 }
