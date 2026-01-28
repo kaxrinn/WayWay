@@ -20,7 +20,7 @@
 
             <a href="#"
                class="inline-block mt-8 px-8 py-3 rounded-full bg-[#F4DBB4] text-black text-sm font-semibold hover:bg-[#f9d497] transition">
-                Join Now
+                Jelajahi Sekarang
             </a>
         </div>
     </div>

@@ -10,13 +10,11 @@ use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
 {
-    // ========== TAMPILKAN FORM LUPA PASSWORD ==========
     public function showForgetPasswordForm()
     {
         return view('auth.forgot-password');
     }
 
-    // ========== KIRIM LINK RESET KE EMAIL ==========
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate([
@@ -27,7 +25,6 @@ class PasswordResetController extends Controller
             'email.exists' => 'Email tidak terdaftar',
         ]);
 
-        // Kirim email reset password
         $status = Password::sendResetLink(
             $request->only('email')
         );
@@ -39,25 +36,21 @@ class PasswordResetController extends Controller
         return back()->withErrors(['email' => __($status)]);
     }
 
-    // ========== TAMPILKAN FORM RESET PASSWORD ==========
     public function showResetPasswordForm($token)
     {
-        // Ambil email dari query string
         $email = request('email');
-        
-        // Validasi email ada
+
         if (!$email) {
             return redirect()->route('wisatawan.password.request')
                 ->withErrors(['email' => 'Link reset password tidak valid. Silakan request ulang.']);
         }
-        
+
         return view('auth.reset-password', [
             'token' => $token,
             'email' => $email,
         ]);
     }
 
-    // ========== PROSES RESET PASSWORD ==========
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -65,13 +58,12 @@ class PasswordResetController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*[A-Za-z])(?=.*\d).+$/',
         ], [
-            'password.required' => 'Password wajib diisi',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
-            'password.regex' => 'Password harus mengandung huruf dan angka',
+            'password.required' => 'Kata sandi wajib diisi',
+            'password.min' => 'Kata sandi minimal harus 8 karakter',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
+            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
         ]);
 
-        // Reset password
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -85,14 +77,12 @@ class PasswordResetController extends Controller
 
         if ($status === Password::PASSWORD_RESET) {
             return redirect()->route('wisatawan.login')
-                ->with('success', 'Password berhasil diubah! Silakan login dengan password baru.');
+                ->with('success', 'Password berhasil dibuat! Silakan login dengan password baru.');
         }
 
         return back()->withErrors(['email' => __($status)]);
     }
-    
-    // ========== ALIAS METHOD UNTUK ROUTE ==========
-    // Biar route bisa pakai @reset atau @resetPassword
+
     public function reset(Request $request)
     {
         return $this->resetPassword($request);
