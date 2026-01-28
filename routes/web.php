@@ -119,8 +119,8 @@ Route::middleware(['auth', 'role:wisatawan'])
     ->prefix('wisatawan')
     ->group(function () {
 
-        Route::get('/home', [WisatawanController::class, 'home'])
-            ->name('wisatawan.home');
+        Route::get('/beranda', [WisatawanController::class, 'beranda'])
+            ->name('wisatawan.beranda');
 });
 
 /*
@@ -128,24 +128,7 @@ Route::middleware(['auth', 'role:wisatawan'])
 | DEFAULT REDIRECT
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
 
-    if (auth()->check()) {
-        $user = auth()->user();
-
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
-
-        if ($user->isPemilikWisata()) {
-            return redirect()->route('pemilik.dashboard');
-        }
-
-        return redirect()->route('wisatawan.home');
-    }
-
-    return redirect()->route('wisatawan.login');
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -203,3 +186,15 @@ Route::get('/wisatawan/reset-password/{token}', function (string $token) {
 Route::post('/wisatawan/reset-password', [PasswordResetController::class, 'reset'])
     ->middleware('guest')
     ->name('wisatawan.password.update');
+
+//beranda
+Route::get('/', function () {
+    return view('wisatawan.beranda');
+})->name('beranda');
+
+
+//profil
+Route::middleware('auth')->group(function () {
+    Route::get('/wisatawan/profil', [WisatawanController::class, 'profile'])
+        ->name('wisatawan.profile');
+});

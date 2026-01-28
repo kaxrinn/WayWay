@@ -9,10 +9,10 @@ class WisatawanController extends Controller
     /**
      * Halaman home wisatawan
      */
-    public function home()
+    public function beranda()
     {
         $user = auth()->user();
-        return view('wisatawan.home', compact('user'));
+        return view('wisatawan.beranda', compact('user'));
     }
 
     /**
