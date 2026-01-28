@@ -55,10 +55,10 @@ class AdminController extends Controller
             'email.required' => 'Email wajib diisi',
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password wajib diisi',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
-            'password.regex' => 'Password harus mengandung huruf dan angka',
+            'password.required' => 'Kata sandi wajib diisi',
+            'password.min' => 'Kata sandi minimal harus 8 karakter',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
+            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
         ]);
 
         User::create([
@@ -98,9 +98,9 @@ class AdminController extends Controller
             'email.required' => 'Email wajib diisi',
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
-            'password.regex' => 'Password harus mengandung huruf dan angka',
+            'password.min' => 'Kata sandi minimal harus 8 karakter',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
+            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
         ]);
 
         $data = [

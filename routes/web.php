@@ -14,41 +14,34 @@ use App\Http\Controllers\WisatawanController;
 */
 Route::middleware('guest')->group(function () {
 
-    // Login
     Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('wisatawan.login');
 
     Route::post('/login', [AuthController::class, 'login'])
         ->name('wisatawan.loginPost');
 
-    // Register
     Route::get('/register', [AuthController::class, 'showRegister'])
         ->name('wisatawan.register');
 
     Route::post('/register', [AuthController::class, 'register'])
         ->name('wisatawan.registerPost');
 
-    // Lupa Password
     Route::get('/forgot-password', [PasswordResetController::class, 'showForgetPasswordForm'])
         ->name('wisatawan.password.request');
 
     Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
         ->name('wisatawan.password.email');
 
-    // Reset Password
     Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetPasswordForm'])
         ->name('wisatawan.password.reset');
 
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
         ->name('wisatawan.password.update');
-
 });
-
-
 
 /*
 |--------------------------------------------------------------------------
-| GOOGLE OAUTH (JANGAN GUEST)
+| GOOGLE OAUTH
 |--------------------------------------------------------------------------
 */
 Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])
@@ -59,12 +52,23 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 
 /*
 |--------------------------------------------------------------------------
-| LOGOUT (SUDAH LOGIN)
+| LOGOUT
 |--------------------------------------------------------------------------
 */
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC BERANDA (TANPA LOGIN)
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [WisatawanController::class, 'beranda'])
+    ->name('beranda');
+
+Route::get('/wisatawan/beranda', [WisatawanController::class, 'beranda'])
+    ->name('wisatawan.beranda');
 
 /*
 |--------------------------------------------------------------------------
@@ -112,89 +116,38 @@ Route::middleware(['auth', 'role:pemilik_wisata'])
 
 /*
 |--------------------------------------------------------------------------
-| WISATAWAN ROUTES
+| WISATAWAN PRIVATE ROUTES (WAJIB LOGIN)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:wisatawan'])
     ->prefix('wisatawan')
     ->group(function () {
 
-        Route::get('/beranda', [WisatawanController::class, 'beranda'])
-            ->name('wisatawan.beranda');
+        Route::get('/profil', [WisatawanController::class, 'profile'])
+            ->name('wisatawan.profile');
 });
-
-/*
-|--------------------------------------------------------------------------
-| DEFAULT REDIRECT
-|--------------------------------------------------------------------------
-*/
-
-
-/*
-|--------------------------------------------------------------------------
-| Password Reset Routes
-|--------------------------------------------------------------------------
-*/
-
-// form minta email
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
-
-// kirim email reset
-Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
-    ->middleware('guest')
-    ->name('password.email');
-    
-// form reset password
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', ['token' => $token]);
-})->middleware('guest')->name('password.reset');
-
-// submit password baru
-Route::post('/reset-password', [PasswordResetController::class, 'reset'])
-    ->middleware('guest')
-    ->name('password.update');
-
 
 /*
 |--------------------------------------------------------------------------
 | Wisatawan Password Reset
 |--------------------------------------------------------------------------
 */
-
-// form minta email
 Route::get('/wisatawan/forgot-password', function () {
     return view('auth.forgot-password');
 })
 ->middleware('guest')
 ->name('wisatawan.password.request');
 
-// kirim email reset
 Route::post('/wisatawan/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
     ->middleware('guest')
     ->name('wisatawan.password.email');
 
-// form reset password
 Route::get('/wisatawan/reset-password/{token}', function (string $token) {
     return view('auth.reset-password', ['token' => $token]);
 })
 ->middleware('guest')
 ->name('wisatawan.password.reset');
 
-// simpan password baru
 Route::post('/wisatawan/reset-password', [PasswordResetController::class, 'reset'])
     ->middleware('guest')
     ->name('wisatawan.password.update');
-
-//beranda
-Route::get('/', function () {
-    return view('wisatawan.beranda');
-})->name('beranda');
-
-
-//profil
-Route::middleware('auth')->group(function () {
-    Route::get('/wisatawan/profil', [WisatawanController::class, 'profile'])
-        ->name('wisatawan.profile');
-});

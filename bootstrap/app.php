@@ -11,9 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+
+        // alias middleware role
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+
+        // redirect guest (BELUM LOGIN) ke route wisatawan.login
+        $middleware->redirectGuestsTo(fn () => route('wisatawan.login'));
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

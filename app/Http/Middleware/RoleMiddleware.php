@@ -4,19 +4,22 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('wisatawan.login');
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!in_array($user->role, $roles)) {
-            abort(403, 'Unauthorized access');
+            Auth::logout();
+            return redirect()->route('wisatawan.login')
+                ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
         }
 
         return $next($request);
