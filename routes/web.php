@@ -3,9 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PemilikWisataController;
 use App\Http\Controllers\WisatawanController;
+use App\Http\Controllers\DestinasiController;
+use App\Http\Controllers\Api\DestinasiController as ApiDestinasiController;
+use App\Http\Controllers\TranksaksiPromosiController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\AdminProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,17 +20,11 @@ use App\Http\Controllers\WisatawanController;
 */
 Route::middleware('guest')->group(function () {
 
-    Route::get('/login', [AuthController::class, 'showLogin'])
-        ->name('wisatawan.login');
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('wisatawan.login');
+    Route::post('/login', [AuthController::class, 'login'])->name('wisatawan.loginPost');
 
-    Route::post('/login', [AuthController::class, 'login'])
-        ->name('wisatawan.loginPost');
-
-    Route::get('/register', [AuthController::class, 'showRegister'])
-        ->name('wisatawan.register');
-
-    Route::post('/register', [AuthController::class, 'register'])
-        ->name('wisatawan.registerPost');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('wisatawan.register');
+    Route::post('/register', [AuthController::class, 'register'])->name('wisatawan.registerPost');
 
     Route::get('/forgot-password', [PasswordResetController::class, 'showForgetPasswordForm'])
         ->name('wisatawan.password.request');
@@ -44,11 +44,8 @@ Route::middleware('guest')->group(function () {
 | GOOGLE OAUTH
 |--------------------------------------------------------------------------
 */
-Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])
-    ->name('auth.google');
-
-Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])
-    ->name('auth.google.callback');
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 /*
 |--------------------------------------------------------------------------
@@ -56,19 +53,29 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 |--------------------------------------------------------------------------
 */
 Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout')
-    ->middleware('auth');
+    ->middleware('auth')
+    ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC BERANDA (TANPA LOGIN)
+| PUBLIC BERANDA
 |--------------------------------------------------------------------------
 */
-Route::get('/', [WisatawanController::class, 'beranda'])
-    ->name('beranda');
+Route::get('/', [WisatawanController::class, 'beranda'])->name('beranda');
+Route::get('/wisatawan/beranda', [WisatawanController::class, 'beranda'])->name('wisatawan.beranda');
 
-Route::get('/wisatawan/beranda', [WisatawanController::class, 'beranda'])
-    ->name('wisatawan.beranda');
+/*
+|--------------------------------------------------------------------------
+| API ROUTES (AJAX)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('api')->group(function () {
+    Route::get(
+        '/destinasi/kategori/{kategoriId}',
+        [ApiDestinasiController::class, 'byKategori']
+    );
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -77,29 +84,121 @@ Route::get('/wisatawan/beranda', [WisatawanController::class, 'beranda'])
 */
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
+    ->name('admin.')
     ->group(function () {
 
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])
-            ->name('admin.dashboard');
+        // Dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('dashboard');
 
-        Route::get('/pemilik-wisata', [AdminController::class, 'indexPemilik'])
-            ->name('admin.pemilik.index');
+        Route::put('/profile', [\App\Http\Controllers\AdminProfileController::class, 'update'])
+            ->name('profile.update');
 
-        Route::get('/pemilik-wisata/create', [AdminController::class, 'createPemilik'])
-            ->name('admin.pemilik.create');
+        // Pemilik Wisata
+        Route::resource('pemilik', PemilikWisataController::class);
 
-        Route::post('/pemilik-wisata', [AdminController::class, 'storePemilik'])
-            ->name('admin.pemilik.store');
+        // Wisatawan
+        Route::get('/wisatawan', function () {
+            $wisatawan = \App\Models\User::where('role', 'wisatawan')->latest()->get();
+            return view('admin.wisatawan.index', compact('wisatawan'));
+        })->name('wisatawan.index');
 
-        Route::get('/pemilik-wisata/{id}/edit', [AdminController::class, 'editPemilik'])
-            ->name('admin.pemilik.edit');
+        // Destinasi
+        Route::resource('destinasi', DestinasiController::class);
 
-        Route::put('/pemilik-wisata/{id}', [AdminController::class, 'updatePemilik'])
-            ->name('admin.pemilik.update');
+        // API ambil destinasi berdasarkan kategori (UNTUK FILTER)
+        Route::get('/destinasi/kategori/{id}', [DestinasiController::class, 'byKategori'])
+            ->name('destinasi.byKategori');
 
-        Route::delete('/pemilik-wisata/{id}', [AdminController::class, 'destroyPemilik'])
-            ->name('admin.pemilik.destroy');
-});
+        // ================= KATEGORI =================
+        Route::get('/kategori', [KategoriController::class, 'index'])
+            ->name('kategori.index');
+
+        Route::post('/kategori', [KategoriController::class, 'store'])
+            ->name('kategori.store');
+
+        Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])
+            ->name('kategori.update');
+
+        Route::get('/kategori/{kategori}/data', [KategoriController::class, 'getData'])
+            ->name('kategori.data');
+        // ============================================
+
+
+        // ==============================
+        // PROMOSI
+        // ==============================
+        Route::get('/promosi', function () {
+            $promosi = \App\Models\Promosi::with(['destinasi.kategori', 'paket'])
+                ->latest()->get();
+            $paketPromosi = \App\Models\PaketPromosi::where('status', 'active')->get();
+
+            return view('admin.promosi.index', compact('promosi', 'paketPromosi'));
+        })->name('promosi.index');
+
+        // ==============================
+        // TRANSAKSI PROMOSI
+        // ==============================
+        Route::get('/transaksi', function () {
+            $transaksi = \App\Models\TransaksiPromosi::with([
+                'user',
+                'paket',
+                'promosi.destinasi'
+            ])->latest()->get();
+
+            $stats = [
+                'total' => \App\Models\TransaksiPromosi::count(),
+                'pending' => \App\Models\TransaksiPromosi::where('status_pembayaran', 'pending')->sum('total_harga'),
+                'success' => \App\Models\TransaksiPromosi::where('status_pembayaran', 'success')->sum('total_harga'),
+            ];
+
+            return view('admin.transaksi.index', compact('transaksi', 'stats'));
+        })->name('transaksi.index');
+
+        // ==============================
+        // BANTUAN (HUBUNGI KAMI)
+        // ==============================
+        Route::get('/bantuan', function () {
+            $messages = \App\Models\HubungiKami::with('user')
+                ->orderByRaw("
+                    CASE status 
+                        WHEN 'pending' THEN 1 
+                        WHEN 'processed' THEN 2 
+                        WHEN 'resolved' THEN 3 
+                    END
+                ")
+                ->latest()
+                ->get();
+
+            $stats = [
+                'pending' => \App\Models\HubungiKami::where('status', 'pending')->count(),
+                'processed' => \App\Models\HubungiKami::where('status', 'processed')->count(),
+                'resolved' => \App\Models\HubungiKami::where('status', 'resolved')->count(),
+            ];
+
+            return view('admin.bantuan.index', compact('messages', 'stats'));
+        })->name('bantuan.index');
+
+        Route::post('/bantuan/{id}/update-status', function ($id) {
+            $message = \App\Models\HubungiKami::findOrFail($id);
+
+            if ($message->status === 'pending') {
+                $newStatus = 'processed';
+            } elseif ($message->status === 'processed') {
+                $newStatus = 'resolved';
+            } else {
+                $newStatus = $message->status;
+            }
+
+            $message->update(['status' => $newStatus]);
+
+            return redirect()
+                ->route('admin.bantuan.index')
+                ->with('success', 'Status berhasil diupdate!');
+        })->name('bantuan.update-status');
+    });
+
+    
 
 /*
 |--------------------------------------------------------------------------
@@ -108,46 +207,21 @@ Route::middleware(['auth', 'role:admin'])
 */
 Route::middleware(['auth', 'role:pemilik_wisata'])
     ->prefix('pemilik')
+    ->name('pemilik.')
     ->group(function () {
-
-        Route::get('/dashboard', [PemilikWisataController::class, 'dashboard'])
-            ->name('pemilik.dashboard');
-});
+        Route::get('/dashboard', [PemilikWisataController::class, 'dashboard'])->name('dashboard');
+    });
 
 /*
 |--------------------------------------------------------------------------
-| WISATAWAN PRIVATE ROUTES (WAJIB LOGIN)
+| WISATAWAN ROUTES
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:wisatawan'])
     ->prefix('wisatawan')
+    ->name('wisatawan.')
     ->group(function () {
+        Route::get('/profil', [WisatawanController::class, 'profile'])->name('profile');
+    });
 
-        Route::get('/profil', [WisatawanController::class, 'profile'])
-            ->name('wisatawan.profile');
-});
-
-/*
-|--------------------------------------------------------------------------
-| Wisatawan Password Reset
-|--------------------------------------------------------------------------
-*/
-Route::get('/wisatawan/forgot-password', function () {
-    return view('auth.forgot-password');
-})
-->middleware('guest')
-->name('wisatawan.password.request');
-
-Route::post('/wisatawan/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
-    ->middleware('guest')
-    ->name('wisatawan.password.email');
-
-Route::get('/wisatawan/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', ['token' => $token]);
-})
-->middleware('guest')
-->name('wisatawan.password.reset');
-
-Route::post('/wisatawan/reset-password', [PasswordResetController::class, 'reset'])
-    ->middleware('guest')
-    ->name('wisatawan.password.update');
+require __DIR__.'/auth.php';

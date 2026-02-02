@@ -1,212 +1,127 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Pemilik Wisata - Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 {
-            color: #667eea;
-            font-size: 28px;
-        }
-        .btn {
-            padding: 12px 25px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-block;
-            border: none;
-            cursor: pointer;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-        .btn-sm {
-            padding: 8px 15px;
-            font-size: 13px;
-        }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .alert {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border-left: 4px solid #10b981;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table thead {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-        table th, table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        table tbody tr:hover {
-            background: #f9fafb;
-        }
-        .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .badge-success {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .action-btns {
-            display: flex;
-            gap: 8px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-        }
-        .empty-state i {
-            font-size: 80px;
-            margin-bottom: 20px;
-            color: #d1d5db;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div>
-                <h1>📋 Kelola Pemilik Wisata</h1>
-                <p style="color: #666; font-size: 14px; margin-top: 5px;">
-                    Admin: <strong>{{ auth()->user()->name }}</strong>
-                </p>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
-                <a href="{{ route('admin.pemilik.create') }}" class="btn btn-success">
-                    <i class="fas fa-plus"></i> Tambah Pemilik Wisata
-                </a>
-            </div>
-        </div>
+@extends('layouts.admin')
 
-        @if(session('success'))
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i> {{ session('success') }}
-        </div>
-        @endif
+@section('title', 'Kelola Pemilik Wisata')
 
-        <div class="card">
-            @if($pemilikWisata->count() > 0)
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Terdaftar</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($pemilikWisata as $index => $pemilik)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>
-                            <strong>{{ $pemilik->name }}</strong>
-                        </td>
-                        <td>{{ $pemilik->email }}</td>
-                        <td>{{ $pemilik->created_at->format('d M Y') }}</td>
-                        <td>
-                            <span class="badge badge-success">
-                                <i class="fas fa-check"></i> Aktif
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-btns">
-                                <a href="{{ route('admin.pemilik.edit', $pemilik->id) }}" 
-                                   class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form method="POST" 
-                                      action="{{ route('admin.pemilik.destroy', $pemilik->id) }}"
-                                      onsubmit="return confirm('Yakin hapus pemilik wisata ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+@section('content')
+<!-- Header -->
+<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                <i class="fas fa-user-tie text-primary"></i>
+                Kelola Pemilik Wisata
+            </h1>
+            <p class="text-gray-500 mt-2">Manage akun pemilik wisata yang terdaftar di sistem</p>
+        </div>
+        <a href="{{ route('admin.pemilik.create') }}" 
+           class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-2">
+            <i class="fas fa-plus"></i>
+            Tambah Pemilik Wisata
+        </a>
+    </div>
+</div>
+
+<!-- Success Alert -->
+@if(session('success'))
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6 shadow">
+    <div class="flex items-center">
+        <i class="fas fa-check-circle text-2xl mr-3"></i>
+        <span class="font-medium">{{ session('success') }}</span>
+    </div>
+</div>
+@endif
+
+<!-- Table Card -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    @if($pemilikWisata->count() > 0)
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gradient-to-r from-primary to-blue-400 text-white">
+                <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">No</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Nama</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Email</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">No. Telepon</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Destinasi</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Terdaftar</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @foreach($pemilikWisata as $index => $pemilik)
+                <tr class="hover:bg-accent/30 transition">
+                    <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $index + 1 }}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                                <span class="text-primary font-bold text-sm">{{ strtoupper(substr($pemilik->name, 0, 2)) }}</span>
                             </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            @else
-            <div class="empty-state">
-                <i class="fas fa-users-slash"></i>
-                <h3>Belum Ada Pemilik Wisata</h3>
-                <p>Klik tombol "Tambah Pemilik Wisata" untuk menambahkan data baru</p>
-            </div>
-            @endif
+                            <span class="font-semibold text-gray-800">{{ $pemilik->name }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $pemilik->email }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $pemilik->no_telepon ?? '-' }}</td>
+                    <td class="px-6 py-4">
+    @if($pemilik->destinasi->isNotEmpty())
+        <div class="flex flex-wrap gap-1">
+            @foreach($pemilik->destinasi as $destinasi)
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+                    {{ $destinasi->nama_destinasi }}
+                </span>
+            @endforeach
+        </div>
+    @else
+        <span class="text-gray-400">Belum ada destinasi</span>
+    @endif
+</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $pemilik->created_at->format('d M Y') }}</td>
+                    <td class="px-6 py-4">
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit">
+                            <i class="fas fa-check-circle"></i>
+                            Aktif
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('admin.pemilik.edit', $pemilik->id) }}" 
+                               class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg transition text-sm flex items-center gap-1">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </a>
+                            <form method="POST" 
+                                  action="{{ route('admin.pemilik.destroy', $pemilik->id) }}"
+                                  onsubmit="return confirm('Yakin ingin menghapus pemilik wisata ini?')"
+                                  class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition text-sm flex items-center gap-1">
+                                    <i class="fas fa-trash"></i>
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @else
+    <!-- Empty State -->
+    <div class="py-20 px-6 text-center">
+        <div class="flex flex-col items-center justify-center text-gray-400">
+            <i class="fas fa-users-slash text-7xl mb-5"></i>
+            <h3 class="text-2xl font-bold text-gray-600 mb-2">Belum Ada Pemilik Wisata</h3>
+            <p class="text-gray-500 mb-6">Klik tombol "Tambah Pemilik Wisata" untuk menambahkan data baru</p>
+            <a href="{{ route('admin.pemilik.create') }}" 
+               class="bg-gradient-to-r from-primary to-blue-400 hover:from-blue-400 hover:to-primary text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl flex items-center gap-2">
+                <i class="fas fa-plus"></i>
+                Tambah Pemilik Wisata
+            </a>
         </div>
     </div>
-</body>
-</html>
+    @endif
+</div>
+@endsection

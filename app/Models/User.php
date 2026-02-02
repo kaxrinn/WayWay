@@ -12,14 +12,16 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'google_id',
-        'avatar',
-        'role',
-        'email_verified_at',
-    ];
+    'name',
+    'email',
+    'password',
+    'google_id',
+    'avatar',
+    'role',
+    'destinasi_id',
+    'no_telepon',
+    'email_verified_at',
+];
 
     protected $hidden = [
         'password',
@@ -55,5 +57,22 @@ class User extends Authenticatable
     public function isWisatawan()
     {
         return $this->role === 'wisatawan';
+    }
+    /**
+     * Get destinasi yang dikelola pemilik wisata
+     */
+    /** Pemilik bisa punya banyak destinasi */
+    public function destinasi()
+    {
+        return $this->hasMany(Destinasi::class, 'user_id');
+    }
+     
+
+    /**
+     * Get transaksi promosi dari user
+     */
+    public function transaksiPromosi()
+    {
+        return $this->hasMany(TransaksiPromosi::class, 'user_id');
     }
 }

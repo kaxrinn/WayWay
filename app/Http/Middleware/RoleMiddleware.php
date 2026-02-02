@@ -10,16 +10,14 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
+        // belum login
         if (!Auth::check()) {
             return redirect()->route('wisatawan.login');
         }
 
-        $user = Auth::user();
-
-        if (!in_array($user->role, $roles)) {
-            Auth::logout();
-            return redirect()->route('wisatawan.login')
-                ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
+        // role tidak sesuai
+        if (!in_array(Auth::user()->role, $roles)) {
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         return $next($request);
