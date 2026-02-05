@@ -99,7 +99,18 @@
             </div>
         </div>
     </nav>
-    
+
+    <!-- Error Alert profile data --> 
+    @if ($errors->any())
+<div class="fixed top-20 right-6 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    <ul class="list-disc ml-4">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
     <!-- Modal Ubah Profil -->
 <div x-show="profileModal" x-cloak
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -108,7 +119,7 @@
          class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">
 
         <h2 class="text-xl font-bold mb-6 text-gray-800">Ubah Profil Admin</h2>
-
+         
         <form method="POST" action="{{ route('admin.profile.update') }}">
             @csrf
             @method('PUT')
@@ -152,24 +163,30 @@
                 <!-- Password -->
                 <div>
                     <label class="text-sm font-medium text-gray-700">Password Baru</label>
-                    <input type="password" name="password"
-                           placeholder="Kosongkan jika tidak diubah"
-                           class="w-full rounded-lg border-2 border-accent/70
-                                  bg-gray-50 px-4 py-2
-                                  focus:bg-white focus:border-accent focus:ring-2 focus:ring-accent/30
-                                  transition">
+                    <input
+    type="password"
+    name="password"
+    autocomplete="new-password"
+    placeholder="Kosongkan jika tidak diubah"
+    class="w-full rounded-lg border-2 border-accent/70
+           bg-gray-50 px-4 py-2
+           focus:bg-white focus:border-accent focus:ring-2 focus:ring-accent/30
+           transition">
+
                 </div>
 
                 <!-- Konfirmasi Password -->
                 <div>
                     <label class="text-sm font-medium text-gray-700">Konfirmasi Password</label>
-                    <input type="password" name="password_confirmation"
-                           class="w-full rounded-lg border-2 border-accent/70
-                                  bg-gray-50 px-4 py-2
-                                  focus:bg-white focus:border-accent focus:ring-2 focus:ring-accent/30
-                                  transition">
+                    <input
+    type="password"
+    name="password_confirmation"
+    autocomplete="new-password"
+    class="w-full rounded-lg border-2 border-accent/70
+           bg-gray-50 px-4 py-2
+           focus:bg-white focus:border-accent focus:ring-2 focus:ring-accent/30
+           transition">
                 </div>
-
             </div>
 
             <div class="flex justify-end gap-3 mt-6">
@@ -269,6 +286,13 @@
                class="flex items-center px-4 py-3 text-gray-700 hover:bg-accent rounded-lg transition {{ request()->routeIs('admin.bantuan.*') ? 'bg-primary text-white' : '' }}">
                 <i class="fas fa-life-ring w-6"></i>
                 <span class="ml-3">Kelola Hubungi Kami</span>
+            </a>
+
+            <!-- Kelola Hubungi Kami -->
+            <a href="{{ route('admin.edit-requests.index') }}" 
+               class="flex items-center px-4 py-3 text-gray-700 hover:bg-accent rounded-lg transition {{ request()->routeIs('admin.edit-requests.*') ? 'bg-primary text-white' : '' }}">
+                <i class="fas fa-life-ring w-6"></i>
+                <span class="ml-3">Kelola Edit Request</span>
             </a>
         </nav>
     </aside>

@@ -77,17 +77,39 @@
                 </div>
 
                 <!-- FOTO SAAT INI (MAX 3) -->
-                @if($destinasi->foto)
-                <div class="md:col-span-2">
-                    <label class="block text-gray-700 font-semibold mb-2">Foto Saat Ini</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        @foreach(json_decode($destinasi->foto) as $foto)
-                            <img src="{{ Storage::url($foto) }}"
-                                class="w-full h-48 object-cover rounded-lg shadow">
-                        @endforeach
-                    </div>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    @foreach($destinasi->foto as $index => $foto)
+        <div class="relative group">
+            <img src="{{ Storage::url($foto) }}"
+                 class="w-full h-48 object-cover rounded-lg shadow">
+
+            <!-- CHECKBOX -->
+            <label class="absolute top-2 right-2 cursor-pointer">
+                <input type="checkbox"
+                       name="delete_foto[]"
+                       value="{{ $index }}"
+                       class="peer hidden">
+
+                <!-- ICON -->
+                <div class="bg-red-500 text-white p-2 rounded-full
+                            peer-checked:bg-red-700
+                            peer-checked:ring-2 peer-checked:ring-red-300
+                            transition">
+                    <i class="fas fa-trash"></i>
                 </div>
-                @endif
+            </label>
+
+            <!-- OVERLAY SAAT DIPILIH -->
+            <div class="absolute inset-0 bg-red-500/30 rounded-lg
+                        opacity-0 peer-checked:opacity-100 transition pointer-events-none">
+            </div>
+        </div>
+    @endforeach
+</div>
+
+
+
+                
 
                 <!-- FOTO BARU -->
                 <div class="md:col-span-2">

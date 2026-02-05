@@ -59,10 +59,10 @@
         <!-- Image -->
         <div class="relative h-48 bg-gray-200">
             @if($destinasi->foto)
-                @php $foto = json_decode($destinasi->foto)[0]; @endphp
-                <img src="{{ Storage::url($foto) }}" 
-                     alt="{{ $destinasi->nama_destinasi }}"
-                     class="w-full h-full object-cover">
+                @php $foto = $destinasi->foto[0] ?? null; @endphp
+                <img src="{{ $destinasi->foto[0] ? Storage::url($destinasi->foto[0]) : asset('placeholder.jpg') }}" 
+     alt="{{ $destinasi->nama_destinasi }}"
+     class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary to-blue-400">
                     <i class="fas fa-image text-white text-6xl opacity-50"></i>

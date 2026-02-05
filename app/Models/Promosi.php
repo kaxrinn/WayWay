@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Promosi extends Model
 {
     use HasFactory;
-    protected $table = 'promosi';
+
+    protected $table = 'promosi'; // FIX: Explicitly set table name (no 's')
+
     protected $fillable = [
+        'user_id',
         'destinasi_id',
         'paket_id',
         'tanggal_mulai',
@@ -21,6 +24,14 @@ class Promosi extends Model
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
     ];
+
+    /**
+     * Get user dari promosi (untuk user subscription)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     /**
      * Get destinasi dari promosi

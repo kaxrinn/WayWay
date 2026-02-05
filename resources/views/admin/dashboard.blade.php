@@ -104,25 +104,22 @@
 
     {{-- FOTO --}}
     <td class="px-6 py-4">
-       @php
-        $foto = $destinasi->foto;
-
-       // kalau foto berupa JSON / array
-         if (is_string($foto) && str_starts_with($foto, '[')) {
-           $foto = json_decode($foto, true)[0] ?? null;
-        }
+    @php
+        $foto = $destinasi->foto[0] ?? null;
     @endphp
 
-     @if($foto)
-      <img src="{{ Storage::url($foto) }}"
-         alt="{{ $destinasi->nama_destinasi }}"
-         class="h-14 w-20 rounded-lg object-cover shadow">
-        @else
-         <div class="h-14 w-20 bg-gray-200 rounded-lg flex items-center justify-center">
+    @if ($foto)
+        <img 
+            src="{{ asset('storage/' . $foto) }}"
+            alt="Foto Destinasi"
+            class="h-14 w-20 object-cover rounded-lg shadow"
+        >
+    @else
+        <div class="h-14 w-20 bg-gray-200 rounded-lg flex items-center justify-center">
             <i class="fas fa-image text-gray-400 text-xl"></i>
-         </div>
-      @endif
-    </td>
+        </div>
+    @endif
+</td>
 
     {{-- NAMA --}}
     <td class="px-6 py-4 font-medium text-gray-800">
