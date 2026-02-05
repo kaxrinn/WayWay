@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+@extends('layouts.pemilik')
 
 @section('title', 'Tambah Destinasi')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
     <!-- Back Button -->
-    <a href="{{ route('admin.destinasi.index') }}" 
+    <a href="{{ route('pemilik.destinasi.index') }}" 
        class="inline-flex items-center text-gray-600 hover:text-primary transition mb-6">
         <i class="fas fa-arrow-left mr-2"></i>
         Kembali ke Daftar
@@ -17,13 +17,32 @@
         <div class="bg-gradient-to-r from-primary to-blue-400 px-8 py-6">
             <h1 class="text-3xl font-bold text-white flex items-center gap-3">
                 <i class="fas fa-plus-circle"></i>
-                Tambah Destinasi Wisata
+                Tambah Destinasi Wisata Baru
             </h1>
-            <p class="text-white/90 mt-2">Isi form di bawah untuk menambahkan destinasi wisata baru</p>
+            <p class="text-white/90 mt-2">Isi form di bawah untuk menambahkan destinasi wisata</p>
+        </div>
+        
+        <!-- Paket Info -->
+        <div class="bg-blue-50 px-8 py-4 border-b border-blue-100">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <i class="fas fa-info-circle text-blue-500 text-2xl"></i>
+                    <div>
+                        <p class="text-sm text-gray-600">Batasan Paket {{ $limits['max_foto'] ?? '∞' }}</p>
+                        <p class="font-semibold text-gray-800">
+                            Max {{ $limits['max_foto'] ?? '∞' }} foto & {{ $limits['max_video'] ?? '∞' }} video per destinasi
+                        </p>
+                    </div>
+                </div>
+                <a href="{{ route('pemilik.paket.index') }}" 
+                   class="text-primary hover:text-blue-600 font-semibold text-sm">
+                    Upgrade Paket <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
         </div>
         
         <!-- Form -->
-        <form method="POST" action="{{ route('admin.destinasi.store') }}" enctype="multipart/form-data" class="p-8">
+        <form method="POST" action="{{ route('pemilik.destinasi.store') }}" enctype="multipart/form-data" class="p-8">
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -40,7 +59,10 @@
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('nama_destinasi') border-red-500 @enderror"
                            required>
                     @error('nama_destinasi')
-                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                        <p class="text-red-500 text-sm mt-2 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ $message }}
+                        </p>
                     @enderror
                 </div>
                 
@@ -54,9 +76,9 @@
                             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('kategori_id') border-red-500 @enderror"
                             required>
                         <option value="">-- Pilih Kategori --</option>
-                        @foreach($kategori as $kat)
-                            <option value="{{ $kat->id }}" {{ old('kategori_id') == $kat->id ? 'selected' : '' }}>
-                                {{ $kat->nama_kategori }}
+                        @foreach($kategoris as $kategori)
+                            <option value="{{ $kategori->id }}" {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>
+                                {{ $kategori->nama_kategori }}
                             </option>
                         @endforeach
                     </select>
@@ -68,16 +90,19 @@
                 <!-- Harga -->
                 <div>
                     <label for="harga" class="block text-gray-700 font-semibold mb-2">
-                        Harga (Rp) <span class="text-red-500">*</span>
+                        Harga Tiket (Rp) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" 
-                           id="harga" 
-                           name="harga" 
-                           value="{{ old('harga') }}"
-                           placeholder="0"
-                           min="0"
-                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('harga') border-red-500 @enderror"
-                           required>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">Rp</span>
+                        <input type="number" 
+                               id="harga" 
+                               name="harga" 
+                               value="{{ old('harga') }}"
+                               placeholder="0"
+                               min="0"
+                               class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('harga') border-red-500 @enderror"
+                               required>
+                    </div>
                     @error('harga')
                         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                     @enderror
@@ -135,27 +160,69 @@
                     @enderror
                 </div>
                 
-                <!-- Foto Baru -->
+                <!-- Foto Upload -->
                 <div class="md:col-span-2">
                     <label class="block text-gray-700 font-semibold mb-2">
-                        Upload Foto Destinasi (Maks 3)
+                        Foto Destinasi (Max {{ $limits['max_foto'] ?? '∞' }} foto)
                     </label>
-
-                    <input type="file" name="foto[]" multiple accept="image/*"
-                        class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg"
-                        onchange="previewImages(this)">
-
-                    <p class="text-sm text-gray-500 mt-2">Kosongkan jika tidak ingin menambahkan foto</p>
-
-                    <div id="imagePreview" class="mt-4 hidden">
-                        <p class="text-sm font-semibold text-gray-700 mb-2">Preview Foto:</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="previewContainer"></div>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary transition">
+                        <div class="text-center">
+                            <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-3"></i>
+                            <p class="text-gray-600 mb-2">Klik atau drag & drop foto di sini</p>
+                            <p class="text-sm text-gray-500">Format: JPG, PNG. Maksimal 2MB per foto</p>
+                            <input type="file" 
+                                   id="foto" 
+                                   name="foto[]" 
+                                   accept="image/*"
+                                   multiple
+                                   class="hidden"
+                                   onchange="previewFoto(this)">
+                            <button type="button" 
+                                    onclick="document.getElementById('foto').click()"
+                                    class="mt-4 bg-primary hover:bg-blue-500 text-white px-6 py-2 rounded-lg transition">
+                                <i class="fas fa-images mr-2"></i>
+                                Pilih Foto
+                            </button>
+                        </div>
                     </div>
-
-                    @error('foto')
+                    <div id="fotoPreview" class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4"></div>
+                    @error('foto.*')
                         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
                     @enderror
                 </div>
+                
+                <!-- Video Upload -->
+                @if(($limits['max_video'] ?? 0) > 0)
+                <div class="md:col-span-2">
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Video Destinasi (Max {{ $limits['max_video'] }} video)
+                    </label>
+                    <div class="border-2 border-dashed border-purple-300 rounded-lg p-6 hover:border-purple-500 transition">
+                        <div class="text-center">
+                            <i class="fas fa-video text-5xl text-purple-400 mb-3"></i>
+                            <p class="text-gray-600 mb-2">Klik atau drag & drop video di sini</p>
+                            <p class="text-sm text-gray-500">Format: MP4, MOV, AVI. Maksimal 10MB per video</p>
+                            <input type="file" 
+                                   id="video" 
+                                   name="video[]" 
+                                   accept="video/*"
+                                   multiple
+                                   class="hidden"
+                                   onchange="previewVideo(this)">
+                            <button type="button" 
+                                    onclick="document.getElementById('video').click()"
+                                    class="mt-4 bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition">
+                                <i class="fas fa-video mr-2"></i>
+                                Pilih Video
+                            </button>
+                        </div>
+                    </div>
+                    <div id="videoPreview" class="grid grid-cols-2 gap-4 mt-4"></div>
+                    @error('video.*')
+                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                @endif
             </div>
             
             <!-- Info Box -->
@@ -178,7 +245,7 @@
                     <i class="fas fa-save"></i>
                     Simpan Destinasi
                 </button>
-                <a href="{{ route('admin.destinasi.index') }}" 
+                <a href="{{ route('pemilik.destinasi.index') }}" 
                    class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-4 rounded-lg transition shadow-lg hover:shadow-xl font-semibold text-lg flex items-center justify-center gap-2">
                     <i class="fas fa-times"></i>
                     Batal
@@ -191,28 +258,55 @@
 
 @push('scripts')
 <script>
-function previewImages(input) {
-    const preview = document.getElementById('imagePreview');
-    const container = document.getElementById('previewContainer');
-    container.innerHTML = '';
-    preview.classList.remove('hidden');
+let maxFoto = {{ $limits['max_foto'] ?? 999 }};
+let maxVideo = {{ $limits['max_video'] ?? 0 }};
 
-    if (input.files.length > 3) {
-        alert('Maksimal upload 3 foto');
+function previewFoto(input) {
+    const preview = document.getElementById('fotoPreview');
+    preview.innerHTML = '';
+    
+    if (input.files.length > maxFoto) {
+        alert(`Maksimal ${maxFoto} foto untuk paket Anda!`);
         input.value = '';
-        preview.classList.add('hidden');
         return;
     }
-
-    Array.from(input.files).forEach(file => {
+    
+    Array.from(input.files).forEach((file, index) => {
         const reader = new FileReader();
         reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = "w-full h-48 object-cover rounded-lg shadow";
-            container.appendChild(img);
+            const div = document.createElement('div');
+            div.className = 'relative';
+            div.innerHTML = `
+                <img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg shadow">
+                <div class="absolute top-2 right-2 bg-primary text-white px-2 py-1 rounded text-xs font-bold">
+                    ${index + 1}
+                </div>
+            `;
+            preview.appendChild(div);
         }
         reader.readAsDataURL(file);
+    });
+}
+
+function previewVideo(input) {
+    const preview = document.getElementById('videoPreview');
+    preview.innerHTML = '';
+    
+    if (input.files.length > maxVideo) {
+        alert(`Maksimal ${maxVideo} video untuk paket Anda!`);
+        input.value = '';
+        return;
+    }
+    
+    Array.from(input.files).forEach((file, index) => {
+        const div = document.createElement('div');
+        div.className = 'relative bg-gray-100 rounded-lg p-4';
+        div.innerHTML = `
+            <i class="fas fa-video text-4xl text-purple-500"></i>
+            <p class="text-sm text-gray-700 mt-2">${file.name}</p>
+            <p class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+        `;
+        preview.appendChild(div);
     });
 }
 </script>

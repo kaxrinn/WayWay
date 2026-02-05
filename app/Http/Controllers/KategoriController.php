@@ -7,12 +7,18 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
+    /**
+     * Display list kategori
+     */
     public function index()
     {
         $kategori = Kategori::withCount('destinasi')->get();
         return view('admin.kategori.index', compact('kategori'));
     }
 
+    /**
+     * Store new kategori
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -25,6 +31,9 @@ class KategoriController extends Controller
         return redirect()->back()->with('success', 'Kategori berhasil ditambahkan!');
     }
 
+    /**
+     * Update kategori
+     */
     public function update(Request $request, Kategori $kategori)
     {
         $request->validate([
@@ -38,6 +47,9 @@ class KategoriController extends Controller
             ->with('success', 'Kategori berhasil diperbarui!');
     }
 
+    /**
+     * Get kategori data for edit modal (AJAX)
+     */
     public function getData(Kategori $kategori)
     {
         return response()->json($kategori);

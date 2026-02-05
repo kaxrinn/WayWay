@@ -17,31 +17,49 @@
 <!-- Paket Promosi Info Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     @foreach($paketPromosi as $paket)
-    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg p-6 border-2 border-{{ $loop->first ? 'blue' : ($loop->iteration == 2 ? 'purple' : 'yellow') }}-400 hover:shadow-2xl transition transform hover:-translate-y-2">
+    <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg p-6 border-2 border-purple-400 hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-2xl font-bold text-gray-800">{{ $paket->nama_paket }}</h3>
-            <div class="bg-{{ $loop->first ? 'blue' : ($loop->iteration == 2 ? 'purple' : 'yellow') }}-100 p-3 rounded-full">
-                <i class="fas fa-star text-{{ $loop->first ? 'blue' : ($loop->iteration == 2 ? 'purple' : 'yellow') }}-500 text-xl"></i>
+            <div class="bg-purple-100 p-3 rounded-full">
+                <i class="fas fa-star text-purple-500 text-xl"></i>
             </div>
         </div>
         
         <div class="mb-4">
-            <p class="text-4xl font-bold text-{{ $loop->first ? 'blue' : ($loop->iteration == 2 ? 'purple' : 'yellow') }}-600">
+            <p class="text-4xl font-bold text-purple-600">
                 Rp {{ number_format($paket->harga, 0, ',', '.') }}
             </p>
-            <p class="text-sm text-gray-500">Durasi: {{ $paket->durasi_hari }} hari</p>
+            <p class="text-sm text-gray-500">Per bulan</p>
         </div>
         
         <p class="text-gray-600 text-sm mb-4">{{ $paket->deskripsi }}</p>
         
         <div class="border-t border-gray-200 pt-4">
             <p class="text-xs font-semibold text-gray-700 mb-2">Fitur:</p>
-            @foreach(explode(',', $paket->fitur) as $fitur)
-            <p class="text-xs text-gray-600 mb-1 flex items-start gap-2">
-                <i class="fas fa-check text-green-500 mt-0.5"></i>
-                <span>{{ trim($fitur) }}</span>
-            </p>
-            @endforeach
+            <div class="space-y-1">
+                <p class="text-xs text-gray-600 flex items-start gap-2">
+                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                    <span>Max {{ $paket->max_destinasi }} destinasi</span>
+                </p>
+                <p class="text-xs text-gray-600 flex items-start gap-2">
+                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                    <span>Max {{ $paket->max_foto }} foto per destinasi</span>
+                </p>
+                <p class="text-xs text-gray-600 flex items-start gap-2">
+                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                    <span>Max {{ $paket->max_video }} video per destinasi</span>
+                </p>
+                <p class="text-xs text-gray-600 flex items-start gap-2">
+                    <i class="fas fa-{{ $paket->can_edit_foto ? 'check' : 'times' }} text-{{ $paket->can_edit_foto ? 'green' : 'red' }}-500 mt-0.5"></i>
+                    <span>{{ $paket->can_edit_foto ? 'Edit langsung' : 'Butuh persetujuan admin' }}</span>
+                </p>
+                @if($paket->is_featured_allowed)
+                <p class="text-xs text-gray-600 flex items-start gap-2">
+                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                    <span>Featured listing</span>
+                </p>
+                @endif
+            </div>
         </div>
     </div>
     @endforeach
@@ -60,7 +78,7 @@
             <thead class="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Destinasi</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">User</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Paket</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Harga</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Periode</th>
@@ -68,29 +86,33 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @foreach($promosi as $promosi)
+                @foreach($promosi as $item)
                 @php
                     $today = now();
-                    $isExpired = $promosi->tanggal_selesai < $today;
-                    $isActive = $promosi->tanggal_mulai <= $today && $promosi->tanggal_selesai >= $today;
+                    $isExpired = $item->tanggal_selesai < $today;
+                    $isActive = $item->tanggal_mulai <= $today && $item->tanggal_selesai >= $today;
                 @endphp
                 <tr class="hover:bg-accent/30 transition">
-                    <td class="px-6 py-4 text-sm font-medium text-gray-700">{{ $promosi->id }}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-700">{{ $item->id }}</td>
                     <td class="px-6 py-4">
-                        <div class="font-semibold text-gray-800">{{ $promosi->destinasi->nama_destinasi ?? '-' }}</div>
-                        <div class="text-xs text-gray-500">{{ $promosi->destinasi->kategori->nama_kategori ?? '-' }}</div>
+                        @if($item->user)
+                        <div class="font-semibold text-gray-800">{{ $item->user->name }}</div>
+                        <div class="text-xs text-gray-500">{{ $item->user->email }}</div>
+                        @else
+                        <span class="text-gray-400">-</span>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
                         <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
-                            {{ $promosi->paket->nama_paket }}
+                            {{ $item->paket->nama_paket }}
                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm font-bold text-gray-700">
-                        Rp {{ number_format($promosi->paket->harga, 0, ',', '.') }}
+                        Rp {{ number_format($item->paket->harga, 0, ',', '.') }}
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-600">
-                        <div>{{ $promosi->tanggal_mulai->format('d M Y') }}</div>
-                        <div class="text-xs text-gray-500">s/d {{ $promosi->tanggal_selesai->format('d M Y') }}</div>
+                        <div>{{ $item->tanggal_mulai->format('d M Y') }}</div>
+                        <div class="text-xs text-gray-500">s/d {{ $item->tanggal_selesai->format('d M Y') }}</div>
                     </td>
                     <td class="px-6 py-4">
                         @if($isExpired)

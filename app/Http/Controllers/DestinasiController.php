@@ -9,133 +9,142 @@ use Illuminate\Support\Facades\Storage;
 
 class DestinasiController extends Controller
 {
+    /**
+     * Display list destinasi
+     */
     public function index()
     {
         $destinasi = Destinasi::with('kategori')->latest()->get();
         return view('admin.destinasi.index', compact('destinasi'));
     }
 
+    /**
+     * Show create form
+     */
     public function create()
     {
         $kategori = Kategori::all();
         return view('admin.destinasi.create', compact('kategori'));
     }
 
+    /**
+     * Store new destinasi
+     */
     public function store(Request $request)
     {
         $request->validate([
             'nama_destinasi' => 'required|string|max:255',
-            'kategori_id'    => 'required',
-            'harga'          => 'required|numeric|min:0',
-            'latitude'       => 'required',
-            'longitude'      => 'required',
-            'deskripsi'      => 'required',
-            'foto.*'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'kategori_id' => 'required|exists:kategori,id',
+            'harga' => 'required|numeric|min:0',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'deskripsi' => 'required|string',
+            'foto.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        $data = $request->except('foto');
+        $data['status'] = 'active';
+        
+        // Handle multiple foto upload
         $fotoPaths = [];
-
         if ($request->hasFile('foto')) {
-
-            if (count($request->file('foto')) > 3) {
-                return back()->withErrors(['foto' => 'Maksimal upload 3 foto']);
-            }
-
             foreach ($request->file('foto') as $file) {
-                $path = $file->store('destinasi', 'public');
+                // Store with correct path: storage/destinasi/foto/
+                $path = $file->store('destinasi/foto', 'public');
                 $fotoPaths[] = $path;
             }
         }
+        
+        $data['foto'] = $fotoPaths; // Will be cast to JSON by model
 
-        Destinasi::create([
-            'nama_destinasi' => $request->nama_destinasi,
-            'kategori_id'    => $request->kategori_id,
-            'harga'          => $request->harga,
-            'latitude'       => $request->latitude,
-            'longitude'      => $request->longitude,
-            'deskripsi'      => $request->deskripsi,
-            'foto'           => json_encode($fotoPaths)
-        ]);
+        Destinasi::create($data);
 
-        return redirect()->route('admin.destinasi.index')
-            ->with('success', 'Destinasi berhasil ditambahkan');
+        return redirect()
+            ->route('admin.destinasi.index')
+            ->with('success', 'Destinasi berhasil ditambahkan!');
     }
 
-    public function edit($id)
+    /**
+     * Show edit form
+     */
+    public function edit(Destinasi $destinasi)
     {
-        $destinasi = Destinasi::findOrFail($id);
         $kategori = Kategori::all();
         return view('admin.destinasi.edit', compact('destinasi', 'kategori'));
     }
 
-    public function update(Request $request, $id)
-{
-    $request->validate([
-        'nama_destinasi' => 'required|string|max:255',
-        'kategori_id' => 'required',
-        'harga' => 'required|numeric',
-        'latitude' => 'required',
-        'longitude' => 'required',
-        'deskripsi' => 'required',
-        'foto.*' => 'image|mimes:jpeg,png,jpg|max:2048'
-    ]);
+    /**
+     * Update destinasi
+     */
+    public function update(Request $request, Destinasi $destinasi)
+    {
+        $request->validate([
+            'nama_destinasi' => 'required|string|max:255',
+            'kategori_id' => 'required|exists:kategori,id',
+            'harga' => 'required|numeric|min:0',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'deskripsi' => 'required|string',
+            'foto.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'delete_foto' => 'nullable|array',
+        ]);
 
-    $destinasi = Destinasi::findOrFail($id);
-
-    $data = $request->except('foto');
-
-    //  CEK JIKA ADA FOTO BARU
-    if ($request->hasFile('foto')) {
-
-        $files = $request->file('foto');
-
-        // pastikan array
-        if (!is_array($files)) {
-            $files = [$files];
+        $data = $request->except(['foto', 'delete_foto']);
+        
+        // Get existing foto
+        $existingFoto = $destinasi->foto ?? [];
+        
+        // Delete selected foto
+        if ($request->has('delete_foto')) {
+            foreach ($request->delete_foto as $index) {
+                if (isset($existingFoto[$index])) {
+                    Storage::disk('public')->delete($existingFoto[$index]);
+                    unset($existingFoto[$index]);
+                }
+            }
+            $existingFoto = array_values($existingFoto); // Re-index
         }
-
-        if (count($files) > 3) {
-            return back()->withErrors(['foto' => 'Maksimal upload 3 foto']);
-        }
-
-        // hapus foto lama
-        if ($destinasi->foto) {
-            foreach (json_decode($destinasi->foto) as $oldFoto) {
-                Storage::delete($oldFoto);
+        
+        // Add new foto
+        if ($request->hasFile('foto')) {
+            foreach ($request->file('foto') as $file) {
+                $path = $file->store('destinasi/foto', 'public');
+                $existingFoto[] = $path;
             }
         }
+        
+        $data['foto'] = $existingFoto;
 
-        $fotoPaths = [];
-        foreach ($files as $file) {
-            $path = $file->store('destinasi', 'public');
-            $fotoPaths[] = $path;
-        }
+        $destinasi->update($data);
 
-        $data['foto'] = json_encode($fotoPaths);
+        return redirect()
+            ->route('admin.destinasi.index')
+            ->with('success', 'Destinasi berhasil diupdate!');
     }
 
-    $destinasi->update($data);
-
-    return redirect()->route('admin.destinasi.index')
-        ->with('success', 'Destinasi berhasil diupdate');
-}
-
-    public function destroy($id)
+    /**
+     * Delete destinasi
+     */
+    public function destroy(Destinasi $destinasi)
     {
-        $destinasi = Destinasi::findOrFail($id);
-
+        // Delete all foto
         if ($destinasi->foto) {
-            $fotos = json_decode($destinasi->foto, true);
-            foreach ($fotos as $foto) {
-                if (Storage::disk('public')->exists($foto)) {
-                    Storage::disk('public')->delete($foto);
-                }
+            foreach ($destinasi->foto as $foto) {
+                Storage::disk('public')->delete($foto);
+            }
+        }
+        
+        // Delete all video
+        if ($destinasi->video) {
+            foreach ($destinasi->video as $video) {
+                Storage::disk('public')->delete($video);
             }
         }
 
         $destinasi->delete();
 
-        return redirect()->route('admin.destinasi.index')
-            ->with('success', 'Destinasi berhasil dihapus');
+        return redirect()
+            ->route('admin.destinasi.index')
+            ->with('success', 'Destinasi berhasil dihapus!');
     }
 }
