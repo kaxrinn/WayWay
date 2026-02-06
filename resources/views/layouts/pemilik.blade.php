@@ -150,13 +150,13 @@
                 </a>
                 @endif
                 
-                <hr class="my-4">
-                <!-- mau disambungin ke wa -->
-                <a href="#" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition text-gray-700">
-                    <i class="fas fa-question-circle w-5"></i>
-                    <span>Bantuan</span>
-                </a>
+                <!-- bantuan link -->
+              <a href="https://wa.me/6289520428618?text={{ urlencode('Halo admin WayWay, saya butuh bantuan') }}"
+   target="_blank"
+   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition text-gray-700">
+    <i class="fas fa-question-circle w-5"></i>
+    <span>Bantuan</span>
+</a>
             </nav>
         </div>
     </aside>

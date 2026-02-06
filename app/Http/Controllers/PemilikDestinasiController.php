@@ -63,9 +63,9 @@ class PemilikDestinasiController extends Controller
                 ->with('error', 'Batas destinasi sudah tercapai! Upgrade paket Anda untuk menambah lebih banyak destinasi.');
         }
         
-        $kategoris = Kategori::all();
+        $kategori = Kategori::all();
         
-        return view('pemilik.destinasi.create', compact('kategoris', 'limits'));
+        return view('pemilik.destinasi.create', compact('kategori', 'limits'));
     }
 
     /**
@@ -90,7 +90,7 @@ class PemilikDestinasiController extends Controller
             'longitude' => 'required|numeric',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
-            'kategori_id' => 'required|exists:kategoris,id',
+            'kategori_id' => 'required|exists:kategori,id',
             'foto.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'video.*' => 'nullable|mimes:mp4,mov,avi|max:10240', // 10MB max
         ]);
@@ -174,9 +174,9 @@ class PemilikDestinasiController extends Controller
                 ->with('info', 'Paket Basic tidak bisa edit langsung. Silakan ajukan request edit.');
         }
         
-        $kategoris = Kategori::all();
+        $kategori = Kategori::all();
         
-        return view('pemilik.destinasi.edit', compact('destinasi', 'kategoris', 'limits'));
+        return view('pemilik.destinasi.edit', compact('destinasi', 'kategori', 'limits'));
     }
 
     /**
@@ -199,7 +199,7 @@ class PemilikDestinasiController extends Controller
             'longitude' => 'required|numeric',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
-            'kategori_id' => 'required|exists:kategoris,id',
+            'kategori_id' => 'required|exists:kategori,id',
             'foto.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'video.*' => 'nullable|mimes:mp4,mov,avi|max:10240',
             'is_featured' => 'nullable|boolean',

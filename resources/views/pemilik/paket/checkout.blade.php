@@ -30,26 +30,59 @@
                 </div>
             </div>
             
-            <!-- Payment Instructions -->
+            <!-- Midtrans Payment Info -->
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-6">
-                <h4 class="font-bold mb-2">Transfer ke Rekening:</h4>
-                <p class="font-mono text-lg">BCA: 1234567890</p>
-                <p class="text-sm text-gray-600">a/n PT WayWay Indonesia</p>
+                <p class="text-sm text-gray-700">
+                    <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                    Pembayaran aman menggunakan <strong>Midtrans</strong>
+                </p>
+                <p class="text-xs text-gray-600 mt-2">
+                    Support: Credit Card, GoPay, OVO, Bank Transfer, QRIS, dan lainnya
+                </p>
             </div>
             
-            <!-- Upload Bukti Form -->
-            <form method="POST" action="{{ route('pemilik.transaksi.confirm', $transaksi->id) }}" enctype="multipart/form-data">
-                @csrf
-                
-                <label class="block font-semibold mb-2">Upload Bukti Transfer:</label>
-                <input type="file" name="bukti_pembayaran" accept="image/*" required
-                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg">
-                
-                <button type="submit" class="w-full mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-lg font-semibold">
-                    <i class="fas fa-check mr-2"></i> Konfirmasi Pembayaran
-                </button>
-            </form>
+            <!-- Midtrans Pay Button -->
+            <button id="pay-button" 
+                    class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                <i class="fas fa-lock mr-2"></i>
+                Bayar Sekarang dengan Midtrans
+            </button>
+            
+            <p class="text-center text-sm text-gray-500 mt-4">
+                Klik tombol di atas untuk melanjutkan ke halaman pembayaran
+            </p>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<!-- Midtrans Snap Script (SANDBOX) -->
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" 
+        data-client-key="{{ $clientKey }}"></script>
+
+<script>
+const payButton = document.getElementById('pay-button');
+
+payButton.addEventListener('click', function () {
+    snap.pay('{{ $snapToken }}', {
+        onSuccess: function(result) {
+            console.log('Payment success:', result);
+            window.location.href = '{{ route("pemilik.paket.callback") }}';
+        },
+        onPending: function(result) {
+            console.log('Payment pending:', result);
+            window.location.href = '{{ route("pemilik.paket.callback") }}';
+        },
+        onError: function(result) {
+            console.log('Payment error:', result);
+            alert('Pembayaran gagal! Silakan coba lagi.');
+        },
+        onClose: function() {
+            console.log('Payment popup closed');
+            alert('Anda menutup popup pembayaran. Silakan klik tombol bayar lagi jika ingin melanjutkan.');
+        }
+    });
+});
+</script>
+@endpush

@@ -76,7 +76,7 @@
                             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('kategori_id') border-red-500 @enderror"
                             required>
                         <option value="">-- Pilih Kategori --</option>
-                        @foreach($kategoris as $kategori)
+                        @foreach($kategori as $kategori)
                             <option value="{{ $kategori->id }}" {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}>
                                 {{ $kategori->nama_kategori }}
                             </option>
