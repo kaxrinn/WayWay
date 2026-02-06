@@ -6,9 +6,20 @@ use App\Models\PaketPromosi;
 use App\Models\TransaksiPromosi;
 use App\Models\Promosi;
 use Illuminate\Http\Request;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class PaketController extends Controller
 {
+    public function __construct()
+    {
+        // Set Midtrans configuration
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized = config('midtrans.is_sanitized');
+        Config::$is3ds = config('midtrans.is_3ds');
+    }
+    
     /**
      * Display list paket promosi
      */
@@ -35,7 +46,7 @@ class PaketController extends Controller
     }
 
     /**
-     * Checkout paket (will redirect to Midtrans)
+     * Checkout paket (UPDATED: Midtrans integration)
      */
     public function checkout(Request $request, $paketId)
     {
@@ -63,8 +74,8 @@ class PaketController extends Controller
         
         // Create promosi record
         $promosi = Promosi::create([
-            'user_id' => $user->id, // ADD user_id untuk user subscription
-            'destinasi_id' => null, // NULL untuk user subscription (bukan destinasi spesifik)
+            'user_id' => $user->id,
+            'destinasi_id' => null,
             'paket_id' => $paket->id,
             'tanggal_mulai' => now(),
             'tanggal_selesai' => now()->addDays($durasiHari),
@@ -82,14 +93,132 @@ class PaketController extends Controller
             'tanggal_transaksi' => now(),
         ]);
         
-        // TODO: Integrate with Midtrans
-        // For now, just redirect to success page with manual confirmation
-        
-        return view('pemilik.paket.checkout', compact('transaksi', 'paket', 'durasi', 'totalHarga'));
+        // ✅ MIDTRANS INTEGRATION - CREATE SNAP TOKEN
+        try {
+            $params = [
+                'transaction_details' => [
+                    'order_id' => 'TRX-' . $transaksi->id . '-' . time(),
+                    'gross_amount' => (int) $totalHarga,
+                ],
+                'customer_details' => [
+                    'first_name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->no_telepon ?? '08123456789',
+                ],
+                'item_details' => [[
+                    'id' => $paket->id,
+                    'price' => (int) $totalHarga,
+                    'quantity' => 1,
+                    'name' => 'Paket ' . $paket->nama_paket . ' - ' . ucfirst($durasi)
+                ]],
+            ];
+            
+            $snapToken = Snap::getSnapToken($params);
+            
+            // Save snap token
+            $transaksi->update(['snap_token' => $snapToken]);
+            
+            return view('pemilik.paket.checkout', [
+                'transaksi' => $transaksi,
+                'paket' => $paket,
+                'durasi' => $durasi,
+                'totalHarga' => $totalHarga,
+                'snapToken' => $snapToken,
+                'clientKey' => config('midtrans.client_key')
+            ]);
+            
+        } catch (\Exception $e) {
+            // Rollback if Midtrans fails
+            $transaksi->delete();
+            $promosi->delete();
+            
+            return back()->with('error', 'Gagal membuat transaksi: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Manual confirmation (sementara sebelum Midtrans)
+     * Callback after payment (success/pending/failed)
+     */
+    public function callback(Request $request)
+    {
+        return redirect()->route('pemilik.paket.index')
+            ->with('success', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
+    }
+    
+    /**
+     * Midtrans notification webhook
+     */
+    public function notification(Request $request)
+    {
+        $json = json_decode($request->getContent());
+        
+        $orderId = $json->order_id ?? null;
+        $statusCode = $json->status_code ?? null;
+        $grossAmount = $json->gross_amount ?? null;
+        $signatureKey = $json->signature_key ?? null;
+        
+        // Extract transaction ID from order_id (format: TRX-{id}-{timestamp})
+        $parts = explode('-', $orderId);
+        $transaksiId = $parts[1] ?? null;
+        
+        if (!$transaksiId) {
+            return response()->json(['message' => 'Invalid order ID'], 400);
+        }
+        
+        $transaksi = TransaksiPromosi::find($transaksiId);
+        
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+        
+        // Verify signature
+        $serverKey = config('midtrans.server_key');
+        $hash = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+        
+        if ($hash !== $signatureKey) {
+            return response()->json(['message' => 'Invalid signature'], 403);
+        }
+        
+        // Update transaction based on status
+        $transactionStatus = $json->transaction_status ?? null;
+        
+        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+            // Payment SUCCESS
+            $transaksi->update(['status_pembayaran' => 'success']);
+            
+            if ($transaksi->promosi) {
+                $transaksi->promosi->update(['status' => 'active']);
+                
+                if ($transaksi->user) {
+                    $transaksi->user->update([
+                        'current_paket_id' => $transaksi->paket_id,
+                        'paket_expired_at' => $transaksi->promosi->tanggal_selesai,
+                    ]);
+                }
+            }
+        } 
+        elseif ($transactionStatus == 'pending') {
+            $transaksi->update(['status_pembayaran' => 'pending']);
+        }
+        elseif ($transactionStatus == 'deny' || $transactionStatus == 'expire' || $transactionStatus == 'cancel') {
+            // Payment FAILED
+            $transaksi->update(['status_pembayaran' => 'failed']);
+            
+            if ($transaksi->promosi) {
+                $transaksi->promosi->update(['status' => 'expired']);
+            }
+        }
+        
+        return response()->json(['message' => 'OK']);
+    }
+
+     public function destroy($id)
+    {
+        TransaksiPromosi::findOrFail($id)->delete();
+        return back()->with('success','Transaksi berhasil dihapus.');
+    }
+    /**
+     * Manual confirmation (TETAP ADA - untuk backup jika Midtrans error)
      */
     public function confirmPayment(Request $request, $transaksiId)
     {
@@ -110,4 +239,7 @@ class PaketController extends Controller
         return redirect()->route('pemilik.paket.index')
             ->with('success', 'Bukti pembayaran berhasil diupload! Menunggu konfirmasi admin.');
     }
+
+
+
 }

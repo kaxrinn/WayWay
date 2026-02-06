@@ -117,7 +117,7 @@ Route::middleware(['auth', 'role:admin'])
         
         // Transaksi Management
         Route::get('/transaksi', function () {
-            $transaksis = \App\Models\TransaksiPromosi::with(['user', 'paket', 'promosi.destinasi'])->latest()->get();
+            $transaksis = \App\Models\TransaksiPromosi::with(['user', 'paket', 'promosi.destinasi'])->latest()->paginate(10);
             $stats = [
                 'total' => \App\Models\TransaksiPromosi::count(),
                 'pending' => \App\Models\TransaksiPromosi::where('status_pembayaran', 'pending')->sum('total_harga'),
@@ -147,6 +147,20 @@ Route::post('/transaksi/{id}/reject', function($id) {
     if ($t->promosi) $t->promosi->update(['status' => 'expired']);
     return back()->with('success', 'Rejected!');
 })->name('transaksi.reject');
+
+Route::delete('/transaksi/{id}', function ($id) {
+    $t = \App\Models\TransaksiPromosi::findOrFail($id);
+
+    // kalau mau sekalian hapus relasi promosi (opsional)
+    if ($t->promosi) {
+        $t->promosi->delete();
+    }
+
+    $t->delete();
+
+    return back()->with('success', 'Transaksi berhasil dihapus!');
+})->name('transaksi.destroy');
+
         
         // Bantuan (Hubungi Kami) Management
         Route::get('/bantuan', function () {
@@ -197,8 +211,6 @@ Route::post('/transaksi/{id}/reject', function($id) {
 
 
        // Admin Profile (PAKAI CONTROLLER)
-
-
 Route::put('/profile', [AdminProfileController::class, 'updateProfile'])
     ->name('profile.update');
     });
@@ -223,12 +235,16 @@ Route::middleware(['auth', 'role:pemilik_wisata'])
         Route::resource('destinasi', \App\Http\Controllers\PemilikDestinasiController::class);
         
         // Paket Promosi
-        Route::get('/paket', [\App\Http\Controllers\PaketController::class, 'index'])
-            ->name('paket.index');
-        Route::post('/paket/{id}/checkout', [\App\Http\Controllers\PaketController::class, 'checkout'])
-            ->name('paket.checkout');
-        Route::post('/transaksi/{id}/confirm', [\App\Http\Controllers\PaketController::class, 'confirmPayment'])
-            ->name('transaksi.confirm');
+Route::get('/paket', [\App\Http\Controllers\PaketController::class, 'index'])
+    ->name('paket.index');
+Route::post('/paket/{id}/checkout', [\App\Http\Controllers\PaketController::class, 'checkout'])
+    ->name('paket.checkout');
+Route::get('/paket/callback', [\App\Http\Controllers\PaketController::class, 'callback'])
+    ->name('paket.callback');
+Route::post('/transaksi/{id}/confirm', [\App\Http\Controllers\PaketController::class, 'confirmPayment'])
+    ->name('transaksi.confirm');
+
+    
         
         // Edit Requests (untuk Basic users)
         Route::get('/edit-request', [\App\Http\Controllers\EditRequestController::class, 'index'])
