@@ -11,6 +11,7 @@ use App\Http\Controllers\DestinasiController;
 use App\Http\Controllers\Api\DestinasiApiController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AdminProfileController;
+use App\Http\Controllers\UlasanController;
 
 
 /*
@@ -75,6 +76,31 @@ Route::get('/', [WisatawanController::class, 'beranda'])
 Route::get('/wisatawan/beranda', [WisatawanController::class, 'beranda'])
     ->name('wisatawan.beranda');
 
+/* ===== DESTINASI PUBLIK (WISATAWAN) ===== */
+Route::get('/destinasi', [DestinasiController::class, 'index'])
+    ->name('destinasi.index');
+
+Route::get('/destinasi/{destinasi}', 
+    [WisatawanController::class, 'show']
+)->name('destinasi.show');
+
+Route::get('/destinasi', [WisatawanController::class, 'index'])
+    ->name('destinasi.index');
+
+//ulasan destinasi
+Route::post('/ulasan', [UlasanController::class, 'store'])
+    ->name('ulasan.store')
+    ->middleware('auth');
+//kontak
+Route::post('/kontak', [WisatawanController::class, 'kirimPesan'])
+    ->name('hubungi.kami.store');
+
+//Favorit
+
+Route::middleware('auth')->group(function () {
+    Route::post('/favorit/toggle', [WisatawanController::class, 'toggle'])
+        ->name('wisatawan.favorit.toggle');
+});
 
 /*
 |--------------------------------------------------------------------------

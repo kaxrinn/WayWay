@@ -140,6 +140,14 @@ class User extends Authenticatable
 
     return PaketPromosi::where('nama_paket', 'Basic')->first();
 }
-
+public function favorit()
+{
+    return $this->belongsToMany(
+        Destinasi::class,
+        'favorit',
+        'user_id',
+        'destinasi_id'
+    )->withTimestamps();
+}
 
 }

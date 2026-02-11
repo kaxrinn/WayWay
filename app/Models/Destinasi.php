@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Ulasan;
 class Destinasi extends Model
 {
     use HasFactory;
@@ -73,5 +73,26 @@ class Destinasi extends Model
     {
         return $this->hasMany(EditRequest::class, 'destinasi_id');
     }
+//ulasan
+    public function ulasan()
+    {
+        return $this->hasMany(Ulasan::class);
+    }
+
+    /* AVG rating otomatis */
+    public function getAvgRatingAttribute()
+    {
+        return $this->ulasan()->avg('rating');
+    }
+
+public function difavoritkanOleh()
+{
+    return $this->belongsToMany(
+        User::class,
+        'favorit',
+        'destinasi_id',
+        'user_id'
+    )->withTimestamps();
+}
 }
 

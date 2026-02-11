@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Destinasi;
+use App\Models\Kategori;
+use App\Models\HubungiKami;
+use App\Models\Favorit;
 use Illuminate\Http\Request;
 
 class WisatawanController extends Controller
@@ -12,7 +16,86 @@ class WisatawanController extends Controller
     public function beranda()
     {
         $user = auth()->user();
-        return view('wisatawan.beranda', compact('user'));
+
+        $destinasiPopuler = Destinasi::with('kategori')
+            ->withAvg('ulasan', 'rating') // ✅ Tambahkan ini untuk rating
+            ->where('status', 'active')
+            ->latest()
+            ->take(9) // ✅ Batasi hanya 9 destinasi populer
+            ->get();
+
+        $kategori = Kategori::all();
+
+        // ✅ PENTING: Ambil favorit user yang login
+        $favoritIds = [];
+        if (auth()->check()) {
+            $favoritIds = Favorit::where('user_id', auth()->id())
+                ->pluck('destinasi_id')
+                ->toArray();
+        }
+
+        return view('wisatawan.beranda', compact(
+            'user',
+            'destinasiPopuler',
+            'kategori',
+            'favoritIds' // ✅ TAMBAHKAN INI
+        ));
+    }
+
+    public function show(Destinasi $destinasi)
+    {
+        $destinasi->load(['kategori', 'ulasan.user']);
+
+        $avgRating = round($destinasi->ulasan()->avg('rating') ?? 5, 1);
+        $totalReview = $destinasi->ulasan()->count();
+
+        return view('wisatawan.berandasection.show', compact(
+            'destinasi',
+            'avgRating',
+            'totalReview'
+        ));
+    }
+
+    public function index(Request $request)
+    {
+        $kategori = Kategori::all();
+
+        $destinasi = Destinasi::with('kategori')
+            ->where('status', 'active');
+
+        // 🔍 SEARCH (navbar & halaman)
+        if ($request->filled('q')) {
+            $q = $request->q;
+
+            $destinasi->where(function ($query) use ($q) {
+                $query->where('nama_destinasi', 'like', "%$q%")
+                      ->orWhere('deskripsi', 'like', "%$q%")
+                      ->orWhereHas('kategori', function ($kat) use ($q) {
+                          $kat->where('nama_kategori', 'like', "%$q%");
+                      });
+            });
+        }
+
+        // 🏷️ FILTER kategori
+        if ($request->filled('kategori') && $request->kategori !== 'all') {
+            $destinasi->where('kategori_id', $request->kategori);
+        }
+
+        // ✅ PENTING: Ambil favorit user yang login
+        $favoritIds = [];
+        if (auth()->check()) {
+            $favoritIds = Favorit::where('user_id', auth()->id())
+                ->pluck('destinasi_id')
+                ->toArray();
+        }
+
+        return view('wisatawan.berandasection.index', [
+            'destinasi' => $destinasi->paginate(9)->withQueryString(),
+            'kategori' => $kategori,
+            'q' => $request->q,
+            'kategoriAktif' => $request->kategori,
+            'favoritIds' => $favoritIds // ✅ PERBAIKI INI
+        ]);
     }
 
     /**
@@ -47,5 +130,67 @@ class WisatawanController extends Controller
         ]);
 
         return back()->with('success', 'Profil berhasil diupdate!');
+    }
+
+    //hubungi_kami
+    public function kirimPesan(Request $request)
+    {
+        $request->validate([
+            'nama'   => 'required',
+            'email'  => 'required|email',
+            'subjek' => 'required',
+            'pesan'  => 'required',
+        ]);
+
+        HubungiKami::create([
+            'nama'    => $request->nama,
+            'email'   => $request->email,
+            'subjek'  => $request->subjek,
+            'pesan'   => $request->pesan,
+            'status'  => 'pending',
+            'user_id' => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Pesan berhasil dikirim!');
+    }
+
+    //favorit
+    public function toggle(Request $request)
+    {
+        // ✅ Cek apakah user login
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Silakan login terlebih dahulu'
+            ], 401);
+        }
+
+        $request->validate([
+            'destinasi_id' => 'required|exists:destinasi,id'
+        ]);
+
+        $userId = auth()->id();
+
+        $favorit = Favorit::where('user_id', $userId)
+            ->where('destinasi_id', $request->destinasi_id)
+            ->first();
+
+        if ($favorit) {
+            $favorit->delete();
+            return response()->json([
+                'status' => 'removed',
+                'message' => 'Dihapus dari favorit'
+            ]);
+        }
+
+        Favorit::create([
+            'user_id' => $userId,
+            'destinasi_id' => $request->destinasi_id
+        ]);
+
+        return response()->json([
+            'status' => 'added',
+            'message' => 'Ditambahkan ke favorit'
+        ]);
     }
 }
