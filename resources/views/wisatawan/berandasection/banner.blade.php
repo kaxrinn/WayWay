@@ -1,6 +1,7 @@
 <section id="beranda"
-    class="relative w-full overflow-hidden aspect-video max-h-screen">
-
+    class="relative w-full overflow-hidden
+           min-h-[55vh] sm:min-h-screen
+           pt-16 sm:pt-0">
     <video autoplay muted loop playsinline
         class="absolute inset-0 w-full h-full object-cover">
         <source src="{{ asset('videos/batam-hero.mp4') }}" type="video/mp4">
@@ -9,7 +10,9 @@
     <!-- overlay biar teks kebaca -->
     <div class="absolute inset-0"></div>
 
-    <div class="relative z-10 flex items-center justify-center h-full text-center px-4 sm:px-6">
+    <div class="relative z-10 flex items-center justify-center 
+            h-full text-center px-4 sm:px-6
+            pt-10 sm:pt-0">
         <div class="text-white max-w-2xl">
 
             <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-wide leading-tight">
