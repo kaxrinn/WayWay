@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\DestinasiApiController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\UlasanController;
+use App\Http\Controllers\PemilikPromosiController;
 
 
 /*
@@ -96,7 +97,6 @@ Route::post('/kontak', [WisatawanController::class, 'kirimPesan'])
     ->name('hubungi.kami.store');
 
 //Favorit
-
 Route::middleware('auth')->group(function () {
     Route::post('/favorit/toggle', [WisatawanController::class, 'toggle'])
         ->name('wisatawan.favorit.toggle');
@@ -312,6 +312,19 @@ Route::post('/transaksi/{id}/confirm', [\App\Http\Controllers\PaketController::c
             return back()->with('success', 'Profil berhasil diupdate!');
         })->name('profile.update');
     });
+
+//Pemilik Promosi iklan
+Route::middleware(['auth', /* middleware role pemilik */])->prefix('pemilik')->name('pemilik.')->group(function () {
+
+    // Banner Promosi Premium
+    Route::get('/promosi',               [PemilikPromosiController::class, 'index'])->name('promosi.index');
+    Route::post('/promosi',              [PemilikPromosiController::class, 'store'])->name('promosi.store');
+    Route::get('/promosi/{promosi}/edit',[PemilikPromosiController::class, 'edit'])->name('promosi.edit');
+    Route::put('/promosi/{promosi}',     [PemilikPromosiController::class, 'update'])->name('promosi.update');
+    Route::delete('/promosi/{promosi}',  [PemilikPromosiController::class, 'destroy'])->name('promosi.destroy');
+
+});
+
 
 /*
 |--------------------------------------------------------------------------

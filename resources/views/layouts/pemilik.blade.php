@@ -130,11 +130,26 @@
                     <span>Destinasi Saya</span>
                 </a>
                 
-                <a href="{{ route('pemilik.paket.index') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition {{ request()->routeIs('pemilik.paket.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
-                    <i class="fas fa-box w-5"></i>
-                    <span>Paket Promosi</span>
-                </a>
+<a href="{{ route('pemilik.paket.index') }}"
+   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition {{ request()->routeIs('pemilik.paket.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
+    <i class="fas fa-box w-5"></i>
+    <span>Paket Promosi</span>
+</a>
+
+@php
+    $isPremium = isset($paket) && $paket && $paket->priority_level >= 3;
+@endphp
+
+@if($isPremium)
+<a href="{{ route('pemilik.promosi.index') }}"
+   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-yellow-100 transition {{ request()->routeIs('pemilik.promosi.*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700' }}">
+    <i class="fas fa-bullhorn w-5 text-yellow-500"></i>
+    <span>Banner Promosi</span>
+    <span class="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full leading-tight">
+        Premium
+    </span>
+</a>
+@endif
                 
                 @php
                     $canEditFoto = $paket && $paket->can_edit_foto;

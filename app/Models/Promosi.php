@@ -15,6 +15,9 @@ class Promosi extends Model
         'user_id',
         'destinasi_id',
         'paket_id',
+        'judul_banner',
+        'deskripsi_banner',
+        'banner_promosi',
         'tanggal_mulai',
         'tanggal_selesai',
         'status'
@@ -56,4 +59,11 @@ class Promosi extends Model
     {
         return $this->hasMany(TransaksiPromosi::class, 'promosi_id');
     }
+    public function scopeAktif($query)
+    {
+        return $query->where('status', 'active')
+                     ->whereDate('tanggal_mulai', '<=', now())
+                     ->whereDate('tanggal_selesai', '>=', now());
+    }
+
 }
