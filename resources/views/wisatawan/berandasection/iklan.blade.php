@@ -1,10 +1,10 @@
-<section class="bg-white py-20">
+<section class="bg-white py-20 sm:px-15">
     <div class="max-w-5xl mx-auto px-6">
 
         <!-- Judul -->
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-[#496d9e]">
-                Event & Promosi
+                Penawaran Spesial
             </h2>
         </div>
 

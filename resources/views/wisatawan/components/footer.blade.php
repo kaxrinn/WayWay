@@ -15,7 +15,6 @@
                 No. HP: 0812-3456-7890
             </p>
         </div>
-
         
     <!-- Link dan ikon media sosial -->
     <div class="flex gap-5 mt-2">

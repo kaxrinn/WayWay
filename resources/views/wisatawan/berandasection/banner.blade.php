@@ -1,31 +1,45 @@
-<section id="beranda"class="relative h-screen w-full overflow-hidden">
+<section id="beranda"
+    class="relative w-full overflow-hidden aspect-video max-h-screen">
 
     <video autoplay muted loop playsinline
         class="absolute inset-0 w-full h-full object-cover">
         <source src="{{ asset('videos/batam-hero.mp4') }}" type="video/mp4">
     </video>
 
+    <!-- overlay biar teks kebaca -->
     <div class="absolute inset-0"></div>
 
-    <div class="relative z-10 flex items-center justify-center h-full text-center px-6">
-        <div class="text-white">
+    <div class="relative z-10 flex items-center justify-center h-full text-center px-4 sm:px-6">
+        <div class="text-white max-w-2xl">
 
-            <h1 class="text-4xl md:text-6xl font-bold tracking-wide">
+            <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-wide leading-tight">
                 Find Your Way<br/> Enjoy the Way
             </h1>
 
-            <p class="mt-10 text-xl text-bold md:text-bold text-white">
+            <p class="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-white/90">
                 AI Travel Guide for Batam
             </p>
 
-            <a href="#"
-               class="inline-block mt-8 px-8 py-3 rounded-full bg-[#F4DBB4] text-black text-sm font-semibold hover:bg-[#f9d497] transition">
-                Jelajahi Sekarang
-            </a>
+            @auth
+                <a href="/#destinasi"
+                   class="inline-block mt-6 sm:mt-8 px-7 py-3 rounded-full
+                          bg-[#F4DBB4] text-black text-sm font-semibold
+                          hover:bg-[#f9d497] transition">
+                    Temukan Destinasimu
+                </a>
+            @else
+                <a href="{{ route('wisatawan.login') }}"
+                   class="inline-block mt-6 sm:mt-8 px-7 py-3 rounded-full
+                          bg-[#F4DBB4] text-black text-sm font-semibold
+                          hover:bg-[#f9d497] transition">
+                    Jelajahi Sekarang
+                </a>
+            @endauth
+
         </div>
     </div>
 </section>
-<section class="bg-white py-20">
+<section class="bg-white py-20 sm:px-20">
     <div class="max-w-6xl mx-auto px-6 text-center">
 
         <!-- Title -->
