@@ -115,14 +115,7 @@
                             src="{{ $destinasi->foto ? Storage::url($destinasi->foto[0]) : asset('images/placeholder.jpg') }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500 rounded-t-[24px]">
                         
-                        <!-- RATING BADGE -->
-                        <div class="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full 
-                                    flex items-center gap-1 shadow-sm">
-                            <span class="text-amber-400 text-xs">⭐</span>
-                            <span class="text-xs font-semibold text-gray-700">
-                                {{ number_format($destinasi->avg_rating ?? 5, 1) }}
-                            </span>
-                        </div>
+
                     </div>
 
                     <!-- CONTENT -->

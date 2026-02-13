@@ -12,7 +12,7 @@
 
     <div class="relative z-10 flex items-center justify-center 
             h-full text-center px-4 sm:px-6
-            pt-10 sm:pt-0">
+            pt-10 sm:pt-25">
         <div class="text-white max-w-2xl">
 
             <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-wide leading-tight">
