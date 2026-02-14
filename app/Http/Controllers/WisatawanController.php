@@ -125,26 +125,31 @@ class WisatawanController extends Controller
      * Update profil wisatawan
      */
     public function updateProfile(Request $request)
-    {
-        $user = auth()->user();
+{
+    $user = auth()->user();
 
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-        ], [
-            'name.required'  => 'Nama wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email'    => 'Format email tidak valid',
-            'email.unique'   => 'Email sudah terdaftar',
-        ]);
+    $request->validate([
+        'name'  => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:6|confirmed',
+    ]);
 
-        $user->update([
-            'name'  => $request->name,
-            'email' => $request->email,
-        ]);
+    $data = [
+        'name'  => $request->name,
+        'email' => $request->email,
+        'no_telepon' => $request->no_telepon,
+    ];
 
-        return back()->with('success', 'Profil berhasil diupdate!');
+    // ✅ HANYA UPDATE PASSWORD JIKA DIISI
+    if ($request->filled('password')) {
+        $data['password'] = bcrypt($request->password);
     }
+
+    $user->update($data);
+
+    return back()->with('success', 'Profil berhasil diperbarui');
+}
+
 
     // Hubungi Kami
     public function kirimPesan(Request $request)
@@ -237,4 +242,6 @@ class WisatawanController extends Controller
 
         return view('wisatawan.favorit.index', compact('destinasiFavorit', 'favoritIds'));
     }
+
+
 }

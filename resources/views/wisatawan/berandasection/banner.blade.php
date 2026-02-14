@@ -1,47 +1,42 @@
 <section id="beranda"
-    class="relative w-full overflow-hidden
-           min-h-[55vh] sm:min-h-screen
-           pt-16 sm:pt-0">
+    class="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+
+    <!-- VIDEO -->
     <video autoplay muted loop playsinline
         class="absolute inset-0 w-full h-full object-cover">
         <source src="{{ asset('videos/batam-hero.mp4') }}" type="video/mp4">
     </video>
 
-    <!-- overlay biar teks kebaca -->
-    <div class="absolute inset-0"></div>
+    <!-- OVERLAY GRADIENT -->
+    <div class="absolute inset-0 
+        bg-gradient-to-b 
+        from-black/20 via-black/10 to-transparent">
+    </div>
 
-    <div class="relative z-10 flex items-center justify-center 
-            h-full text-center px-4 sm:px-6
-            pt-10 sm:pt-40">
-        <div class="text-white max-w-2xl">
+    <!-- CONTENT -->
+    <div class="relative z-20 text-center px-4 sm:px-6 max-w-2xl text-white">
+        <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
+            Find Your Way<br>Enjoy the Way
+        </h1>
 
-            <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-wide leading-tight">
-                Find Your Way<br/> Enjoy the Way
-            </h1>
+        <p class="mt-4 sm:mt-6 text-base sm:text-lg text-white/90">
+            AI Travel Guide for Batam
+        </p>
 
-            <p class="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-white/90">
-                AI Travel Guide for Batam
-            </p>
+        <a href="#destinasi"
+           class="inline-block mt-6 px-7 py-3 rounded-full
+                  bg-[#F4DBB4] text-black font-semibold
+                  hover:bg-[#f9d497] transition">
+            Jelajahi Sekarang
+        </a>
+    </div>
 
-            @auth
-                <a href="/#destinasi"
-                   class="inline-block mt-6 sm:mt-8 px-7 py-3 rounded-full
-                          bg-[#F4DBB4] text-black text-sm font-semibold
-                          hover:bg-[#f9d497] transition">
-                    Temukan Destinasimu
-                </a>
-            @else
-                <a href="{{ route('wisatawan.login') }}"
-                   class="inline-block mt-6 sm:mt-8 px-7 py-3 rounded-full
-                          bg-[#F4DBB4] text-black text-sm font-semibold
-                          hover:bg-[#f9d497] transition">
-                    Jelajahi Sekarang
-                </a>
-            @endauth
-
-        </div>
+    <!-- FADE KE SECTION BAWAH -->
+    <div class="absolute bottom-0 left-0 w-full h-32
+                bg-gradient-to-t from-white to-transparent z-10">
     </div>
 </section>
+
 <!-- About Section -->
 <section class="bg-white py-20">
     <div class="max-w-5xl mx-auto px-6 sm:px-6 lg:px-8">

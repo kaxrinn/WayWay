@@ -103,6 +103,11 @@ Route::post('/kontak', [WisatawanController::class, 'kirimPesan'])
     // Halaman daftar favorit
     Route::get('/wisatawan/favorit', [WisatawanController::class, 'indexFavorit'])
         ->name('wisatawan.favorit.index');
+
+    Route::put('/wisatawan/profile', [WisatawanController::class, 'updateProfile'])
+    ->middleware('auth')
+    ->name('wisatawan.profile.update');
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN ROUTES
@@ -197,7 +202,7 @@ Route::delete('/transaksi/{id}', function ($id) {
                     WHEN 'processed' THEN 2 
                     WHEN 'resolved' THEN 3 
                 END
-            ")->latest()->get();
+            ")->latest()->paginate(10);
             
             $stats = [
                 'pending' => \App\Models\HubungiKami::where('status', 'pending')->count(),
@@ -221,6 +226,19 @@ Route::delete('/transaksi/{id}', function ($id) {
             
             return redirect()->route('admin.bantuan.index')->with('success', 'Status berhasil diupdate!');
         })->name('bantuan.update-status');
+
+        Route::delete('/bantuan/{id}', function ($id) {
+            \App\Models\HubungiKami::findOrFail($id)->delete();
+            return back()->with('success', 'Pesan berhasil dihapus!');
+        })->name('bantuan.destroy');
+
+        Route::delete('/bantuan/{id}', function ($id) {
+    \App\Models\HubungiKami::findOrFail($id)->delete();
+
+    return redirect()
+        ->route('admin.bantuan.index')
+        ->with('success', 'Pesan berhasil dihapus');
+})->name('bantuan.destroy');
         
         // Edit Requests Management
         Route::get('/edit-requests', [\App\Http\Controllers\AdminEditRequestController::class, 'index'])

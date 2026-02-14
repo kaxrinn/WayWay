@@ -84,8 +84,8 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-2">
-                            <a href="{{ route('admin.pemilik.edit', $pemilik->id) }}" 
-                               class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg transition text-sm flex items-center gap-1">
+                            <a href="{{ route('admin.pemilik.edit', $pemilik->id) }}"  
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg transition text-xs flex items-center gap-1">
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </a>
@@ -96,7 +96,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 
-                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition text-sm flex items-center gap-1">
+                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition text-xs flex items-center gap-1">
                                     <i class="fas fa-trash"></i>
                                     Hapus
                                 </button>

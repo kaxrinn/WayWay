@@ -42,13 +42,16 @@
                     
                     <div class="flex items-center gap-3">
                     <div class="bg-white p-2 rounded-lg">
-    <img src="{{  asset('assets/Logo/logo.png')}}" 
-         alt="Logo" 
-         class="w-8 h-8 object-contain">
-</div>
+                    <img src="{{  asset('assets/Logo/logo.png')}}" 
+                    alt="Logo" 
+                    class="w-8 h-8 object-contain">
+             </div>
                         
                         <div>
-                            <h1 class="text-2xl font-bold">WayWay</h1>
+                            <h1 class="font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#c6c4c9] via-[#415c7f] to-[#c6c4c9]">
+                             WayWay
+                            </h1>
+                            
                             <p class="text-xs text-white/80">Pemilik Wisata</p>
                         </div>
                     </div>
@@ -167,11 +170,11 @@
                 
                 <!-- bantuan link -->
               <a href="https://wa.me/6289520428618?text={{ urlencode('Halo admin WayWay, saya butuh bantuan') }}"
-   target="_blank"
-   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition text-gray-700">
-    <i class="fas fa-question-circle w-5"></i>
-    <span>Bantuan</span>
-</a>
+                 target="_blank"
+                 class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition text-gray-700">
+                <i class="fas fa-question-circle w-5"></i>
+                <span>Bantuan</span>
+               </a>
             </nav>
         </div>
     </aside>

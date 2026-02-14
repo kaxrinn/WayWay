@@ -1,3 +1,23 @@
+<head>
+    <meta charset="UTF-8">
+    <title>WayWay</title>
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <!-- ALPINE JS (WAJIB) -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
+<div x-data="{ profileModal: false }">
+
 <header class="fixed top-4 w-full z-50">
     <div class="max-w-[1200px] mx-auto px-4">
         <div class="bg-[#9ECCDB]/80 backdrop-blur
@@ -9,11 +29,11 @@
             <!-- LOGO -->
             <div class="flex items-center gap-2">
                 <img src="{{ asset('assets/logo/logoo.png') }}"
-                     class="h-10" alt="WayWay">
-                <span class="font-bold text-[#415c7f] bg-[#9ECCDB]">
-                    Way<span class="text-white bg-[#9ECCDB]">Way</span>
-                </span>
-</div>
+                     class="h-10" alt="WayWay">        
+            <span class="font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#c6c4c9] via-[#415c7f] to-[#c6c4c9]">
+                WayWay
+            </span>
+    </div>
 
             <!-- DESKTOP MENU -->
             <nav class="hidden lg:flex items-center gap-2 text-sm text-white">
@@ -121,14 +141,19 @@
                                group-hover:translate-y-0
                                transition-all duration-200 z-50">
 
-                        <a href="{{ route('wisatawan.profile') }}"
-                           class="flex items-center gap-2 px-4 py-2 text-sm
-                                  text-slate-700 hover:bg-sky-50 rounded-t-xl">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
-                            Profil
-                        </a>
+                        <button
+    @click="profileModal = true"
+    type="button"
+    class="flex items-center gap-2 px-4 py-2 text-sm
+           text-slate-700 hover:bg-sky-50 rounded-t-xl w-full text-left">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+    </svg>
+    Ubah Profil
+</button>
+
+
 
                         {{-- ✅ LINK FAVORIT --}}
                         <a href="{{ route('wisatawan.favorit.index') }}"
@@ -202,6 +227,102 @@
         </div>
     </div>
 </header>
+
+<!-- MODAL UBAH PROFIL -->
+<div
+    x-show="profileModal"
+    x-cloak
+    x-transition.opacity
+    class="fixed inset-0 bg-black/50 flex items-center justify-center z-[99999]"
+>
+    <div
+        @click.away="profileModal = false"
+        class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl relative"
+    >
+
+        <h2 class="text-xl font-bold text-slate-800 mb-6">
+            Ubah Profil Wisatawan
+        </h2>
+
+        <form 
+    method="POST" 
+    action="{{ route('wisatawan.profile.update') }}"
+    autocomplete="off">
+
+            @csrf
+            @method('PUT')
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm font-medium">Nama</label>
+                    <input type="text" name="name"
+                        value="{{ auth()->user()->name }}"
+                        class="w-full rounded-xl border px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Email</label>
+                    <input type="email" name="email"
+                        value="{{ auth()->user()->email }}"
+                        class="w-full rounded-xl border px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">No Telepon</label>
+                    <input type="text" name="no_telepon"
+                        value="{{ auth()->user()->no_telepon }}"
+                        class="w-full rounded-xl border px-4 py-2">
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Password Baru</label>
+                    <input 
+    type="password" 
+    name="password"
+    placeholder="Kosongkan jika tidak diubah"
+    class="w-full rounded-xl border px-4 py-2"
+    autocomplete="new-password"
+>
+                </div>
+
+                <div>
+                    <label class="text-sm font-medium">Konfirmasi Password</label>
+                    <input 
+    type="password" 
+    name="password_confirmation"
+    class="w-full rounded-xl border px-4 py-2"
+    autocomplete="new-password"
+>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button"
+                    @click="profileModal = false"
+                    class="px-4 py-2 rounded-full bg-gray-100">
+                    Batal
+                </button>
+
+                <button type="submit"
+                    class="px-5 py-2 rounded-full bg-[#5b9ac7] text-white">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@if(session('success'))
+<div
+    x-data="{ show: true }"
+    x-init="setTimeout(() => show = false, 3000)"
+    x-show="show"
+    x-transition
+    class="fixed top-24 right-6 bg-green-500 text-white px-5 py-3 rounded-xl shadow-lg z-[9999]">
+    {{ session('success') }}
+</div>
+@endif
+
 
 <!-- MOBILE BOTTOM NAVIGATION -->
 <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-t border-sky-200 shadow-lg">
@@ -279,6 +400,7 @@
             <span>Login</span>
         </a>
         @endauth
+    </div>
     </div>
 </nav>
 

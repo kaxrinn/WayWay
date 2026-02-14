@@ -64,7 +64,9 @@
                     </button>
                     <div class="flex items-center ml-4 lg:ml-0">
                         <img src="{{  asset('assets/Logo/logo.png')}}" alt="WayWay Logo" class="h-10 w-10">
-                        <span class="ml-3 text-white font-bold text-xl">WayWay</span>
+                        <span class="ml-3 font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#c6c4c9] via-[#415c7f] to-[#c6c4c9]">
+                         WayWay
+                        </span>
                     </div>
                 </div>
                 
@@ -291,7 +293,7 @@
             <!-- Kelola Hubungi Kami -->
             <a href="{{ route('admin.edit-requests.index') }}" 
                class="flex items-center px-4 py-3 text-gray-700 hover:bg-accent rounded-lg transition {{ request()->routeIs('admin.edit-requests.*') ? 'bg-primary text-white' : '' }}">
-                <i class="fas fa-life-ring w-6"></i>
+                <i class="fas fa-pen-to-square w-6"></i>
                 <span class="ml-3">Kelola Edit Request</span>
             </a>
         </nav>
@@ -311,5 +313,7 @@
     </main>
     
     @stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
