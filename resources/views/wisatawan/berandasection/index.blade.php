@@ -9,7 +9,7 @@
 
         <!-- HEADER -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-[#496d9e] mb-4">
+            <h1 class="text-3xl font-bold text-[#496d9e] mt-4 mb-4">
                 Semua Destinasi
             </h1>
 @if(request('q'))

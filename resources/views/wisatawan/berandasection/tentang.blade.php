@@ -12,12 +12,12 @@
   <div class="absolute inset-0 "></div>
 
   <!-- CONTENT -->
-  <div class="relative z-10 max-w-6xl mx-auto px-6 sm:px-10 h-full
+  <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 h-full
               flex flex-col md:flex-row items-center justify-center md:justify-between gap-10">
 
     <!-- KIRI : Teks -->
-    <div class="text-white max-w-xl text-center md:text-left mt-30">
-      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl
+    <div class="text-white text-center md:text-left mt-30">
+      <h1 class="text-4xl
                  font-bold leading-snug mb-4"
           style="text-shadow: 4px 4px 8px rgba(0,0,0,0.6);">
         Temukan<br/>

@@ -12,7 +12,7 @@
 
     <div class="relative z-10 flex items-center justify-center 
             h-full text-center px-4 sm:px-6
-            pt-10 sm:pt-25">
+            pt-10 sm:pt-40">
         <div class="text-white max-w-2xl">
 
             <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold tracking-wide leading-tight">
@@ -42,8 +42,83 @@
         </div>
     </div>
 </section>
-<section class="bg-white py-20 sm:px-20">
-    <div class="max-w-6xl mx-auto px-6 text-center">
+<!-- About Section -->
+<section class="bg-white py-20">
+    <div class="max-w-5xl mx-auto px-6 sm:px-6 lg:px-8">
+        
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            
+            <!-- LEFT: Text Content -->
+            <div>
+                <h2 class="text-3xl sm:text-4xl font-bold text-[#496d9e] mb-6 leading-tight">
+                    Temukan Destinasi Impianmu
+                </h2>
+                
+                <p class="text-gray-600 text-base sm:text-lg leading-relaxed mb-8">
+                    WayWay hadir untuk membantu kamu menemukan pengalaman wisata terbaik di Batam. 
+                    Dari pantai eksotis hingga kuliner lokal yang menggugah selera, setiap perjalanan 
+                    akan membawa cerita baru yang tak terlupakan. Mari jelajahi keindahan Batam bersama kami.
+                </p>
+                
+                <a href="{{ route('destinasi.index') }}" 
+                   class="inline-block bg-[#F4DBB4] hover:bg-[#f9d497] 
+                          text-black font-semibold px-8 py-3 rounded-full 
+                          transition shadow-md hover:shadow-lg">
+                    Jelajahi Sekarang
+                </a>
+            </div>
+            
+            <!-- gambar -->
+            <div class="order-1 lg:order-2">
+                <div class="relative">
+                    <!-- Main Image -->
+                    <img src="{{ asset('images/sunset.jpeg') }}" 
+                         alt="Wisata Batam"
+                         class="w-full h-auto rounded-3xl shadow-2xl object-cover">
+                    
+                    <!-- Decorative Dots (Optional) -->
+                    <div class="absolute -bottom-6 -left-6 w-24 h-24 opacity-80 hidden lg:block">
+                        <svg viewBox="0 0 100 100" fill="#FF9B42">
+                            <circle cx="10" cy="10" r="3"/>
+                            <circle cx="30" cy="10" r="3"/>
+                            <circle cx="50" cy="10" r="3"/>
+                            <circle cx="70" cy="10" r="3"/>
+                            <circle cx="90" cy="10" r="3"/>
+                            
+                            <circle cx="10" cy="30" r="3"/>
+                            <circle cx="30" cy="30" r="3"/>
+                            <circle cx="50" cy="30" r="3"/>
+                            <circle cx="70" cy="30" r="3"/>
+                            <circle cx="90" cy="30" r="3"/>
+                            
+                            <circle cx="10" cy="50" r="3"/>
+                            <circle cx="30" cy="50" r="3"/>
+                            <circle cx="50" cy="50" r="3"/>
+                            <circle cx="70" cy="50" r="3"/>
+                            <circle cx="90" cy="50" r="3"/>
+                            
+                            <circle cx="10" cy="70" r="3"/>
+                            <circle cx="30" cy="70" r="3"/>
+                            <circle cx="50" cy="70" r="3"/>
+                            <circle cx="70" cy="70" r="3"/>
+                            <circle cx="90" cy="70" r="3"/>
+                            
+                            <circle cx="10" cy="90" r="3"/>
+                            <circle cx="30" cy="90" r="3"/>
+                            <circle cx="50" cy="90" r="3"/>
+                            <circle cx="70" cy="90" r="3"/>
+                            <circle cx="90" cy="90" r="3"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+</section>
+<section class="bg-white py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
         <!-- Title -->
         <h2 class="text-3xl font-bold text-[#496d9e] mb-14">

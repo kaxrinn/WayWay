@@ -99,9 +99,7 @@
         <div class="overflow-x-auto lg:overflow-hidden scrollbar-hide px-4 sm:px-6 lg:px-0">
             <div id="destinasiTrack"
                  class="flex gap-4 sm:gap-5 lg:gap-6 transition-transform duration-500 ease-in-out">
-
                 @foreach ($destinasiPopuler as $destinasi)
-
                 <a href="{{ route('destinasi.show', $destinasi->id) }}"
                    data-kategori="{{ $destinasi->kategori_id }}"
                    class="destinasi-card flex-shrink-0 w-full sm:w-[300px] lg:w-[340px]
@@ -143,10 +141,10 @@
                             </div>
                             
                             <!-- BUTTON -->
-                            <button class="px-4 sm:px-5 py-2 bg-[#1a3b5d] hover:bg-[#0f2942] 
+                            <button class="px-4 sm:px-5 py-2 bg-[#496d9e] hover:bg-[#0f2942] 
                                           text-white text-xs sm:text-sm font-semibold rounded-full
                                           transition-all duration-300">
-                                See More
+                                Detail
                             </button>
                         </div>
                     </div>
