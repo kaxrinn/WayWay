@@ -17,15 +17,15 @@
 <!-- Stats -->
 <div class="grid grid-cols-3 gap-6 mb-6">
     <div class="bg-white rounded-xl p-6 shadow-lg">
-        <p class="text-gray-500 mb-1">Pending</p>
+        <p class="text-gray-500 mb-1">Tunggu</p>
         <p class="text-3xl font-bold text-yellow-500">{{ $stats['pending'] }}</p>
     </div>
     <div class="bg-white rounded-xl p-6 shadow-lg">
-        <p class="text-gray-500 mb-1">Approved</p>
+        <p class="text-gray-500 mb-1">Diterima</p>
         <p class="text-3xl font-bold text-green-500">{{ $stats['approved'] }}</p>
     </div>
     <div class="bg-white rounded-xl p-6 shadow-lg">
-        <p class="text-gray-500 mb-1">Rejected</p>
+        <p class="text-gray-500 mb-1">Ditolak</p>
         <p class="text-3xl font-bold text-red-500">{{ $stats['rejected'] }}</p>
     </div>
 </div>
@@ -61,30 +61,29 @@
                 </td>
                 <td class="px-6 py-4">
     <div class="flex gap-2 flex-wrap">
-        {{-- Approve & Reject hanya untuk pending --}}
+        {{-- Terima & Tolak hanya untuk pending --}}
         @if($req->status == 'pending')
             <form method="POST" action="{{ route('admin.edit-requests.approve', $req->id) }}">
                 @csrf
-                <button class="bg-green-500 text-white px-4 py-2 rounded text-sm hover:bg-green-600">
-                    <i class="fas fa-check mr-1"></i> Approve
+                <button class="bg-green-500 text-white px-3 py-1 rounded text-xs">
+                    Terima
                 </button>
             </form>
 
             <button onclick="openRejectModal({{ $req->id }})"
-                class="bg-red-500 text-white px-4 py-2 rounded text-sm hover:bg-red-600">
-                <i class="fas fa-times mr-1"></i> Reject
+                class="bg-red-500 text-white px-3 py-1 rounded text-xs">
+                Tolak
             </button>
         @endif
 
-        {{-- Tombol DELETE untuk semua status --}}
+        {{-- Hapus untuk semua status --}}
         <form method="POST"
               action="{{ route('admin.edit-requests.destroy', $req->id) }}"
               onsubmit="return confirm('Yakin mau hapus edit request ini?')">
             @csrf
             @method('DELETE')
-            <button
-                class="bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700">
-                <i class="fas fa-trash"></i>
+            <button class="bg-orange-600 text-white px-3 py-1 rounded text-xs">
+                Hapus
             </button>
         </form>
     </div>

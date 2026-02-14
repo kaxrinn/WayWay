@@ -136,27 +136,50 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="flex items-center gap-2">
-                            <button onclick="viewMessage({{ json_encode($message) }})" 
-                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition text-sm">
-                                <i class="fas fa-eye mr-1"></i> Lihat
-                            </button>
-                            @if($message->status !== 'resolved')
-                            <form method="POST" action="{{ route('admin.bantuan.update-status', $message->id) }}" class="inline">
-                                @csrf
-                                <button type="submit" 
-                                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg transition text-sm">
-                                    <i class="fas fa-check mr-1"></i> 
-                                    {{ $message->status === 'pending' ? 'Proses' : 'Selesaikan' }}
-                                </button>
-                            </form>
-                            @endif
-                        </div>
-                    </td>
+    <div class="flex items-center gap-2">
+
+        <!-- LIHAT -->
+        <button onclick="viewMessage({{ json_encode($message) }})"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs">
+            <i class="fas fa-eye mr-1"></i> Lihat
+        </button>
+
+        <!-- UPDATE STATUS (HANYA JIKA BELUM RESOLVED) -->
+        @if($message->status !== 'resolved')
+            <form method="POST"
+                  action="{{ route('admin.bantuan.update-status', $message->id) }}"
+                  class="inline">
+                @csrf
+                <button type="submit"
+                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg transition text-sm">
+                    <i class="fas fa-check mr-1"></i>
+                    {{ $message->status === 'pending' ? 'Proses' : 'Selesaikan' }}
+                </button>
+            </form>
+        @endif
+
+        <!-- HAPUS (SELALU ADA) -->
+        <form method="POST"
+              action="{{ route('admin.bantuan.destroy', $message->id) }}"
+              onsubmit="return confirm('Yakin mau hapus pesan ini?')"
+              class="inline">
+            @csrf
+            @method('DELETE')
+            <button type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">
+                <i class="fas fa-trash mr-1"></i> Hapus
+            </button>
+        </form>
+
+    </div>
+</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+        <div class="px-6 py-4 border-t bg-gray-50 flex justify-center">
+    {{ $messages->links() }}
+</div>
     </div>
     @else
     <div class="py-20 px-6 text-center">
@@ -170,109 +193,101 @@
 </div>
 
 <!-- View Message Modal -->
-<div id="viewMessageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+<div id="viewMessageModal"
+     class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+         onclick="event.stopPropagation()">
+
+        <!-- Header -->
         <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6 flex items-center justify-between">
             <h3 class="text-2xl font-bold text-white">Detail Pesan</h3>
-            <button onclick="closeMessageModal()" class="text-white hover:text-gray-200 text-2xl">
-                <i class="fas fa-times"></i>
+            <button type="button"
+                    onclick="closeMessageModal()"
+                    class="text-white hover:text-gray-200 text-2xl leading-none">
+                &times;
             </button>
         </div>
-        
+
+        <!-- Content -->
         <div id="messageContent" class="p-8">
-            <!-- Will be populated by JavaScript -->
+            <!-- diisi JS -->
         </div>
+
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-// Search functionality
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const searchValue = this.value.toLowerCase();
-    const rows = document.querySelectorAll('.message-row');
-    
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchValue) ? '' : 'none';
-    });
-});
-
-// Filter by status
-document.getElementById('filterStatus').addEventListener('change', function() {
-    const status = this.value;
-    const rows = document.querySelectorAll('.message-row');
-    
-    rows.forEach(row => {
-        if (!status || row.dataset.status === status) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-});
-
-// View message detail
 function viewMessage(message) {
     const statusColors = {
-        'pending': 'yellow',
-        'processed': 'blue',
-        'resolved': 'green'
+        pending: 'yellow',
+        processed: 'blue',
+        resolved: 'green'
     };
+
     const statusText = {
-        'pending': 'Pending',
-        'processed': 'Diproses',
-        'resolved': 'Selesai'
+        pending: 'Pending',
+        processed: 'Diproses',
+        resolved: 'Selesai'
     };
-    
+
     const color = statusColors[message.status] || 'gray';
     const status = statusText[message.status] || message.status;
-    
+
+    const gmailLink =
+    'https://mail.google.com/mail/?view=cm' +
+    '&to=' + encodeURIComponent(message.email) +
+    '&subject=' + encodeURIComponent('Re: ' + message.subjek);
+
     const content = `
         <div class="space-y-4">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Dari</label>
+                <p class="text-sm font-semibold text-gray-700">Dari</p>
                 <p class="text-gray-800 font-medium">${message.nama}</p>
                 <p class="text-sm text-gray-500">${message.email}</p>
             </div>
-            
+
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Subjek</label>
+                <p class="text-sm font-semibold text-gray-700">Subjek</p>
                 <p class="text-gray-800 font-medium">${message.subjek}</p>
             </div>
-            
+
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Pesan</label>
+                <p class="text-sm font-semibold text-gray-700">Pesan</p>
                 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <p class="text-gray-800 whitespace-pre-wrap">${message.pesan}</p>
                 </div>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal</label>
-                    <p class="text-gray-600">${new Date(message.created_at).toLocaleString('id-ID')}</p>
+                    <p class="text-sm font-semibold text-gray-700">Tanggal</p>
+                    <p class="text-gray-600">
+                        ${new Date(message.created_at).toLocaleString('id-ID')}
+                    </p>
                 </div>
-                
+
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Status</label>
-                    <span class="bg-${color}-100 text-${color}-800 px-3 py-1 rounded-full text-xs font-medium inline-block">
+                    <p class="text-sm font-semibold text-gray-700">Status</p>
+                    <span class="bg-${color}-100 text-${color}-800 px-3 py-1 rounded-full text-xs font-medium">
                         ${status}
                     </span>
                 </div>
             </div>
-            
-            <div class="pt-4 border-t border-gray-200">
-                <a href="mailto:${message.email}?subject=Re: ${encodeURIComponent(message.subjek)}" 
-                   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition inline-flex items-center gap-2 font-medium">
-                    <i class="fas fa-reply"></i>
-                    Balas via Email
-                </a>
+
+            <div class="pt-4 border-t border-gray-200 flex justify-end">
+                <a href="${gmailLink}"
+   target="_blank"
+   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition inline-flex items-center gap-2 font-medium">
+    <i class="fas fa-envelope"></i>
+    Balas via Gmail
+</a>
             </div>
         </div>
     `;
-    
+
     document.getElementById('messageContent').innerHTML = content;
     document.getElementById('viewMessageModal').classList.remove('hidden');
 }
@@ -281,11 +296,9 @@ function closeMessageModal() {
     document.getElementById('viewMessageModal').classList.add('hidden');
 }
 
-// Close modal when clicking outside
-document.getElementById('viewMessageModal')?.addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeMessageModal();
-    }
+// klik area hitam = tutup
+document.getElementById('viewMessageModal').addEventListener('click', function () {
+    closeMessageModal();
 });
 </script>
 @endpush
