@@ -7,13 +7,13 @@
                     flex items-center justify-between">
 
             <!-- LOGO -->
-            <a href="/" class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
                 <img src="{{ asset('assets/logo/logoo.png') }}"
                      class="h-10" alt="WayWay">
                 <span class="font-bold text-[#415c7f] bg-[#9ECCDB]">
                     Way<span class="text-white bg-[#9ECCDB]">Way</span>
                 </span>
-            </a>
+</div>
 
             <!-- DESKTOP MENU -->
             <nav class="hidden lg:flex items-center gap-2 text-sm text-white">
@@ -57,25 +57,25 @@
             <!-- DESKTOP RIGHT -->
             <div class="hidden lg:flex items-center gap-3">
                 <!-- SEARCH -->
-    <form action="{{ route('destinasi.index') }}" method="GET" class="relative">
-    <input
-        type="text"
-        name="q"
-        value="{{ request('q') }}"
-        placeholder="Cari destinasi..."
-        class="bg-white w-56 pl-10 pr-4 py-2 text-sm rounded-full
-               border border-sky-200 text-slate-600
-               focus:outline-none focus:ring-2 focus:ring-sky-300">
+                <form action="{{ route('destinasi.index') }}" method="GET" class="relative">
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ request('q') }}"
+                        placeholder="Cari destinasi..."
+                        class="bg-white w-56 pl-10 pr-4 py-2 text-sm rounded-full
+                               border border-sky-200 text-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-sky-300">
 
-    <button type="submit"
-        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-sky-500">
-        <svg class="w-4 h-4"
-             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-    </button>
-</form>
+                    <button type="submit"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-sky-500">
+                        <svg class="w-4 h-4"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </form>
 
                 @auth
                 @php
@@ -124,12 +124,19 @@
                         <a href="{{ route('wisatawan.profile') }}"
                            class="flex items-center gap-2 px-4 py-2 text-sm
                                   text-slate-700 hover:bg-sky-50 rounded-t-xl">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
                             Profil
                         </a>
 
-                        <a href="#"
+                        {{-- ✅ LINK FAVORIT --}}
+                        <a href="{{ route('wisatawan.favorit.index') }}"
                            class="flex items-center gap-2 px-4 py-2 text-sm
                                   text-slate-700 hover:bg-sky-50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
                             Favorit
                         </a>
 
@@ -138,8 +145,11 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
-                                class="w-full text-left px-4 py-2 text-sm
+                                class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm
                                        text-red-500 hover:bg-red-50 rounded-b-xl">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
                                 Logout
                             </button>
                         </form>
@@ -170,24 +180,26 @@
     <div id="mobileSearchBar" class="lg:hidden hidden mt-2 max-w-[1200px] mx-auto px-4">
         <div class="bg-white/90 backdrop-blur rounded-full px-4 py-3 shadow-lg border border-sky-200">
             <div class="relative">
-<form action="{{ route('destinasi.index') }}" method="GET" class="relative">
-    <input
-        type="text"
-        name="q"
-        placeholder="Cari destinasi..."
-        class="w-full pl-10 pr-4 py-2 text-sm rounded-full
-               border border-sky-200 text-slate-600
-               focus:outline-none focus:ring-2 focus:ring-sky-300">
+                <form action="{{ route('destinasi.index') }}" method="GET" class="relative">
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Cari destinasi..."
+                        class="w-full pl-10 pr-4 py-2 text-sm rounded-full
+                               border border-sky-200 text-slate-600
+                               focus:outline-none focus:ring-2 focus:ring-sky-300">
 
-    <button type="submit"
-        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-        <svg class="w-4 h-4"
-             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-    </button>
-</form>
+                    <button type="submit"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <svg class="w-4 h-4"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </header>
 
@@ -214,7 +226,17 @@
             <span>Destinasi</span>
         </a>
 
-        <!-- Itinerary -->
+        {{-- ✅ FAVORIT (Mobile) - Hanya tampil jika sudah login --}}
+        @auth
+        <a href="{{ route('wisatawan.favorit.index') }}" 
+           class="flex flex-col items-center justify-center flex-1 h-full text-xs font-medium text-gray-600 hover:text-[#5b9ac7] transition group">
+            <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <span>Favorit</span>
+        </a>
+        @else
+        <!-- Itinerary (jika belum login) -->
         <a href="#" 
            class="flex flex-col items-center justify-center flex-1 h-full text-xs font-medium text-gray-600 hover:text-[#5b9ac7] transition group">
             <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,6 +244,7 @@
             </svg>
             <span>Itinerary</span>
         </a>
+        @endauth
 
         <!-- Chatbot -->
         <a href="#" 

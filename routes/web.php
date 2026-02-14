@@ -96,12 +96,13 @@ Route::post('/ulasan', [UlasanController::class, 'store'])
 Route::post('/kontak', [WisatawanController::class, 'kirimPesan'])
     ->name('hubungi.kami.store');
 
-//Favorit
-Route::middleware('auth')->group(function () {
+    // Toggle favorit (add/remove)
     Route::post('/favorit/toggle', [WisatawanController::class, 'toggle'])
         ->name('wisatawan.favorit.toggle');
-});
-
+    
+    // Halaman daftar favorit
+    Route::get('/wisatawan/favorit', [WisatawanController::class, 'indexFavorit'])
+        ->name('wisatawan.favorit.index');
 /*
 |--------------------------------------------------------------------------
 | ADMIN ROUTES

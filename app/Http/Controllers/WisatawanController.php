@@ -57,10 +57,19 @@ class WisatawanController extends Controller
         $avgRating   = round($destinasi->ulasan()->avg('rating') ?? 5, 1);
         $totalReview = $destinasi->ulasan()->count();
 
+        // Cek apakah destinasi ini sudah difavoritkan
+        $isFavorited = false;
+        if (auth()->check()) {
+            $isFavorited = Favorit::where('user_id', auth()->id())
+                ->where('destinasi_id', $destinasi->id)
+                ->exists();
+        }
+
         return view('wisatawan.berandasection.show', compact(
             'destinasi',
             'avgRating',
-            'totalReview'
+            'totalReview',
+            'isFavorited'
         ));
     }
 
@@ -159,7 +168,9 @@ class WisatawanController extends Controller
         return back()->with('success', 'Pesan berhasil dikirim!');
     }
 
-    // Favorit toggle
+    /**
+     * ✅ FAVORIT: Toggle add/remove favorit
+     */
     public function toggle(Request $request)
     {
         if (!auth()->check()) {
@@ -180,11 +191,50 @@ class WisatawanController extends Controller
 
         if ($favorit) {
             $favorit->delete();
-            return response()->json(['status' => 'removed', 'message' => 'Dihapus dari favorit']);
+            return response()->json([
+                'status' => 'removed', 
+                'message' => 'Dihapus dari favorit'
+            ]);
         }
 
-        Favorit::create(['user_id' => $userId, 'destinasi_id' => $request->destinasi_id]);
+        Favorit::create([
+            'user_id' => $userId, 
+            'destinasi_id' => $request->destinasi_id
+        ]);
 
-        return response()->json(['status' => 'added', 'message' => 'Ditambahkan ke favorit']);
+        return response()->json([
+            'status' => 'added', 
+            'message' => 'Ditambahkan ke favorit'
+        ]);
+    }
+
+    /**
+     * ✅ FAVORIT: Halaman daftar destinasi favorit
+     */
+    public function indexFavorit()
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login')
+                ->with('error', 'Silakan login terlebih dahulu untuk melihat favorit');
+        }
+
+        $userId = auth()->id();
+        
+        // Ambil destinasi yang difavoritkan user
+        $destinasiFavorit = Destinasi::with(['kategori', 'ulasan'])
+            ->whereHas('difavoritkanOleh', function($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->withAvg('ulasan', 'rating')
+            ->where('status', 'active')
+            ->latest()
+            ->paginate(9);
+
+        // Semua ID favorit untuk highlighting
+        $favoritIds = Favorit::where('user_id', $userId)
+            ->pluck('destinasi_id')
+            ->toArray();
+
+        return view('wisatawan.favorit.index', compact('destinasiFavorit', 'favoritIds'));
     }
 }

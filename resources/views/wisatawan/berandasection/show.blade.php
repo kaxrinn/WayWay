@@ -7,16 +7,41 @@
     <div class="bg-white shadow-sm top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 py-1">
             <div class="flex items-center justify-between">
-                <a href="{{ route('wisatawan.beranda') }}" 
-                   class="flex items-center gap-2 text-gray-600 hover:text-[#496d9e]">
-                    <span class="font-medium">Kembali</span>
-                </a>
+<a href="javascript:history.back()" 
+   class="flex items-center gap-2 text-gray-600 hover:text-[#496d9e]">
+    <span class="font-medium">Kembali</span>
+</a>
                 
-                <button class="p-2 hover:bg-red-50 rounded-full transition group">
-                    <svg class="w-6 h-6 text-gray-400 group-hover:text-red-500 group-hover:fill-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                </button>
+                {{-- BUTTON FAVORIT --}}
+                @auth
+                    <button onclick="toggleFavorit({{ $destinasi->id }})" 
+                            id="btnFavorit"
+                            class="p-2 hover:bg-red-50 rounded-full transition group">
+                        <svg id="iconFavorit" 
+                             class="w-6 h-6 transition {{ $isFavorited ? 'text-red-500 fill-red-500' : 'text-gray-400' }}" 
+                             fill="{{ $isFavorited ? 'currentColor' : 'none' }}" 
+                             stroke="currentColor" 
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </button>
+                @else
+                    <a href="{{ route('login') }}" 
+                       class="p-2 hover:bg-red-50 rounded-full transition group">
+                        <svg class="w-6 h-6 text-gray-400 group-hover:text-red-500 transition" 
+                             fill="none" 
+                             stroke="currentColor" 
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </a>
+                @endauth
             </div>
         </div>
     </div>
@@ -216,8 +241,7 @@
                 <p class="text-gray-400">Belum ada ulasan</p>
             </div>
             @endif
-</div>
-<div class="bg-white rounded-3xl shadow-md p-6 lg:p-8 mb-6">
+
             {{-- REVIEW FORM --}}
             @auth
                 <h3 class="font-semibold text-gray-900 mb-4">Tulis Ulasan Anda</h3>
@@ -257,7 +281,6 @@
                         Kirim Ulasan
                     </button>
                 </form>
-            </div>
             @else
             <div class="pt-6 border-t border-gray-200 text-center">
                 <p class="text-gray-600 mb-3 text-sm">Login untuk memberikan ulasan</p>
@@ -267,21 +290,25 @@
                     Login Sekarang
                 </a>
             </div>
-        <div class="flex justify-center mt-7">
+            @endauth
+        </div>
+
+        <div class="flex justify-center mt-7 mb-8">
             <a href="{{ route('wisatawan.beranda') }}"
                class="bg-[#5b9ac7] hover:bg-[#496d9e]
                       text-white font-medium
                       rounded-full px-6 py-2 text-sm transition">
                 Kembali ke Beranda
             </a>
-        </div>   
-            @endauth
         </div>
     </div>
 </div>
 
 {{-- SCRIPTS --}}
 <script>
+// ======================================
+// MEDIA GALLERY SLIDER
+// ======================================
 let currentIndex = 0;
 const slides = document.querySelectorAll('.media-slide');
 const indicators = document.querySelectorAll('.indicator');
@@ -324,5 +351,89 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') prevMedia();
     if (e.key === 'ArrowRight') nextMedia();
 });
+
+// ======================================
+// FAVORIT TOGGLE FUNCTION
+// ======================================
+function toggleFavorit(destinasiId) {
+    const icon = document.getElementById('iconFavorit');
+    const btn = document.getElementById('btnFavorit');
+    
+    // Disable button sementara
+    btn.disabled = true;
+    
+    fetch('{{ route("wisatawan.favorit.toggle") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            destinasi_id: destinasiId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            // Tambah ke favorit - warna merah
+            icon.classList.remove('text-gray-400');
+            icon.classList.add('text-red-500', 'fill-red-500');
+            icon.setAttribute('fill', 'currentColor');
+            
+            // Notifikasi
+            showNotification(data.message, 'success');
+        } else if (data.status === 'removed') {
+            // Hapus dari favorit - warna abu-abu
+            icon.classList.remove('text-red-500', 'fill-red-500');
+            icon.classList.add('text-gray-400');
+            icon.setAttribute('fill', 'none');
+            
+            // Notifikasi
+            showNotification(data.message, 'info');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Terjadi kesalahan', 'error');
+    })
+    .finally(() => {
+        // Enable button kembali
+        btn.disabled = false;
+    });
+}
+
+// ======================================
+// NOTIFICATION HELPER
+// ======================================
+function showNotification(message, type = 'success') {
+    // Buat elemen notifikasi
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white transform transition-all duration-300 translate-x-full`;
+    
+    // Tentukan warna berdasarkan type
+    if (type === 'success') {
+        notification.classList.add('bg-green-500');
+    } else if (type === 'error') {
+        notification.classList.add('bg-red-500');
+    } else {
+        notification.classList.add('bg-blue-500');
+    }
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Animasi masuk
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Hapus setelah 3 detik
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
 </script>
 @endsection
