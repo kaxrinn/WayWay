@@ -39,7 +39,7 @@ class DestinasiController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'deskripsi' => 'required|string',
-            'foto.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = $request->except('foto');
@@ -85,7 +85,7 @@ class DestinasiController extends Controller
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
             'deskripsi' => 'required|string',
-            'foto.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'delete_foto' => 'nullable|array',
         ]);
 
