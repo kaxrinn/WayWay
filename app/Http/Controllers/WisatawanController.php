@@ -21,8 +21,8 @@ class WisatawanController extends Controller
         $destinasiPopuler = Destinasi::with('kategori')
             ->withAvg('ulasan', 'rating')
             ->where('status', 'active')
-            ->latest()
-            ->take(9)
+            ->orderByDesc('ulasan_avg_rating')
+            ->take(40)
             ->get();
 
         $kategori = Kategori::all();

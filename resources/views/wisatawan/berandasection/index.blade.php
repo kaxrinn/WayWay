@@ -61,10 +61,61 @@
             @endforelse
         </div>
 
-        <!-- PAGINATION -->
-        <div class="mt-12">
-            {{ $destinasi->withQueryString()->links() }}
-        </div>
+<!-- PAGINATION -->
+@if($destinasi->hasPages())
+<div class="mt-12 flex flex-col items-center gap-3">
+    
+    <p class="text-sm text-gray-500">
+        Menampilkan {{ $destinasi->firstItem() }}–{{ $destinasi->lastItem() }}
+        dari <span class="font-semibold">{{ $destinasi->total() }}</span> destinasi
+    </p>
+
+    <div class="flex items-center gap-2 flex-wrap justify-center">
+
+        {{-- Prev --}}
+        @if($destinasi->onFirstPage())
+            <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-400 text-sm cursor-not-allowed">
+                ← Prev
+            </span>
+        @else
+            <a href="{{ $destinasi->previousPageUrl() }}"
+               class="px-4 py-2 rounded-full bg-white border border-gray-200
+                      text-sm text-gray-600 hover:bg-[#496d9e] hover:text-white transition">
+                ← Prev
+            </a>
+        @endif
+
+        {{-- Page Numbers --}}
+        @foreach($destinasi->getUrlRange(1, $destinasi->lastPage()) as $page => $url)
+            @if($page == $destinasi->currentPage())
+                <span class="px-4 py-2 rounded-full bg-[#496d9e] text-white text-sm font-semibold">
+                    {{ $page }}
+                </span>
+            @else
+                <a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}"
+                   class="px-4 py-2 rounded-full bg-white border border-gray-200
+                          text-sm text-gray-600 hover:bg-[#496d9e] hover:text-white transition">
+                    {{ $page }}
+                </a>
+            @endif
+        @endforeach
+
+        {{-- Next --}}
+        @if($destinasi->hasMorePages())
+            <a href="{{ $destinasi->nextPageUrl() }}"
+               class="px-4 py-2 rounded-full bg-white border border-gray-200
+                      text-sm text-gray-600 hover:bg-[#496d9e] hover:text-white transition">
+                Next →
+            </a>
+        @else
+            <span class="px-4 py-2 rounded-full bg-gray-100 text-gray-400 text-sm cursor-not-allowed">
+                Next →
+            </span>
+        @endif
+
+    </div>
+</div>
+@endif
 
     </div>
 </section>

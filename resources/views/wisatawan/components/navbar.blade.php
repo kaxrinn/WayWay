@@ -77,25 +77,24 @@
             <!-- DESKTOP RIGHT -->
             <div class="hidden lg:flex items-center gap-3">
                 <!-- SEARCH -->
-                <form action="{{ route('destinasi.index') }}" method="GET" class="relative">
-                    <input
-                        type="text"
-                        name="q"
-                        value="{{ request('q') }}"
-                        placeholder="Cari destinasi..."
-                        class="bg-white w-56 pl-10 pr-4 py-2 text-sm rounded-full
-                               border border-sky-200 text-slate-600
-                               focus:outline-none focus:ring-2 focus:ring-sky-300">
+            <form action="{{ route('destinasi.index') }}" method="GET" 
+                class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-sky-200 w-56
+                        focus-within:ring-2 focus-within:ring-sky-300">
+                
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
 
-                    <button type="submit"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-sky-500">
-                        <svg class="w-4 h-4"
-                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </button>
-                </form>
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Cari destinasi..."
+                    class="flex-1 text-sm text-slate-600 bg-transparent
+                        focus:outline-none placeholder-slate-400">
+            </form>
 
                 @auth
                 @php
