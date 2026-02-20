@@ -106,11 +106,6 @@
         </div>
     @endforeach
 </div>
-
-
-
-                
-
                 <!-- FOTO BARU -->
                 <div class="md:col-span-2">
                     <label class="block text-gray-700 font-semibold mb-2">

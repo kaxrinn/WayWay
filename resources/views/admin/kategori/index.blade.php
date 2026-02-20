@@ -11,7 +11,7 @@
                 <i class="fas fa-tags text-green-500"></i>
                 Kelola Kategori
             </h1>
-            <p class="text-gray-500 mt-2">Manage kategori wisata yang tersedia di platform</p>
+            <p class="text-gray-500 mt-2">Mengelola kategori wisata yang tersedia di platform</p>
         </div>
         <button onclick="openModal()" 
                 class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2">

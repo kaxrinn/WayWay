@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
     <h1 class="text-3xl font-bold text-gray-800">📝 Kelola Edit Requests</h1>
-    <p class="text-gray-500 mt-2">Approve atau reject request dari Basic users</p>
+    <p class="text-gray-500 mt-2">Terima atau Tolak Permintaan dari Basic users</p>
 </div>
 
 @if(session('success'))

@@ -47,13 +47,6 @@
                 </p>
             </div>
 
-            <div>
-                <p class="text-slate-500">Peran</p>
-                <p class="font-medium text-slate-800 capitalize">
-                    {{ str_replace('_', ' ', $user->role) }}
-                </p>
-            </div>
-
         </div>
 
         <!-- ACTION -->
