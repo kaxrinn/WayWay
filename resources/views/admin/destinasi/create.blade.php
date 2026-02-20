@@ -138,14 +138,19 @@
                 <!-- Foto Baru -->
                 <div class="md:col-span-2">
                     <label class="block text-gray-700 font-semibold mb-2">
-                        Upload Foto Destinasi (Maks 3)
+                        Upload Foto Destinasi
                     </label>
 
                     <input type="file" name="foto[]" multiple accept="image/*"
                         class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg"
                         onchange="previewImages(this)">
 
-                    <p class="text-sm text-gray-500 mt-2">Kosongkan jika tidak ingin menambahkan foto</p>
+                    <ul class="text-sm text-gray-500 mt-2">
+                        <li>• Kosongkan jika tidak ingin menambahkan foto</li>
+                        <li>• Maksimal upload 3 foto</li>
+                        <li>• Format yang diterima: JPG, PNG, JPEG, WEBP</li>
+                        <li>• Ukuran maksimal per foto: 2MB</li>
+                    </ul>
 
                     <div id="imagePreview" class="mt-4 hidden">
                         <p class="text-sm font-semibold text-gray-700 mb-2">Preview Foto:</p>

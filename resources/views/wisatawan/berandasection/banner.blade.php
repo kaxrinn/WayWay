@@ -133,12 +133,12 @@
                 </div>
 
                 <h3 class="font-semibold text-lg text-[#496d9e] mb-2">
-                    Rekomendasi Destinasi AI
+                    Rekomendasi Destinasi 
                 </h3>
 
                 <p class="text-gray-500 text-sm leading-relaxed">
                     WayWay memberikan rekomendasi destinasi, event, dan aktivitas wisata
-                    berdasarkan minat, riwayat pencarian, serta ulasan pengguna secara real-time.
+                    berdasarkan rating serta ulasan pengguna.
                 </p>
             </div>
 

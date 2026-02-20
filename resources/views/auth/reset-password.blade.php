@@ -15,7 +15,7 @@
         body { font-family: 'Poppins', sans-serif; }
         .bg-overlay {
             background: linear-gradient(135deg, rgba(55, 87, 175, 0.7), rgba(167, 191, 228, 0.6)),
-                        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80') center/cover fixed;
+                        url("{{ asset('Background/auth.jpg') }}") center/cover fixed;
         }
         .bg-overlay::before {
             content: '';
