@@ -107,8 +107,11 @@
                     </div>
 
                     @php
-                        $sisaHari = now()->diffInDays($promosi->tanggal_selesai, false);
-                    @endphp
+    $today = now()->startOfDay();
+    $end = \Carbon\Carbon::parse($promosi->tanggal_selesai)->startOfDay();
+
+    $sisaHari = $today->diffInDays($end, false);
+@endphp
                     @if($sisaHari >= 0)
                     <div class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg flex items-center gap-2">
                         <i class="fas fa-hourglass-half text-yellow-500"></i>
