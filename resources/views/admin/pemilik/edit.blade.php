@@ -100,15 +100,6 @@
         </option>
     @endforeach
 </select>
-
-                    <option value="">-- Pilih Destinasi --</option>
-                    @foreach($destinasi as $destinasi)
-                        <option value="{{ $destinasi->id }}" 
-                                {{ old('destinasi_id', $pemilik->destinasi_id) == $destinasi->id ? 'selected' : '' }}>
-                            {{ $destinasi->nama_destinasi }}
-                        </option>
-                    @endforeach
-                </select>
                 @error('destinasi_id')
                     <p class="text-red-500 text-sm mt-2 flex items-center gap-1">
                         <i class="fas fa-exclamation-circle"></i>
@@ -135,6 +126,7 @@
                     <input :type="showPassword ? 'text' : 'password'" 
                            id="password" 
                            name="password"
+                           autocomplete="new-password"
                            placeholder="Kosongkan jika tidak ingin mengubah"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pr-12 @error('password') border-red-500 @enderror">
                     <button type="button" 
@@ -160,6 +152,7 @@
                     <input :type="showPassword ? 'text' : 'password'" 
                            id="password_confirmation" 
                            name="password_confirmation"
+                           autocomplete="new-password"
                            placeholder="Ulangi password baru"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pr-12">
                     <button type="button" 

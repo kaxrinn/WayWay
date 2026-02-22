@@ -118,6 +118,7 @@
                     <input :type="showPassword ? 'text' : 'password'" 
                            id="password" 
                            name="password"
+                           autocomplete="new-password"
                            placeholder="Minimal 8 karakter"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pr-12 @error('password') border-red-500 @enderror"
                            required>
@@ -144,6 +145,7 @@
                     <input :type="showPassword ? 'text' : 'password'" 
                            id="password_confirmation" 
                            name="password_confirmation"
+                           autocomplete="new-password"
                            placeholder="Ulangi password"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pr-12"
                            required>
