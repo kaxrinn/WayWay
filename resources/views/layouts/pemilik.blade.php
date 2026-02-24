@@ -41,7 +41,7 @@
                     </button>
                     
                     <div class="flex items-center gap-3">
-                    <div class="bg-white p-2 rounded-lg">
+                    <div class=" p-2 rounded-lg">
                     <img src="{{  asset('assets/Logo/logo.png')}}" 
                     alt="Logo" 
                     class="w-8 h-8 object-contain">
@@ -167,7 +167,12 @@
                     @endif
                 </a>
                 @endif
-                
+<a href="{{ route('pemilik.ulasan.index') }}"
+   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition
+          {{ request()->routeIs('pemilik.ulasan.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
+    <i class="fas fa-star w-5"></i>
+    <span>Ulasan</span>
+</a>                
                 <!-- bantuan link -->
               <a href="https://wa.me/6289520428618?text={{ urlencode('Halo admin WayWay, saya butuh bantuan') }}"
                  target="_blank"
