@@ -76,6 +76,10 @@
 </div>
 
 <!-- Stats Cards -->
+@php
+    $isPremium = isset($currentPaket) && $currentPaket && $currentPaket->priority_level >= 3;
+@endphp
+
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
     <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
         <div class="flex items-center justify-between mb-4">
@@ -105,6 +109,35 @@
         </div>
     </div>
     
+    <!-- Stat: Ulasan -->
+    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+        <div class="flex items-center justify-between mb-4">
+            <div class="bg-yellow-100 p-4 rounded-full">
+                <i class="fas fa-star text-2xl text-yellow-500"></i>
+            </div>
+        </div>
+        <p class="text-gray-500 text-sm mb-1">Total Ulasan</p>
+        <div class="flex items-baseline gap-2">
+            <h3 class="text-3xl font-bold text-gray-800">{{ $totalUlasan ?? 0 }}</h3>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">
+            Rata-rata 
+            <span class="text-yellow-500 font-semibold">{{ number_format($rataRatingUlasan ?? 0, 1) }} ⭐</span>
+        </p>
+    </div>
+
+    @if(!$limits['can_edit_foto'])
+    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+        <div class="flex items-center justify-between mb-4">
+            <div class="bg-orange-100 p-4 rounded-full">
+                <i class="fas fa-edit text-2xl text-orange-500"></i>
+            </div>
+        </div>
+        <p class="text-gray-500 text-sm mb-1">Edit Request</p>
+        <h3 class="text-3xl font-bold text-gray-800">{{ $pendingRequests }}</h3>
+        <p class="text-xs text-gray-500 mt-2">Menunggu approval</p>
+    </div>
+    @else
     <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
         <div class="flex items-center justify-between mb-4">
             <div class="bg-purple-100 p-4 rounded-full">
@@ -116,18 +149,6 @@
             <h3 class="text-3xl font-bold text-gray-800">{{ $totalVideo }}</h3>
         </div>
     </div>
-    
-    @if(!$limits['can_edit_foto'])
-    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
-        <div class="flex items-center justify-between mb-4">
-            <div class="bg-yellow-100 p-4 rounded-full">
-                <i class="fas fa-edit text-2xl text-yellow-500"></i>
-            </div>
-        </div>
-        <p class="text-gray-500 text-sm mb-1">Edit Request</p>
-        <h3 class="text-3xl font-bold text-gray-800">{{ $pendingRequests }}</h3>
-        <p class="text-xs text-gray-500 mt-2">Menunggu approval</p>
-    </div>
     @endif
 </div>
 
@@ -135,41 +156,77 @@
 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
     <h2 class="text-xl font-bold text-gray-800 mb-4">⚡ Quick Actions</h2>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {{-- Tambah Destinasi --}}
         @if($jumlahDestinasi < ($limits['max_destinasi'] ?? PHP_INT_MAX))
         <a href="{{ route('pemilik.destinasi.create') }}" 
-           class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-6 rounded-xl transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-4">
-            <i class="fas fa-plus-circle text-4xl"></i>
+           class="bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 p-5 rounded-xl transition flex items-center gap-4">
+            <div class="bg-green-100 p-3 rounded-full">
+                <i class="fas fa-plus-circle text-2xl text-green-500"></i>
+            </div>
             <div>
-                <p class="font-bold text-lg">Tambah Destinasi</p>
-                <p class="text-sm text-green-100">Buat destinasi baru</p>
+                <p class="font-semibold">Tambah Destinasi</p>
+                <p class="font-semibold text-xs text-green-500 mt-0.5">Buat destinasi baru</p>
             </div>
         </a>
         @else
-        <div class="bg-gray-200 text-gray-500 p-6 rounded-xl flex items-center gap-4 cursor-not-allowed">
-            <i class="fas fa-plus-circle text-4xl"></i>
+        <div class="bg-gray-50 border border-gray-200 text-gray-400 p-5 rounded-xl flex items-center gap-4 cursor-not-allowed">
+            <div class="bg-gray-100 p-3 rounded-full">
+                <i class="fas fa-plus-circle text-2xl"></i>
+            </div>
             <div>
-                <p class="font-bold text-lg">Tambah Destinasi</p>
-                <p class="text-sm">Batas tercapai - Upgrade paket</p>
+                <p class="font-semibold">Tambah Destinasi</p>
+                <p class="font-semibold text-xs mt-0.5">Batas tercapai</p>
             </div>
         </div>
         @endif
-        
-        <a href="{{ route('pemilik.paket.index') }}" 
-           class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white p-6 rounded-xl transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-4">
-            <i class="fas fa-rocket text-4xl"></i>
+
+        {{-- Ulasan --}}
+        <a href="{{ route('pemilik.ulasan.index') }}" 
+           class="bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 text-yellow-700 p-5 rounded-xl transition flex items-center gap-4">
+            <div class="bg-yellow-100 p-3 rounded-full">
+                <i class="fas fa-star text-2xl text-yellow-500"></i>
+            </div>
             <div>
-                <p class="font-bold text-lg">Upgrade Paket</p>
-                <p class="text-sm text-purple-100">Tingkatkan fitur Anda</p>
+                <p class="font-semibold">Ulasan</p>
+                <p class="font-semibold text-xs text-yellow-500 mt-0.5">{{ $totalUlasan ?? 0 }} ulasan masuk</p>
             </div>
         </a>
-        
-        <a href="{{ route('pemilik.destinasi.index') }}" 
-           class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white p-6 rounded-xl transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-4">
-            <i class="fas fa-list text-4xl"></i>
+
+        {{-- Banner Promosi --}}
+        @if($isPremium)
+        <a href="{{ route('pemilik.promosi.index') }}" 
+           class="bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-700 p-5 rounded-xl transition flex items-center gap-4">
+            <div class="bg-orange-100 p-3 rounded-full">
+                <i class="fas fa-bullhorn text-2xl text-orange-500"></i>
+            </div>
             <div>
-                <p class="font-bold text-lg">Lihat Semua</p>
-                <p class="text-sm text-blue-100">Kelola destinasi</p>
+                <p class="font-semibold">Banner Promosi</p>
+                <p class="font-semibold text-xs text-orange-500 mt-0.5">Kelola promosi Anda</p>
+            </div>
+        </a>
+        @else
+        <a href="{{ route('pemilik.paket.index') }}" 
+           class="bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-400 p-5 rounded-xl transition flex items-center gap-4">
+            <div class="bg-orange-100 p-3 rounded-full">
+                <i class="fas fa-bullhorn text-2xl text-orange-300"></i>
+            </div>
+            <div>
+                <p class="font-semibold">Banner Promosi</p>
+                <p class="font-semibold text-xs text-orange-400 mt-0.5">Upgrade ke Premium 🔒</p>
+            </div>
+        </a>
+        @endif
+
+        {{-- Upgrade Paket --}}
+        <a href="{{ route('pemilik.paket.index') }}" 
+           class="bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 p-5 rounded-xl transition flex items-center gap-4">
+            <div class="bg-purple-100 p-3 rounded-full">
+                <i class="fas fa-rocket text-2xl text-purple-500"></i>
+            </div>
+            <div>
+                <p class="font-semibold">Upgrade Paket</p>
+                <p class="font-semibold text-xs text-purple-500 mt-0.5">Tingkatkan fitur Anda</p>
             </div>
         </a>
     </div>

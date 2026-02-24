@@ -343,7 +343,8 @@ Route::middleware(['auth', /* middleware role pemilik */])->prefix('pemilik')->n
     Route::delete('/promosi/{promosi}',  [PemilikPromosiController::class, 'destroy'])->name('promosi.destroy');
 
 });
-
+// pemilik ulasan
+Route::get('/ulasan', [UlasanController::class, 'indexPemilik'])->name('pemilik.ulasan.index');
 
 /*
 |--------------------------------------------------------------------------
