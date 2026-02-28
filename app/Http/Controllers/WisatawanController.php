@@ -16,16 +16,26 @@ class WisatawanController extends Controller
      */
     public function beranda()
     {
-        $user = auth()->user();
-
-        $destinasiPopuler = Destinasi::with('kategori')
-            ->withAvg('ulasan', 'rating')
-            ->where('status', 'active')
-            ->orderByDesc('ulasan_avg_rating')
-            ->take(40)
-            ->get();
-
+        $user     = auth()->user();
         $kategori = Kategori::all();
+
+        // Ambil maksimal 6 destinasi per kategori, lalu gabungkan
+        $destinasiPopuler = collect();
+
+        foreach ($kategori as $kat) {
+            $perKategori = Destinasi::with('kategori')
+                ->withAvg('ulasan', 'rating')
+                ->where('status', 'active')
+                ->where('kategori_id', $kat->id)
+                ->orderByDesc('ulasan_avg_rating')
+                ->take(6)
+                ->get();
+
+            $destinasiPopuler = $destinasiPopuler->merge($perKategori);
+        }
+
+        // Hapus duplikat jika ada & re-index
+        $destinasiPopuler = $destinasiPopuler->unique('id')->values();
 
         // Ambil favorit user yang login
         $favoritIds = [];
@@ -35,7 +45,7 @@ class WisatawanController extends Controller
                 ->toArray();
         }
 
-        // ✅ Ambil banner promosi aktif dari pemilik premium
+        // Ambil banner promosi aktif dari pemilik premium
         $iklanAktif = Promosi::whereNotNull('banner_promosi')
             ->aktif()   // scope: status=active & tanggal masih berlaku
             ->latest()
@@ -125,31 +135,30 @@ class WisatawanController extends Controller
      * Update profil wisatawan
      */
     public function updateProfile(Request $request)
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    $request->validate([
-        'name'  => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'password' => 'nullable|min:6|confirmed',
-    ]);
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
+        ]);
 
-    $data = [
-        'name'  => $request->name,
-        'email' => $request->email,
-        'no_telepon' => $request->no_telepon,
-    ];
+        $data = [
+            'name'        => $request->name,
+            'email'       => $request->email,
+            'no_telepon'  => $request->no_telepon,
+        ];
 
-    // ✅ HANYA UPDATE PASSWORD JIKA DIISI
-    if ($request->filled('password')) {
-        $data['password'] = bcrypt($request->password);
+        // Hanya update password jika diisi
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
+
+        return back()->with('success', 'Profil berhasil diperbarui');
     }
-
-    $user->update($data);
-
-    return back()->with('success', 'Profil berhasil diperbarui');
-}
-
 
     // Hubungi Kami
     public function kirimPesan(Request $request)
@@ -174,7 +183,7 @@ class WisatawanController extends Controller
     }
 
     /**
-     * ✅ FAVORIT: Toggle add/remove favorit
+     * FAVORIT: Toggle add/remove favorit
      */
     public function toggle(Request $request)
     {
@@ -197,24 +206,24 @@ class WisatawanController extends Controller
         if ($favorit) {
             $favorit->delete();
             return response()->json([
-                'status' => 'removed', 
-                'message' => 'Dihapus dari favorit'
+                'status'  => 'removed',
+                'message' => 'Dihapus dari favorit',
             ]);
         }
 
         Favorit::create([
-            'user_id' => $userId, 
-            'destinasi_id' => $request->destinasi_id
+            'user_id'      => $userId,
+            'destinasi_id' => $request->destinasi_id,
         ]);
 
         return response()->json([
-            'status' => 'added', 
-            'message' => 'Ditambahkan ke favorit'
+            'status'  => 'added',
+            'message' => 'Ditambahkan ke favorit',
         ]);
     }
 
     /**
-     * ✅ FAVORIT: Halaman daftar destinasi favorit
+     * FAVORIT: Halaman daftar destinasi favorit
      */
     public function indexFavorit()
     {
@@ -224,10 +233,10 @@ class WisatawanController extends Controller
         }
 
         $userId = auth()->id();
-        
+
         // Ambil destinasi yang difavoritkan user
         $destinasiFavorit = Destinasi::with(['kategori', 'ulasan'])
-            ->whereHas('difavoritkanOleh', function($query) use ($userId) {
+            ->whereHas('difavoritkanOleh', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
             ->withAvg('ulasan', 'rating')
@@ -242,6 +251,4 @@ class WisatawanController extends Controller
 
         return view('wisatawan.favorit.index', compact('destinasiFavorit', 'favoritIds'));
     }
-
-
 }

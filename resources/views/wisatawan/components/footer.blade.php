@@ -10,7 +10,7 @@
             </div>
 
             <p class="text-xs text-white-300 mb-2 italic">
-              Temukan Jalan, Temukan Cerita
+              Find your way, Enjoy your way
             </p>
             <p class="font-medium text-sm leading-relaxed text-left">
                waywaypolibatam@gmail.com<br>

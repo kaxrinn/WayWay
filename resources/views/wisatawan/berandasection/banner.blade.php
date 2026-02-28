@@ -27,11 +27,11 @@
            class="inline-block mt-6 px-7 py-3 rounded-full
                   bg-[#F4DBB4] text-black font-semibold
                   hover:bg-[#f9d497] transition">
-            Jelajahi Sekarang
+            Explore Now
         </a>
     </div>
 
-    <!-- FADE KE SECTION BAWAH -->
+    <!-- FADE TO NEXT SECTION -->
     <div class="absolute bottom-0 left-0 w-full h-32
                 bg-gradient-to-t from-white to-transparent z-10">
     </div>
@@ -46,32 +46,32 @@
             <!-- LEFT: Text Content -->
             <div>
                 <h2 class="text-3xl sm:text-4xl font-bold text-[#496d9e] mb-6 leading-tight">
-                    Temukan Destinasi Impianmu
+                    Discover Your Dream Destination
                 </h2>
                 
                 <p class="text-gray-600 text-base sm:text-lg leading-relaxed mb-8">
-                    WayWay hadir untuk membantu kamu menemukan pengalaman wisata terbaik di Batam. 
-                    Dari pantai eksotis hingga kuliner lokal yang menggugah selera, setiap perjalanan 
-                    akan membawa cerita baru yang tak terlupakan. Mari jelajahi keindahan Batam bersama kami.
+                    WayWay is here to help you find the best travel experiences in Batam. 
+                    From exotic beaches to mouthwatering local cuisine, every journey 
+                    will bring new unforgettable stories. Let's explore the beauty of Batam together.
                 </p>
                 
                 <a href="{{ route('destinasi.index') }}" 
                    class="inline-block bg-[#F4DBB4] hover:bg-[#f9d497] 
                           text-black font-semibold px-8 py-3 rounded-full 
                           transition shadow-md hover:shadow-lg">
-                    Jelajahi Sekarang
+                    Explore Now
                 </a>
             </div>
             
-            <!-- gambar -->
+            <!-- Image -->
             <div class="order-1 lg:order-2">
                 <div class="relative">
                     <!-- Main Image -->
                     <img src="{{ asset('images/sunset.jpeg') }}" 
-                         alt="Wisata Batam"
+                         alt="Batam Tourism"
                          class="w-full h-auto rounded-3xl shadow-2xl object-cover">
                     
-                    <!-- Decorative Dots (Optional) -->
+                    <!-- Decorative Dots -->
                     <div class="absolute -bottom-6 -left-6 w-24 h-24 opacity-80 hidden lg:block">
                         <svg viewBox="0 0 100 100" fill="#FF9B42">
                             <circle cx="10" cy="10" r="3"/>
@@ -117,7 +117,7 @@
 
         <!-- Title -->
         <h2 class="text-3xl font-bold text-[#496d9e] mb-14">
-            Apa yang WayWay Lakukan
+            What WayWay Does
         </h2>
 
         <!-- Features -->
@@ -126,19 +126,18 @@
             <!-- Feature 1 -->
             <div class="flex flex-col items-center">
                 <div class="w-20 h-20 flex items-center justify-center rounded-full border-2 border-[#496d9e] mb-5">
-                    <!-- Icon -->
                     <svg class="w-10 h-10 text-[#496d9e]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.553-1.894L9 2m6 18l5.447-2.724A2 2 0 0021 15.382V6.618a2 2 0 00-1.553-1.894L15 2M9 2v18m6-18v18"/>
                     </svg>
                 </div>
 
                 <h3 class="font-semibold text-lg text-[#496d9e] mb-2">
-                    Rekomendasi Destinasi 
+                    Destination Recommendations
                 </h3>
 
                 <p class="text-gray-500 text-sm leading-relaxed">
-                    WayWay memberikan rekomendasi destinasi, event, dan aktivitas wisata
-                    berdasarkan rating serta ulasan pengguna.
+                    WayWay provides recommendations for destinations, events, and travel activities
+                    based on ratings and user reviews.
                 </p>
             </div>
 
@@ -152,12 +151,12 @@
                 </div>
 
                 <h3 class="font-semibold text-lg text-[#496d9e] mb-2">
-                    Peta Digital & Informasi Lokasi
+                    Digital Map & Location Info
                 </h3>
 
                 <p class="text-gray-500 text-sm leading-relaxed">
-                    Integrasi peta digital untuk menampilkan lokasi destinasi,
-                    rute perjalanan, serta informasi sekitar secara akurat dan mudah dipahami.
+                    Digital map integration to display destination locations,
+                    travel routes, and surrounding information accurately and intuitively.
                 </p>
             </div>
 
@@ -170,12 +169,12 @@
                 </div>
 
                 <h3 class="font-semibold text-lg text-[#496d9e] mb-2">
-                    Chatbot & Itinerary Otomatis
+                    Chatbot & Auto Itinerary
                 </h3>
 
                 <p class="text-gray-500 text-sm leading-relaxed">
-                    Chatbot AI membantu menjawab pertanyaan wisatawan dan
-                    menyusun itinerary perjalanan secara otomatis sesuai preferensi pengguna.
+                    AI chatbot helps answer traveler questions and
+                    automatically creates travel itineraries based on user preferences.
                 </p>
             </div>
 

@@ -30,7 +30,7 @@
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-8 sm:px-5">
         <h2 class="text-3xl font-bold text-[#496d9e]">
-            Penawaran Spesial
+            Special Offers
         </h2>
     </div>
 
@@ -97,7 +97,7 @@
                             <button class="px-4 sm:px-5 py-2 bg-[#1a3b5d] hover:bg-[#0f2942] 
                                           text-white text-xs sm:text-sm font-semibold rounded-full
                                           transition-all duration-300">
-                                Lihat Detail
+                                View Details
                             </button>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
 </div>
 </section>
 
-<!-- POPUP - Gambar + Informasi -->
+<!-- POPUP - Image + Information -->
 <div id="popupModal"
      class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
      onclick="closePopup()">
