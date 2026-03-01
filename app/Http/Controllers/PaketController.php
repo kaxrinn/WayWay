@@ -55,12 +55,12 @@ class PaketController extends Controller
         
         // Validasi: tidak bisa checkout paket yang sama
         if ($user->current_paket_id == $paketId && $user->isPaketActive()) {
-            return back()->with('error', 'Anda sudah menggunakan paket ini!');
+            return back()->with('error', 'You are already using this package!');
         }
         
         // Validasi: Basic tidak bisa di-checkout (gratis)
         if ($paket->harga == 0) {
-            return back()->with('error', 'Paket Basic gratis, tidak perlu checkout!');
+            return back()->with('error', 'Basic package is free, no checkout needed!');
         }
         
         $validated = $request->validate([
@@ -132,7 +132,7 @@ class PaketController extends Controller
             $transaksi->delete();
             $promosi->delete();
             
-            return back()->with('error', 'Gagal membuat transaksi: ' . $e->getMessage());
+            return back()->with('error', 'Failed to create transaction: ' . $e->getMessage());
         }
     }
 
@@ -142,7 +142,7 @@ class PaketController extends Controller
     public function callback(Request $request)
     {
         return redirect()->route('pemilik.paket.index')
-            ->with('success', 'Pembayaran sedang diproses. Silakan tunggu konfirmasi.');
+            ->with('success', 'Payment is being processed. Please wait for confirmation.');
     }
     
     /**
@@ -215,7 +215,7 @@ class PaketController extends Controller
      public function destroy($id)
     {
         TransaksiPromosi::findOrFail($id)->delete();
-        return back()->with('success','Transaksi berhasil dihapus.');
+        return back()->with('success','Transaction deleted successfully.');
     }
     /**
      * Manual confirmation (TETAP ADA - untuk backup jika Midtrans error)
@@ -237,7 +237,7 @@ class PaketController extends Controller
         ]);
         
         return redirect()->route('pemilik.paket.index')
-            ->with('success', 'Bukti pembayaran berhasil diupload! Menunggu konfirmasi admin.');
+            ->with('success', 'Payment proof uploaded successfully! Awaiting admin confirmation.');
     }
 
 

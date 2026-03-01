@@ -20,7 +20,7 @@ class PemilikPromosiController extends Controller
         // Hanya paket Premium (priority_level = 3) yang bisa akses
         if (!$paket || $paket->priority_level < 3) {
             return redirect()->route('pemilik.paket.index')
-                ->with('error', 'Fitur ini hanya tersedia untuk Paket Premium. Silakan upgrade terlebih dahulu.');
+                ->with('error', 'This feature is only available for Premium Package. Please upgrade your package to access banner promotion features!');
         }
 
         // Cek apakah paket masih aktif (ada di tabel user_paket / cek via model)
@@ -64,7 +64,7 @@ class PemilikPromosiController extends Controller
 
         if ($existing) {
             return redirect()->route('pemilik.promosi.index')
-                ->with('error', 'Anda sudah memiliki banner promosi aktif. Hapus atau edit yang lama terlebih dahulu.');
+                ->with('error', 'You already have an active banner promotion. Please delete or edit the existing one first.');
         }
 
         // Upload banner
@@ -90,7 +90,7 @@ class PemilikPromosiController extends Controller
         ]);
 
         return redirect()->route('pemilik.promosi.index')
-            ->with('success', 'Banner promosi berhasil diunggah!');
+            ->with('success', 'Banner promosi successfully uploaded!');
     }
 
     /**
@@ -108,7 +108,7 @@ class PemilikPromosiController extends Controller
         $paket = $user->currentPaket;
         if (!$paket || $paket->priority_level < 3) {
             return redirect()->route('pemilik.paket.index')
-                ->with('error', 'Fitur ini hanya tersedia untuk Paket Premium.');
+                ->with('error', 'This feature is only available for Premium Package.');
         }
 
         return view('pemilik.promosi.edit', compact('promosi', 'paket'));
@@ -153,7 +153,7 @@ class PemilikPromosiController extends Controller
         $promosi->update($data);
 
         return redirect()->route('pemilik.promosi.index')
-            ->with('success', 'Banner promosi berhasil diperbarui!');
+            ->with('success', 'Banner promosi successfully updated!');
     }
 
     /**
@@ -175,6 +175,6 @@ class PemilikPromosiController extends Controller
         $promosi->delete();
 
         return redirect()->route('pemilik.promosi.index')
-            ->with('success', 'Banner promosi berhasil dihapus.');
+            ->with('success', 'Banner promosi successfully deleted!');
     }
 }

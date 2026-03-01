@@ -109,7 +109,7 @@ class PemilikWisataController extends Controller
             ->update(['user_id' => $pemilik->id]);
 
         return redirect()->route('admin.pemilik.index')
-            ->with('success', 'Data pemilik wisata berhasil diupdate');
+            ->with('success', 'Data pemilik wisata successfully updated');
     }
 
     public function destroy(User $pemilik)
@@ -122,6 +122,6 @@ class PemilikWisataController extends Controller
         $pemilik->delete();
 
         return redirect()->route('admin.pemilik.index')
-            ->with('success', 'Pemilik wisata berhasil dihapus');
+            ->with('success', 'owner deleted successfully!');
     }
 }

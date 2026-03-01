@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Destinasi')
+@section('title', 'Edit Destination')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
@@ -8,7 +8,7 @@
     <a href="{{ route('admin.destinasi.index') }}" 
        class="inline-flex items-center text-gray-600 hover:text-primary transition mb-6">
         <i class="fas fa-arrow-left mr-2"></i>
-        Kembali ke Daftar
+        Back to List
     </a>
     
     <!-- Form Card -->
@@ -17,7 +17,7 @@
         <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 px-8 py-6">
             <h1 class="text-3xl font-bold text-white flex items-center gap-3">
                 <i class="fas fa-edit"></i>
-                Edit Destinasi Wisata
+                Edit Tourist Destination
             </h1>
             <p class="text-white/90 mt-2">Edit data: <strong>{{ $destinasi->nama_destinasi }}</strong></p>
         </div>
@@ -31,14 +31,14 @@
 
                 <!-- Nama Destinasi -->
                 <div class="md:col-span-2">
-                    <label class="block text-gray-700 font-semibold mb-2">Nama Destinasi *</label>
+                    <label class="block text-gray-700 font-semibold mb-2">Destination Name *</label>
                     <input type="text" name="nama_destinasi" value="{{ old('nama_destinasi',$destinasi->nama_destinasi) }}"
                         class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg" required>
                 </div>
 
                 <!-- Kategori -->
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Kategori *</label>
+                    <label class="block text-gray-700 font-semibold mb-2">Category *</label>
                     <select name="kategori_id" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg" required>
                         @foreach($kategori as $kat)
                         <option value="{{ $kat->id }}" {{ $destinasi->kategori_id==$kat->id?'selected':'' }}>
@@ -50,7 +50,7 @@
 
                 <!-- Harga -->
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Harga *</label>
+                    <label class="block text-gray-700 font-semibold mb-2">Price *</label>
                     <input type="number" name="harga" value="{{ old('harga',$destinasi->harga) }}"
                         class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg" required>
                 </div>
@@ -71,7 +71,7 @@
 
                 <!-- Deskripsi -->
                 <div class="md:col-span-2">
-                    <label class="block text-gray-700 font-semibold mb-2">Deskripsi *</label>
+                    <label class="block text-gray-700 font-semibold mb-2">Description *</label>
                     <textarea name="deskripsi" rows="4"
                         class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg" required>{{ old('deskripsi',$destinasi->deskripsi) }}</textarea>
                 </div>
@@ -109,17 +109,17 @@
                 <!-- FOTO BARU -->
                 <div class="md:col-span-2">
                     <label class="block text-gray-700 font-semibold mb-2">
-                        Ganti Foto (Maks 3)
+                        Replace Photos (Max 3)
                     </label>
 
                     <input type="file" name="foto[]" multiple accept="image/*"
                         class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg"
                         onchange="previewImage(this)">
 
-                    <p class="text-sm text-gray-500 mt-2">Kosongkan jika tidak ingin mengubah foto</p>
+                    <p class="text-sm text-gray-500 mt-2">Leave empty if you do not want to change the photos</p>
 
                     <div id="imagePreview" class="mt-4 hidden">
-                        <p class="text-sm font-semibold text-gray-700 mb-2">Preview Foto Baru:</p>
+                        <p class="text-sm font-semibold text-gray-700 mb-2">New Photo Preview:</p>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="previewContainer"></div>
                     </div>
 
@@ -133,11 +133,11 @@
             <div class="flex gap-4 mt-8">
                 <button type="submit" 
                         class="flex-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-4 rounded-lg font-semibold">
-                    <i class="fas fa-save"></i> Update Destinasi
+                    <i class="fas fa-save"></i> Update Destination
                 </button>
                 <a href="{{ route('admin.destinasi.index') }}" 
                    class="flex-1 bg-gray-500 text-white px-6 py-4 rounded-lg font-semibold text-center">
-                    <i class="fas fa-times"></i> Batal
+                    <i class="fas fa-times"></i> Cancel
                 </a>
             </div>
         </form>
@@ -154,7 +154,7 @@ function previewImage(input) {
     preview.classList.remove('hidden');
 
     if (input.files.length > 3) {
-        alert('Maksimal upload 3 foto');
+        alert('Maximum 3 photos allowed');
         input.value = '';
         preview.classList.add('hidden');
         return;

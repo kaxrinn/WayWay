@@ -1,31 +1,31 @@
 @extends('layouts.pemilik')
 
-@section('title', 'Destinasi Saya')
+@section('title', 'My Destinations')
 
 @section('content')
 <!-- Header -->
 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
                 <i class="fas fa-map-marked-alt text-primary"></i>
-                Destinasi Wisata Saya
+                My Tourist Destinations
             </h1>
-            <p class="text-gray-500 mt-2">Kelola semua destinasi wisata yang Anda miliki</p>
+            <p class="text-gray-500 mt-2">Manage all your tourist destinations</p>
         </div>
         @if($destinasi->count() < ($limits['max_destinasi'] ?? PHP_INT_MAX))
         <a href="{{ route('pemilik.destinasi.create') }}" 
-           class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-2">
+           class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-2 justify-center">
             <i class="fas fa-plus"></i>
-            Tambah Destinasi
+            Add Destination
         </a>
         @else
         <div class="text-center">
-            <p class="text-red-600 font-semibold mb-2">Batas destinasi tercapai!</p>
+            <p class="text-red-600 font-semibold mb-2">Destination limit reached!</p>
             <a href="{{ route('pemilik.paket.index') }}" 
                class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl inline-flex items-center gap-2">
                 <i class="fas fa-rocket"></i>
-                Upgrade Paket
+                Upgrade Plan
             </a>
         </div>
         @endif
@@ -60,7 +60,7 @@
                 <i class="fas fa-map-marked-alt text-3xl"></i>
             </div>
             <div>
-                <p class="text-sm text-white/80">Total Destinasi</p>
+                <p class="text-sm text-white/80">Total Destinations</p>
                 <p class="text-3xl font-bold">{{ $destinasi->count() }} / {{ $limits['max_destinasi'] ?? '∞' }}</p>
             </div>
         </div>
@@ -70,7 +70,7 @@
                 <i class="fas fa-images text-3xl"></i>
             </div>
             <div>
-                <p class="text-sm text-white/80">Batas Foto/Destinasi</p>
+                <p class="text-sm text-white/80">Photo Limit / Destination</p>
                 <p class="text-3xl font-bold">{{ $limits['max_foto'] ?? '∞' }}</p>
             </div>
         </div>
@@ -80,14 +80,14 @@
                 <i class="fas fa-video text-3xl"></i>
             </div>
             <div>
-                <p class="text-sm text-white/80">Batas Video/Destinasi</p>
+                <p class="text-sm text-white/80">Video Limit / Destination</p>
                 <p class="text-3xl font-bold">{{ $limits['max_video'] ?? '∞' }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Destinasi Grid -->
+<!-- Destination Grid -->
 @if($destinasi->count() > 0)
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @foreach($destinasi as $destinasi)
@@ -119,12 +119,12 @@
                 @if($destinasi->status == 'active')
                     <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                         <i class="fas fa-check-circle"></i>
-                        Aktif
+                        Active
                     </span>
                 @else
                     <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                         <i class="fas fa-times-circle"></i>
-                        Nonaktif
+                        Inactive
                     </span>
                 @endif
             </div>
@@ -134,7 +134,7 @@
         <div class="p-5">
             <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $destinasi->nama_destinasi }}</h3>
             
-            <!-- Kategori -->
+            <!-- Category -->
             @if($destinasi->kategori)
             <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium mb-3">
                 {{ $destinasi->kategori->nama_kategori }}
@@ -155,22 +155,21 @@
                 </div>
                 <div class="flex items-center text-sm text-gray-600">
                     <i class="fas fa-images w-5 text-green-500"></i>
-                    <span>{{ count($destinasi->foto ?? []) }} foto, {{ count($destinasi->video ?? []) }} video</span>
+                    <span>{{ count($destinasi->foto ?? []) }} photos, {{ count($destinasi->video ?? []) }} videos</span>
                 </div>
             </div>
             
             <!-- Actions -->
-            <div class="flex gap-2 pt-3 border-t border-gray-200">
+            <div class="flex gap-2 pt-3 border-t border-gray-200 flex-col sm:flex-row">
                 @php
                     $canEdit = $limits['can_edit_foto'] ?? false;
                     
-                    // IMPORTANT: Check if Basic user has RECENT approved request
                     if (!$canEdit) {
                         try {
                             $hasApprovedRequest = \App\Models\EditRequest::where('user_id', auth()->id())
                                 ->where('destinasi_id', $destinasi->id)
                                 ->where('status', 'approved')
-                                ->where('approved_at', '>=', now()->subDays(7)) // Check approved_at, not created_at!
+                                ->where('approved_at', '>=', now()->subDays(7))
                                 ->exists();
                             
                             $canEdit = $hasApprovedRequest;
@@ -194,13 +193,13 @@
                 
                 <form method="POST" 
                       action="{{ route('pemilik.destinasi.destroy', $destinasi->id) }}"
-                      onsubmit="return confirm('Yakin ingin menghapus destinasi ini?')"
+                      onsubmit="return confirm('Are you sure you want to delete this destination?')"
                       class="flex-1">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 
                             class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition text-sm font-medium">
-                        <i class="fas fa-trash mr-1"></i> Hapus
+                        <i class="fas fa-trash mr-1"></i> Delete
                     </button>
                 </form>
             </div>
@@ -215,10 +214,11 @@
     <div class="flex items-start">
         <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1"></i>
         <div>
-            <p class="font-semibold text-blue-800 mb-1">Paket Basic - Edit Terbatas</p>
-            <p class="text-sm text-blue-700">Untuk mengedit destinasi, Anda perlu mengajukan request ke admin. 
-                <a href="{{ route('pemilik.paket.index') }}" class="underline font-semibold">Upgrade ke Standard/Premium</a> 
-                untuk edit langsung tanpa approval.
+            <p class="font-semibold text-blue-800 mb-1">Basic Plan - Limited Edit Access</p>
+            <p class="text-sm text-blue-700">
+                To edit a destination, you must submit a request to admin. 
+                <a href="{{ route('pemilik.paket.index') }}" class="underline font-semibold">Upgrade to Standard/Premium</a> 
+                to edit directly without approval.
             </p>
         </div>
     </div>
@@ -230,14 +230,14 @@
 <div class="bg-white rounded-xl shadow-lg py-20 px-6 text-center">
     <div class="flex flex-col items-center justify-center text-gray-400">
         <i class="fas fa-map-marked-alt text-8xl mb-5"></i>
-        <h3 class="text-2xl font-bold text-gray-600 mb-2">Belum Ada Destinasi</h3>
-        <p class="text-gray-500 mb-6">Mulai tambahkan destinasi wisata pertama Anda!</p>
+        <h3 class="text-2xl font-bold text-gray-600 mb-2">No Destinations Yet</h3>
+        <p class="text-gray-500 mb-6">Start by adding your first tourist destination!</p>
         
         @if($destinasi->count() < ($limits['max_destinasi'] ?? PHP_INT_MAX))
         <a href="{{ route('pemilik.destinasi.create') }}" 
            class="bg-gradient-to-r from-primary to-blue-400 text-white px-8 py-4 rounded-lg transition shadow-lg hover:shadow-xl flex items-center gap-2 font-semibold">
             <i class="fas fa-plus"></i>
-            Tambah Destinasi Pertama
+            Add First Destination
         </a>
         @endif
     </div>

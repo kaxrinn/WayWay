@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atur Ulang Kata Sandi</title>
+    <title>Reset Password</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -59,9 +59,9 @@
             <img src="{{ asset('assets/Logo/logodnnama.png') }}" alt="Logo" class="h-20">
         </div>
 
-        <h2 class="text-2xl font-bold text-white text-center mb-3">Atur Ulang Kata Sandi</h2>
+        <h2 class="text-2xl font-bold text-white text-center mb-3">Reset Password</h2>
         <p class="text-sm text-white/90 text-center mb-6 leading-relaxed">
-            Masukkan kata sandi baru Anda untuk mengamankan akun Anda kembali.
+            Enter your new password to secure your account again.
         </p>
 
         <form method="POST" action="{{ route('wisatawan.password.update') }}">
@@ -73,21 +73,21 @@
             <div class="bg-white/10 rounded-xl p-3 mb-5">
                 <p class="text-[11px] text-white/85 mb-1.5">
                     <i class="fas fa-info-circle text-[10px] mr-1.5"></i>
-                    Kata sandi harus memenuhi:
+                    Password must meet:
                 </p>
                 <p class="text-[11px] text-white/85 mb-1">
                     <i class="fas fa-check text-[10px] mr-1.5"></i>
-                    Minimal 8 karakter
+                    Minimum 8 characters
                 </p>
                 <p class="text-[11px] text-white/85">
                     <i class="fas fa-check text-[10px] mr-1.5"></i>
-                    Kombinasi huruf dan angka
+                    Combination of letters and numbers
                 </p>
             </div>
 
             <!-- Password -->
             <div class="mb-5">
-                <label class="block text-[13px] font-medium text-white mb-2">Kata Sandi Baru</label>
+                <label class="block text-[13px] font-medium text-white mb-2">New Password</label>
                 <div class="relative">
                     <input type="password" id="password" name="password" required
                         class="w-full px-5 py-3.5 bg-white/90 border border-white/30 rounded-xl text-sm"
@@ -102,7 +102,7 @@
 
             <!-- Password Confirmation -->
             <div class="mb-5">
-                <label class="block text-[13px] font-medium text-white mb-2">Konfirmasi Kata Sandi Baru</label>
+                <label class="block text-[13px] font-medium text-white mb-2">Confirm New Password</label>
                 <div class="relative">
                     <input type="password" id="password_confirmation" name="password_confirmation" required
                         class="w-full px-5 py-3.5 bg-white/90 border border-white/30 rounded-xl text-sm"
@@ -118,7 +118,7 @@
             <!-- Button -->
             <button type="submit"
                 class="w-full py-3.5 bg-brand hover:bg-[#8abecf] rounded-xl text-white font-semibold shadow-lg mt-3">
-                ATUR ULANG KATA SANDI
+                RESET PASSWORD
             </button>
         </form>
 
@@ -126,7 +126,7 @@
             <a href="{{ route('wisatawan.login') }}"
                 class="inline-flex items-center gap-2 text-sm text-white font-semibold border-b border-white">
                 <i class="fas fa-arrow-left text-xs"></i>
-                Kembali ke Halaman Masuk
+                Back to Login
             </a>
         </div>
 
@@ -161,9 +161,9 @@
 <script>
     Swal.fire({
         icon: 'success',
-        title: 'Berhasil!',
+        title: 'Success!',
         text: '{{ session("success") }}',
-        confirmButtonText: 'Login Sekarang',
+        confirmButtonText: 'Login Now',
         confirmButtonColor: '#9eccdb'
     }).then((result) => {
         if (result.isConfirmed) {

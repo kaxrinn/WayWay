@@ -25,6 +25,6 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         TransaksiPromosi::findOrFail($id)->delete();
-        return back()->with('success','Transaksi berhasil dihapus.');
+        return back()->with('success','Transaksi has been deleted successfully.');
     }
 }

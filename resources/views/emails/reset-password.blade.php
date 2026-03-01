@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atur Ulang Kata Sandi</title>
+    <title>Reset Your Password</title>
 </head>
 <body style="margin:0; padding:40px 20px; font-family:Arial,sans-serif; background:url('{{ asset('assets/background/bgemail.jpg') }}') center/cover; background-attachment:fixed;">
     
@@ -13,7 +13,7 @@
         <tr>
             <td style="background:linear-gradient(135deg, #9eccdb 0%, #89b8c9 100%); padding:40px 30px; text-align:center; border-radius:20px 20px 0 0;">
                 <img src="https://github.com/kaxrinn/WayWay/blob/main/public/Assets/Logo/logodnnama.png?raw=true" alt="WayWay Logo" style="max-width:180px; height:auto; margin-bottom:15px; filter:drop-shadow(0 2px 8px rgba(0,0,0,0.15));">
-                <h1 style="color:#fff; font-size:28px; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.1);">Atur Ulang Kata Sandi</h1>
+                <h1 style="color:#fff; font-size:28px; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.1);">Reset Your Password</h1>
             </td>
         </tr>
 
@@ -23,11 +23,11 @@
                 
                 <!-- Greeting -->
                 <p style="font-size:20px; font-weight:600; color:#4e4e4e; margin:0 0 15px;">
-                    Halo, {{ $namaPengguna }}! 👋
+                    Hi, {{ $namaPengguna }}! 👋
                 </p>
                 
                 <p style="font-size:15px; color:#4e4e4e; line-height:1.8; margin:0 0 20px; opacity:0.9;">
-                    Kami menerima permintaan untuk mengatur ulang kata sandi akun WayWay Anda. Klik tombol di bawah untuk membuat kata sandi baru.
+                    We received a request to reset the password for your WayWay account. Click the button below to create a new password.
                 </p>
 
                 <!-- Info Box -->
@@ -35,8 +35,8 @@
                     <tr>
                         <td style="background:#f4dbb4; border-left:4px solid #9eccdb; padding:15px; border-radius:8px;">
                             <p style="font-size:14px; color:#4e4e4e; margin:0;">
-                                <strong>⏱️ Link berlaku selama 60 menit</strong><br>
-                                Segera atur ulang kata sandi Anda sebelum link kadaluarsa.
+                                <strong>⏱️ Link valid for 60 minutes</strong><br>
+                                Make sure to reset your password before the link expires.
                             </p>
                         </td>
                     </tr>
@@ -47,15 +47,15 @@
                     <tr>
                         <td style="text-align:center;">
                             <a href="{{ $url }}" style="display:inline-block; padding:16px 40px; background:#9eccdb; color:#fff; text-decoration:none; border-radius:10px; font-weight:600; font-size:16px; box-shadow:0 4px 12px rgba(158,204,219,0.4); transition:all 0.3s;">
-                                Atur Ulang Kata Sandi
+                                Reset Password
                             </a>
                         </td>
                     </tr>
                 </table>
 
-                <!-- Link Alternatif -->
+                <!-- Alternative Link -->
                 <p style="font-size:13px; color:#4e4e4e; margin:20px 0 8px; opacity:0.8;">
-                    Jika tombol tidak berfungsi, copy link ini:
+                    If the button doesn't work, copy and paste this link:
                 </p>
                 <p style="font-size:12px; color:#9eccdb; word-break:break-all; margin:0; padding:12px; background:#eeeeee; border-radius:8px; border-left:3px solid #9eccdb;">
                     {{ $url }}
@@ -66,7 +66,7 @@
                     <tr>
                         <td style="background:#f4dbb4; border-left:4px solid #9eccdb; padding:15px; border-radius:8px;">
                             <p style="font-size:13px; color:#4e4e4e; margin:0;">
-                                <strong>🔒 Catatan Keamanan:</strong> Jika Anda tidak meminta reset password, abaikan email ini. Akun Anda tetap aman.
+                                <strong>🔒 Security Note:</strong> If you didn't request a password reset, you can safely ignore this email. Your account remains secure.
                             </p>
                         </td>
                     </tr>
@@ -79,11 +79,11 @@
         <tr>
             <td style="background:#4e4e4e; padding:30px; text-align:center; border-top:1px solid #eeeeee; border-radius:0 0 20px 20px;">
                 <p style="font-size:12px; color:#eeeeee; margin:10px 0; opacity:0.9;">
-                    Terima kasih telah menggunakan WayWay.<br>
-                    Butuh bantuan? <a href="mailto:waywaypolibatam@gmail.com" style="color:#9eccdb; text-decoration:none; font-weight:600;">waywaypolibatam@gmail.com</a>
+                    Thank you for using WayWay.<br>
+                    Need help? <a href="mailto:waywaypolibatam@gmail.com" style="color:#9eccdb; text-decoration:none; font-weight:600;">waywaypolibatam@gmail.com</a>
                 </p>
                 <p style="font-size:11px; color:#eeeeee; margin:15px 0 0; opacity:0.7;">
-                    © 2025 WayWay. Semua hak dilindungi.
+                    © 2026 WayWay. All rights reserved.
                 </p>
             </td>
         </tr>

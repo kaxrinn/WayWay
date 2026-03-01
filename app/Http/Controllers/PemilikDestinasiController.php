@@ -239,7 +239,7 @@ class PemilikDestinasiController extends Controller
             $newFotoCount = count($request->file('foto'));
             
             if (($currentFotoCount + $newFotoCount) > $maxFoto) {
-                return back()->with('error', "Maksimal $maxFoto foto untuk paket Anda!");
+                return back()->with('error', "Maximal $maxFoto photo for your package!");
             }
             
             foreach ($request->file('foto') as $foto) {
@@ -255,7 +255,7 @@ class PemilikDestinasiController extends Controller
             $newVideoCount = count($request->file('video'));
             
             if (($currentVideoCount + $newVideoCount) > $maxVideo) {
-                return back()->with('error', "Maksimal $maxVideo video untuk paket Anda!");
+                return back()->with('error', "Maximal $maxVideo video for your package!");
             }
             
             foreach ($request->file('video') as $video) {
@@ -284,7 +284,7 @@ class PemilikDestinasiController extends Controller
         ]);
         
         return redirect()->route('pemilik.destinasi.index')
-            ->with('success', 'Destinasi berhasil diupdate!');
+            ->with('success', 'Destinasi successfully updated!');
     }
 
     /**
@@ -298,6 +298,6 @@ class PemilikDestinasiController extends Controller
         $destinasi->update(['status' => 'inactive']);
         
         return redirect()->route('pemilik.destinasi.index')
-            ->with('success', 'Destinasi berhasil dihapus!');
+            ->with('success', 'Destinasi successfully deleted!');
     }
 }

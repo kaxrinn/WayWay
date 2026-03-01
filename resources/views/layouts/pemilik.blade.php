@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ sidebarOpen: false, userMenuOpen: false }">
+<html lang="en" x-data="{ sidebarOpen: false, userMenuOpen: false }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard') - WayWay Pemilik</title>
+    <title>@yield('title', 'Dashboard') - WayWay Owner</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -41,18 +41,17 @@
                     </button>
                     
                     <div class="flex items-center gap-3">
-                    <div class=" p-2 rounded-lg">
-                    <img src="{{  asset('assets/Logo/logo.png')}}" 
-                    alt="Logo" 
-                    class="w-8 h-8 object-contain">
-             </div>
+                        <div class="p-2 rounded-lg">
+                            <img src="{{ asset('assets/Logo/logo.png')}}" 
+                                 alt="Logo" 
+                                 class="w-8 h-8 object-contain">
+                        </div>
                         
                         <div>
                             <h1 class="font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#c6c4c9] via-[#415c7f] to-[#c6c4c9]">
-                             WayWay
+                                WayWay
                             </h1>
-                            
-                            <p class="text-xs text-white/80">Pemilik Wisata</p>
+                            <p class="text-xs text-white/80">Tourism Owner</p>
                         </div>
                     </div>
                 </div>
@@ -81,11 +80,11 @@
                          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50">
                         <a href="{{ route('pemilik.profile') }}" 
                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                            <i class="fas fa-user mr-2"></i> Profil
+                            <i class="fas fa-user mr-2"></i> Profile
                         </a>
                         <a href="{{ route('pemilik.paket.index') }}" 
                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                            <i class="fas fa-box mr-2"></i> Upgrade Paket
+                            <i class="fas fa-box mr-2"></i> Upgrade Package
                         </a>
                         <hr class="my-2">
                         <form method="POST" action="{{ route('logout') }}">
@@ -116,7 +115,7 @@
                 $color = $colors[$paketName] ?? 'bg-gray-100 text-gray-800';
             @endphp
             <div class="{{ $color }} px-4 py-2 rounded-lg text-center mb-6">
-                <p class="text-xs font-semibold">Paket Aktif</p>
+                <p class="text-xs font-semibold">Active Package</p>
                 <p class="text-lg font-bold">{{ $paketName }}</p>
             </div>
             
@@ -130,29 +129,29 @@
                 <a href="{{ route('pemilik.destinasi.index') }}" 
                    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition {{ request()->routeIs('pemilik.destinasi.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
                     <i class="fas fa-map-marked-alt w-5"></i>
-                    <span>Destinasi Saya</span>
+                    <span>My Destinations</span>
                 </a>
                 
-<a href="{{ route('pemilik.paket.index') }}"
-   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition {{ request()->routeIs('pemilik.paket.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
-    <i class="fas fa-box w-5"></i>
-    <span>Paket Promosi</span>
-</a>
+                <a href="{{ route('pemilik.paket.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition {{ request()->routeIs('pemilik.paket.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
+                    <i class="fas fa-box w-5"></i>
+                    <span>Promotion Packages</span>
+                </a>
 
-@php
-    $isPremium = isset($paket) && $paket && $paket->priority_level >= 3;
-@endphp
+                @php
+                    $isPremium = isset($paket) && $paket && $paket->priority_level >= 3;
+                @endphp
 
-@if($isPremium)
-<a href="{{ route('pemilik.promosi.index') }}"
-   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-yellow-100 transition {{ request()->routeIs('pemilik.promosi.*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700' }}">
-    <i class="fas fa-bullhorn w-5 text-yellow-500"></i>
-    <span>Banner Promosi</span>
-    <span class="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full leading-tight">
-        Premium
-    </span>
-</a>
-@endif
+                @if($isPremium)
+                <a href="{{ route('pemilik.promosi.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-yellow-100 transition {{ request()->routeIs('pemilik.promosi.*') ? 'bg-yellow-100 text-yellow-700 font-semibold' : 'text-gray-700' }}">
+                    <i class="fas fa-bullhorn w-5 text-yellow-500"></i>
+                    <span>Banner Promotion</span>
+                    <span class="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full leading-tight">
+                        Premium
+                    </span>
+                </a>
+                @endif
                 
                 @php
                     $canEditFoto = $paket && $paket->can_edit_foto;
@@ -167,19 +166,21 @@
                     @endif
                 </a>
                 @endif
-<a href="{{ route('pemilik.ulasan.index') }}"
-   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition
-          {{ request()->routeIs('pemilik.ulasan.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
-    <i class="fas fa-star w-5"></i>
-    <span>Ulasan</span>
-</a>                
-                <!-- bantuan link -->
-              <a href="https://wa.me/6289520428618?text={{ urlencode('Halo admin WayWay, saya butuh bantuan') }}"
-                 target="_blank"
-                 class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition text-gray-700">
-                <i class="fas fa-question-circle w-5"></i>
-                <span>Bantuan</span>
-               </a>
+
+                <a href="{{ route('pemilik.ulasan.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition
+                          {{ request()->routeIs('pemilik.ulasan.*') ? 'bg-primary/30 text-primary font-semibold' : 'text-gray-700' }}">
+                    <i class="fas fa-star w-5"></i>
+                    <span>Reviews</span>
+                </a>                
+                
+                <!-- help link -->
+                <a href="https://wa.me/6289520428618?text={{ urlencode('Hello WayWay admin, I need assistance') }}"
+                   target="_blank"
+                   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-primary/20 transition text-gray-700">
+                    <i class="fas fa-question-circle w-5"></i>
+                    <span>Help</span>
+                </a>
             </nav>
         </div>
     </aside>

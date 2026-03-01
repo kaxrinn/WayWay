@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lupa Kata Sandi</title>
+    <title>Forgot Password</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,9 +66,9 @@
                 <img src="{{ asset('assets/Logo/logodnnama.png') }}" alt="Logo" class="h-20">
             </div>
             
-            <h2 class="text-2xl font-bold text-white text-center mb-3">Lupa Kata Sandi?</h2>
+            <h2 class="text-2xl font-bold text-white text-center mb-3">Forgot Password?</h2>
             <p class="text-sm text-white/90 text-center mb-8 leading-relaxed">
-                Jangan khawatir! Masukkan email Anda dan kami akan mengirimkan panduan untuk mengatur ulang kata sandi.
+                Don't worry! Enter your email and we will send you instructions to reset your password.
             </p>
 
             <form method="POST" action="{{ route('wisatawan.password.email') }}">
@@ -98,7 +98,7 @@
                 <button 
                     type="submit" 
                     class="w-full py-3.5 bg-brand hover:bg-[#8abecf] border-none rounded-xl text-white text-sm font-semibold tracking-wider cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                    KIRIM LINK ATUR ULANG
+                    SEND RESET LINK
                 </button>
             </form>
 
@@ -107,7 +107,7 @@
                 <a href="{{ route('wisatawan.login') }}" 
                    class="inline-flex items-center gap-2 text-sm text-white font-semibold border-b border-white hover:opacity-80 transition-opacity no-underline">
                     <i class="fas fa-arrow-left text-xs"></i>
-                    Kembali ke Halaman Masuk
+                    Back to Login
                 </a>
             </div>
 

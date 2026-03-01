@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Promosi')
+@section('title', 'Manage Promotions')
 
 @section('content')
 <!-- Header -->
@@ -8,13 +8,13 @@
     <div>
         <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
             <i class="fas fa-bullhorn text-purple-500"></i>
-            Kelola Promosi & Iklan
+            Manage Promotions & Ads
         </h1>
-        <p class="text-gray-500 mt-2">Manage promosi dan iklan destinasi wisata</p>
+        <p class="text-gray-500 mt-2">Manage promotions and ads for tourism destinations</p>
     </div>
 </div>
 
-<!-- Paket Promosi Info Cards -->
+<!-- Promotion Package Info Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     @foreach($paketPromosi as $paket)
     <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg p-6 border-2 border-purple-400 hover:shadow-2xl transition transform hover:-translate-y-2">
@@ -29,29 +29,29 @@
             <p class="text-4xl font-bold text-purple-600">
                 Rp {{ number_format($paket->harga, 0, ',', '.') }}
             </p>
-            <p class="text-sm text-gray-500">Per bulan</p>
+            <p class="text-sm text-gray-500">Per month</p>
         </div>
         
         <p class="text-gray-600 text-sm mb-4">{{ $paket->deskripsi }}</p>
         
         <div class="border-t border-gray-200 pt-4">
-            <p class="text-xs font-semibold text-gray-700 mb-2">Fitur:</p>
+            <p class="text-xs font-semibold text-gray-700 mb-2">Features:</p>
             <div class="space-y-1">
                 <p class="text-xs text-gray-600 flex items-start gap-2">
                     <i class="fas fa-check text-green-500 mt-0.5"></i>
-                    <span>Max {{ $paket->max_destinasi }} destinasi</span>
+                    <span>Max {{ $paket->max_destinasi }} destinations</span>
                 </p>
                 <p class="text-xs text-gray-600 flex items-start gap-2">
                     <i class="fas fa-check text-green-500 mt-0.5"></i>
-                    <span>Max {{ $paket->max_foto }} foto per destinasi</span>
+                    <span>Max {{ $paket->max_foto }} photos per destination</span>
                 </p>
                 <p class="text-xs text-gray-600 flex items-start gap-2">
                     <i class="fas fa-check text-green-500 mt-0.5"></i>
-                    <span>Max {{ $paket->max_video }} video per destinasi</span>
+                    <span>Max {{ $paket->max_video }} videos per destination</span>
                 </p>
                 <p class="text-xs text-gray-600 flex items-start gap-2">
                     <i class="fas fa-{{ $paket->can_edit_foto ? 'check' : 'times' }} text-{{ $paket->can_edit_foto ? 'green' : 'red' }}-500 mt-0.5"></i>
-                    <span>{{ $paket->can_edit_foto ? 'Edit langsung' : 'Butuh persetujuan admin' }}</span>
+                    <span>{{ $paket->can_edit_foto ? 'Direct editing' : 'Admin approval required' }}</span>
                 </p>
                 @if($paket->is_featured_allowed)
                 <p class="text-xs text-gray-600 flex items-start gap-2">
@@ -65,11 +65,11 @@
     @endforeach
 </div>
 
-<!-- Active Promosi Table -->
+<!-- Active Promotions Table -->
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200">
-        <h2 class="text-xl font-bold text-gray-800">Daftar Promosi Aktif</h2>
-        <p class="text-sm text-gray-500 mt-1">Promosi yang sedang berjalan di platform</p>
+        <h2 class="text-xl font-bold text-gray-800">Active Promotions</h2>
+        <p class="text-sm text-gray-500 mt-1">Promotions currently running on the platform</p>
     </div>
     
     @if($promosi->count() > 0)
@@ -79,9 +79,9 @@
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">User</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Paket</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Harga</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Periode</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Package</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Price</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Period</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
                 </tr>
             </thead>
@@ -112,7 +112,7 @@
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-600">
                         <div>{{ $item->tanggal_mulai->format('d M Y') }}</div>
-                        <div class="text-xs text-gray-500">s/d {{ $item->tanggal_selesai->format('d M Y') }}</div>
+                        <div class="text-xs text-gray-500">to {{ $item->tanggal_selesai->format('d M Y') }}</div>
                     </td>
                     <td class="px-6 py-4">
                         @if($isExpired)
@@ -138,8 +138,8 @@
     <div class="py-20 px-6 text-center">
         <div class="flex flex-col items-center justify-center text-gray-400">
             <i class="fas fa-bullhorn text-7xl mb-5"></i>
-            <h3 class="text-2xl font-bold text-gray-600 mb-2">Belum Ada Promosi</h3>
-            <p class="text-gray-500">Belum ada promosi aktif saat ini</p>
+            <h3 class="text-2xl font-bold text-gray-600 mb-2">No Promotions Yet</h3>
+            <p class="text-gray-500">There are currently no active promotions</p>
         </div>
     </div>
     @endif
@@ -150,7 +150,7 @@
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm mb-1">Total Promosi</p>
+                <p class="text-gray-500 text-sm mb-1">Total Promotions</p>
                 <h3 class="text-3xl font-bold text-purple-500">{{ $promosi->count() }}</h3>
             </div>
             <div class="bg-purple-100 p-4 rounded-full">
@@ -162,7 +162,7 @@
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm mb-1">Promosi Aktif</p>
+                <p class="text-gray-500 text-sm mb-1">Active Promotions</p>
                 <h3 class="text-3xl font-bold text-green-500">
                     {{ $promosi->filter(fn($p) => $p->tanggal_mulai <= now() && $p->tanggal_selesai >= now())->count() }}
                 </h3>
@@ -176,7 +176,7 @@
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm mb-1">Promosi Expired</p>
+                <p class="text-gray-500 text-sm mb-1">Expired Promotions</p>
                 <h3 class="text-3xl font-bold text-red-500">
                     {{ $promosi->filter(fn($p) => $p->tanggal_selesai < now())->count() }}
                 </h3>

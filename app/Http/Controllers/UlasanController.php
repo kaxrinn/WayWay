@@ -24,7 +24,7 @@ class UlasanController extends Controller
             'komentar' => $request->komentar,
         ]);
 
-        return back()->with('success', 'Ulasan berhasil dikirim!');
+        return back()->with('success', 'Review successfully submitted!');
     }
 public function indexPemilik()
 {
