@@ -157,7 +157,7 @@ class WisatawanController extends Controller
 
         $user->update($data);
 
-        return back()->with('success', 'Profil berhasil diperbarui');
+        return back()->with('success', 'profile has been updated successfully!');
     }
 
     // Hubungi Kami
@@ -179,7 +179,7 @@ class WisatawanController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return back()->with('success', 'Pesan berhasil dikirim!');
+        return back()->with('success', 'Pesan successfully sent!');
     }
 
     /**
@@ -190,7 +190,7 @@ class WisatawanController extends Controller
         if (!auth()->check()) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Silakan login terlebih dahulu',
+                'message' => 'Please login first',
             ], 401);
         }
 
@@ -207,7 +207,7 @@ class WisatawanController extends Controller
             $favorit->delete();
             return response()->json([
                 'status'  => 'removed',
-                'message' => 'Dihapus dari favorit',
+                'message' => 'Removed from favorites',
             ]);
         }
 
@@ -218,7 +218,7 @@ class WisatawanController extends Controller
 
         return response()->json([
             'status'  => 'added',
-            'message' => 'Ditambahkan ke favorit',
+            'message' => 'Added to favorites',
         ]);
     }
 
@@ -229,7 +229,7 @@ class WisatawanController extends Controller
     {
         if (!auth()->check()) {
             return redirect()->route('login')
-                ->with('error', 'Silakan login terlebih dahulu untuk melihat favorit');
+                ->with('error', 'Please login first to view favorites');
         }
 
         $userId = auth()->id();

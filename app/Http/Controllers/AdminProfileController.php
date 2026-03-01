@@ -34,6 +34,6 @@ class AdminProfileController extends Controller
         $admin->save();
     }
 
-    return back()->with('success', 'Profil admin berhasil diperbarui');
+    return back()->with('success', 'Profil admin has been updated successfully!');
 }
 }

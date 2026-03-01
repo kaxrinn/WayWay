@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     /**
-     * Dashboard admin
+     * Admin dashboard
      */
     public function dashboard()
     {
@@ -19,10 +19,10 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('totalPemilik', 'totalWisatawan'));
     }
 
-    // ========== KELOLA PEMILIK WISATA ==========
-    
+    // ========== MANAGE TOURISM OWNERS ==========
+
     /**
-     * Tampilkan daftar pemilik wisata
+     * Display list of tourism owners
      */
     public function indexPemilik()
     {
@@ -34,7 +34,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Tampilkan form tambah pemilik wisata
+     * Show form to add a new tourism owner
      */
     public function createPemilik()
     {
@@ -42,7 +42,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Simpan pemilik wisata baru
+     * Save new tourism owner
      */
     public function storePemilik(Request $request)
     {
@@ -51,14 +51,14 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*[A-Za-z])(?=.*\d).+$/',
         ], [
-            'name.required' => 'Nama wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Kata sandi wajib diisi',
-            'password.min' => 'Kata sandi minimal harus 8 karakter',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
-            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
+            'name.required' => 'Name is required',
+            'email.required' => 'Email is required',
+            'email.email' => 'Invalid email format',
+            'email.unique' => 'Email is already registered',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be at least 8 characters',
+            'password.confirmed' => 'Password confirmation does not match',
+            'password.regex' => 'Password must contain letters and numbers',
         ]);
 
         User::create([
@@ -70,11 +70,11 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.pemilik.index')
-            ->with('success', 'Pemilik wisata berhasil ditambahkan!');
+            ->with('success', 'Tourism owner added successfully!');
     }
 
     /**
-     * Tampilkan form edit pemilik wisata
+     * Show form to edit a tourism owner
      */
     public function editPemilik($id)
     {
@@ -83,7 +83,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Update data pemilik wisata
+     * Update tourism owner data
      */
     public function updatePemilik(Request $request, $id)
     {
@@ -94,13 +94,13 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:8|confirmed|regex:/^(?=.*[A-Za-z])(?=.*\d).+$/',
         ], [
-            'name.required' => 'Nama wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.min' => 'Kata sandi minimal harus 8 karakter',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
-            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
+            'name.required' => 'Name is required',
+            'email.required' => 'Email is required',
+            'email.email' => 'Invalid email format',
+            'email.unique' => 'Email is already registered',
+            'password.min' => 'Password must be at least 8 characters',
+            'password.confirmed' => 'Password confirmation does not match',
+            'password.regex' => 'Password must contain letters and numbers',
         ]);
 
         $data = [
@@ -108,7 +108,7 @@ class AdminController extends Controller
             'email' => $request->email,
         ];
 
-        // Update password hanya jika diisi
+        // Only update password if provided
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
@@ -116,11 +116,11 @@ class AdminController extends Controller
         $pemilik->update($data);
 
         return redirect()->route('admin.pemilik.index')
-            ->with('success', 'Pemilik wisata berhasil diupdate!');
+            ->with('success', 'Tourism owner updated successfully!');
     }
 
     /**
-     * Hapus pemilik wisata
+     * Delete a tourism owner
      */
     public function destroyPemilik($id)
     {
@@ -128,6 +128,6 @@ class AdminController extends Controller
         $pemilik->delete();
 
         return redirect()->route('admin.pemilik.index')
-            ->with('success', 'Pemilik wisata berhasil dihapus!');
+            ->with('success', 'Tourism owner deleted successfully!');
     }
 }

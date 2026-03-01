@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Wisatawan')
+@section('title', 'Manage Tourists')
 
 @section('content')
 <!-- Header -->
@@ -9,9 +9,9 @@
         <div>
             <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
                 <i class="fas fa-users text-blue-500"></i>
-                Kelola Wisatawan
+                Manage Tourists
             </h1>
-            <p class="text-gray-500 mt-2">Daftar semua wisatawan yang terdaftar di sistem</p>
+            <p class="text-gray-500 mt-2">List of all tourists registered in the system</p>
         </div>
     </div>
 </div>
@@ -21,7 +21,7 @@
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm mb-1">Total Wisatawan</p>
+                <p class="text-gray-500 text-sm mb-1">Total Tourists</p>
                 <h3 class="text-3xl font-bold text-blue-500">{{ $wisatawan->count() }}</h3>
             </div>
             <div class="bg-blue-100 p-4 rounded-full">
@@ -33,7 +33,7 @@
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm mb-1">Bulan Ini</p>
+                <p class="text-gray-500 text-sm mb-1">This Month</p>
                 <h3 class="text-3xl font-bold text-green-500">{{ $wisatawan->where('created_at', '>=', now()->startOfMonth())->count() }}</h3>
             </div>
             <div class="bg-green-100 p-4 rounded-full">
@@ -45,7 +45,7 @@
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-gray-500 text-sm mb-1">Hari Ini</p>
+                <p class="text-gray-500 text-sm mb-1">Today</p>
                 <h3 class="text-3xl font-bold text-purple-500">{{ $wisatawan->where('created_at', '>=', today())->count() }}</h3>
             </div>
             <div class="bg-purple-100 p-4 rounded-full">
@@ -60,7 +60,7 @@
     <div class="relative">
         <input type="text" 
                id="searchInput"
-               placeholder="🔍 Cari wisatawan berdasarkan nama atau email..."
+               placeholder="🔍 Search tourists by name or email..."
                class="w-full px-6 py-4 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pl-12">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
     </div>
@@ -74,10 +74,10 @@
             <thead class="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">No</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Nama</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Name</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Email</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">No. Telepon</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Terdaftar</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Phone</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold">Registered</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
                 </tr>
             </thead>
@@ -99,7 +99,7 @@
                     <td class="px-6 py-4">
                         <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit">
                             <i class="fas fa-check-circle"></i>
-                            Aktif
+                            Active
                         </span>
                     </td>
                 </tr>
@@ -112,8 +112,8 @@
     <div class="py-20 px-6 text-center">
         <div class="flex flex-col items-center justify-center text-gray-400">
             <i class="fas fa-users-slash text-7xl mb-5"></i>
-            <h3 class="text-2xl font-bold text-gray-600 mb-2">Belum Ada Wisatawan</h3>
-            <p class="text-gray-500">Belum ada wisatawan yang terdaftar di sistem</p>
+            <h3 class="text-2xl font-bold text-gray-600 mb-2">No Tourists Yet</h3>
+            <p class="text-gray-500">No tourists are registered in the system</p>
         </div>
     </div>
     @endif

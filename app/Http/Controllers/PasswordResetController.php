@@ -20,9 +20,9 @@ class PasswordResetController extends Controller
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ], [
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.exists' => 'Email tidak terdaftar',
+            'email.required' => 'Email is required',
+            'email.email' => 'Invalid email format',
+            'email.exists' => 'Email is not registered',
         ]);
 
         $status = Password::sendResetLink(
@@ -30,7 +30,7 @@ class PasswordResetController extends Controller
         );
 
         if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('success', 'Link reset password telah dikirim ke email Anda. Silakan cek inbox atau spam folder.');
+            return back()->with('success', 'Password reset link has been sent to your email. Please check your inbox or spam folder.');
         }
 
         return back()->withErrors(['email' => __($status)]);
@@ -42,7 +42,7 @@ class PasswordResetController extends Controller
 
         if (!$email) {
             return redirect()->route('wisatawan.password.request')
-                ->withErrors(['email' => 'Link reset password tidak valid. Silakan request ulang.']);
+                ->withErrors(['email' => 'Link reset password is not valid. Please request a new one.']);
         }
 
         return view('auth.reset-password', [
@@ -58,10 +58,10 @@ class PasswordResetController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*[A-Za-z])(?=.*\d).+$/',
         ], [
-            'password.required' => 'Kata sandi wajib diisi',
-            'password.min' => 'Kata sandi minimal harus 8 karakter',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
-            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be at least 8 characters',
+            'password.confirmed' => 'Password confirmation does not match',
+            'password.regex' => 'Password must contain both letters and numbers',
         ]);
 
         $status = Password::reset(
@@ -77,7 +77,7 @@ class PasswordResetController extends Controller
 
         if ($status === Password::PASSWORD_RESET) {
             return redirect()->route('wisatawan.login')
-                ->with('success', 'Password berhasil dibuat! Silakan login dengan password baru.');
+                ->with('success', 'Password successfully reset! Please login with your new password.');
         }
 
         return back()->withErrors(['email' => __($status)]);

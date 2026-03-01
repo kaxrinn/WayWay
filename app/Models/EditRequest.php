@@ -10,21 +10,21 @@ class EditRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'destinasi_id',
-        'requests_type',
-        'requests_data',
-        'keterangan',
-        'status',
-        'admin_notes',
-        'approved_by',
-        'approved_at'
-    ];
+    'user_id',
+    'destinasi_id',
+    'request_type',
+    'request_data',
+    'keterangan',
+    'status',
+    'approved_by',
+    'admin_notes'
+];
 
-    protected $casts = [
-        'requests_data' => 'array',
-        'approved_at' => 'datetime',
-    ];
+protected $casts = [
+    'request_data' => 'array',
+    'approved_at' => 'datetime',
+];
+
 
     /**
      * Get user yang request

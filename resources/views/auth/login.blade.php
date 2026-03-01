@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,13 +65,13 @@
                 <span class="text-2xl font-bold tracking-[2px]">WAYWAY</span>
             </div>
             <h1 class="text-5xl lg:text-[56px] font-extrabold leading-tight mb-5 drop-shadow-lg animate-fadeInUp">
-                TEMUKAN<br>DESTINASIMU
+                FIND<br>YOUR DESTINATION
             </h1>
             <p class="text-xl font-light mb-2 opacity-95 animate-fadeInUp" style="animation-delay: 0.1s;">
-                Pilih destinasi terbaik sesuai minat<br>dan kebutuhan Anda.
+                Choose the best destinations based on your interests<br>and needs.
             </p>
             <p class="text-sm opacity-85 leading-relaxed animate-fadeInUp" style="animation-delay: 0.2s;">
-                Jelajahi, temukan, <br>dan rencanakan perjalanan Anda dengan lebih mudah.
+                Explore, discover, <br>and plan your trip with ease.
             </p>
         </div>
 
@@ -84,7 +84,7 @@
             </div>
 
             <p class="text-sm font-medium text-white mb-5 text-center tracking-wide opacity-90">
-                Selamat Datang, Silahkan Masuk!
+                Welcome Back! Please Log In
             </p>
 
             <form method="POST" action="{{ route('wisatawan.loginPost') }}">
@@ -110,7 +110,7 @@
 
                 <!-- Password Input -->
                 <div class="mb-5">
-                    <label for="password" class="block text-[13px] font-medium text-white mb-2 opacity-90">Kata Sandi</label>
+                    <label for="password" class="block text-[13px] font-medium text-white mb-2 opacity-90">Password</label>
                     <div class="relative">
                         <input 
                             type="password" 
@@ -129,7 +129,7 @@
                 <!-- Forgot Password Link -->
                 <div class="text-right mb-5">
                     <a href="{{ route('wisatawan.password.request') }}" class="text-xs text-white opacity-80 hover:opacity-100 transition-opacity">
-                        Lupa Kata Sandi?
+                        Forgot Password?
                     </a>
                 </div>
 
@@ -137,14 +137,14 @@
                 <button 
                     type="submit" 
                     class="w-full py-3.5 bg-brand hover:bg-[#8abecf] border-none rounded-xl text-white text-sm font-semibold tracking-wider cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                    MASUK
+                    LOG IN
                 </button>
             </form>
 
             <!-- Divider -->
             <div class="flex items-center my-5 text-white text-xs opacity-70">
                 <div class="flex-1 h-px bg-white/30"></div>
-                <span class="px-4">ATAU</span>
+                <span class="px-4">OR</span>
                 <div class="flex-1 h-px bg-white/30"></div>
             </div>
 
@@ -153,14 +153,14 @@
                 href="{{ route('auth.google') }}" 
                 class="w-full py-3.5 bg-white/90 border border-white/30 rounded-xl flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 text-sm font-medium text-gray-800 hover:bg-white hover:-translate-y-0.5 hover:shadow-lg no-underline">
                 <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google" class="w-[18px] h-[18px]">
-                Masuk dengan Google
+                Log in with Google
             </a>
 
             <!-- Register Link -->
             <div class="text-center mt-5 text-[13px] text-white">
-                Belum Punya Akun? 
+                Don't have an account? 
                 <a href="{{ route('wisatawan.register') }}" class="text-white font-semibold border-b border-white hover:opacity-80 transition-opacity no-underline">
-                    Buat Akun
+                    Sign Up
                 </a>
             </div>
         </div>
@@ -183,7 +183,7 @@
 @if(session('success'))
 <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
     <div class="bg-white rounded-2xl p-6 w-[350px] text-center border-t-8" style="border-color:#9eccdb;">
-        <h2 class="text-lg font-bold mb-2" style="color:#9eccdb;">Registrasi Berhasil</h2>
+        <h2 class="text-lg font-bold mb-2" style="color:#9eccdb;">Registration Successful</h2>
         <p class="text-sm text-gray-600 mb-4">{{ session('success') }}</p>
         <button onclick="closeModal()" class="px-4 py-2 rounded-lg text-white" style="background:#9eccdb;">
             OK
@@ -193,7 +193,7 @@
 
 <script>
 function closeModal(){
-    document.getElementById('successModal').style.display = 'none';
+    document.getElementById('successModal').classList.add('hidden');
 }
 </script>
 @endif

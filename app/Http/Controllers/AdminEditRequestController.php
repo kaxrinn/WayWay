@@ -42,7 +42,7 @@ class AdminEditRequestController extends Controller
         $editRequest = EditRequest::with('destinasi')->findOrFail($id);
         
         if ($editRequest->status !== 'pending') {
-            return back()->with('error', 'Request ini sudah diproses!');
+            return back()->with('error', 'This Request has already been processed!');
         }
         
         $validated = $request->validate([
@@ -109,7 +109,7 @@ class AdminEditRequestController extends Controller
             'approved_at' => now(),
         ]);
         
-        return back()->with('success', 'Request berhasil di-approve dan perubahan telah diterapkan!');
+        return back()->with('success', 'This Request has been approved and changes have been applied successfully!');
     }
 
     /**
@@ -134,7 +134,7 @@ class AdminEditRequestController extends Controller
             'approved_at' => now(),
         ]);
         
-        return back()->with('success', 'Request berhasil di-reject!');
+        return back()->with('success', 'This Request has been rejected successfully!');
     }
 
     /**
@@ -152,7 +152,7 @@ public function destroy($id)
     $request = \App\Models\EditRequest::findOrFail($id);
     $request->delete();
 
-    return back()->with('success', 'Edit request berhasil dihapus!');
+    return back()->with('success', 'Edit request has been deleted successfully!');
 }
 
 

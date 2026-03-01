@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Pemilik Wisata')
+@section('title', 'Add Tourism Owner')
 
 @section('content')
 <div class="max-w-3xl mx-auto">
@@ -8,7 +8,7 @@
     <a href="{{ route('admin.pemilik.index') }}" 
        class="inline-flex items-center text-gray-600 hover:text-primary transition mb-6">
         <i class="fas fa-arrow-left mr-2"></i>
-        Kembali ke Daftar
+        Back to List
     </a>
     
     <!-- Form Card -->
@@ -17,25 +17,25 @@
         <div class="bg-gradient-to-r from-primary to-blue-400 px-8 py-6">
             <h1 class="text-3xl font-bold text-white flex items-center gap-3">
                 <i class="fas fa-user-plus"></i>
-                Tambah Pemilik Wisata
+                Add Tourism Owner
             </h1>
-            <p class="text-white/90 mt-2">Isi form di bawah untuk menambahkan pemilik wisata baru</p>
+            <p class="text-white/90 mt-2">Fill out the form below to add a new tourism owner</p>
         </div>
         
         <!-- Form -->
         <form method="POST" action="{{ route('admin.pemilik.store') }}" class="p-8">
             @csrf
             
-            <!-- Nama Lengkap -->
+            <!-- Full Name -->
             <div class="mb-6">
                 <label for="name" class="block text-gray-700 font-semibold mb-2">
-                    Nama Lengkap <span class="text-red-500">*</span>
+                    Full Name <span class="text-red-500">*</span>
                 </label>
                 <input type="text" 
                        id="name" 
                        name="name" 
                        value="{{ old('name') }}"
-                       placeholder="Masukkan nama lengkap"
+                       placeholder="Enter full name"
                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('name') border-red-500 @enderror"
                        required>
                 @error('name')
@@ -66,10 +66,10 @@
                 @enderror
             </div>
             
-            <!-- No Telepon -->
+            <!-- Phone Number -->
             <div class="mb-6">
                 <label for="no_telepon" class="block text-gray-700 font-semibold mb-2">
-                    No. Telepon
+                    Phone Number
                 </label>
                 <input type="text" 
                        id="no_telepon" 
@@ -85,16 +85,16 @@
                 @enderror
             </div>
             
-            <!-- Destinasi -->
+            <!-- Destination -->
             <div class="mb-6">
                 <label for="destinasi_id" class="block text-gray-700 font-semibold mb-2">
-                    Pilih Destinasi <span class="text-red-500">*</span>
+                    Select Destination <span class="text-red-500">*</span>
                 </label>
                 <select id="destinasi_id" 
                         name="destinasi_id"
                         class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('destinasi_id') border-red-500 @enderror"
                         required>
-                    <option value="">-- Pilih Destinasi --</option>
+                    <option value="">-- Select Destination --</option>
                     @foreach($destinasi as $destinasi)
                         <option value="{{ $destinasi->id }}" {{ old('destinasi_id') == $destinasi->id ? 'selected' : '' }}>
                             {{ $destinasi->nama_destinasi }}
@@ -119,7 +119,7 @@
                            id="password" 
                            name="password"
                            autocomplete="new-password"
-                           placeholder="Minimal 8 karakter"
+                           placeholder="Minimum 8 characters"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pr-12 @error('password') border-red-500 @enderror"
                            required>
                     <button type="button" 
@@ -136,17 +136,17 @@
                 @enderror
             </div>
             
-            <!-- Konfirmasi Password -->
+            <!-- Confirm Password -->
             <div class="mb-6" x-data="{ showPassword: false }">
                 <label for="password_confirmation" class="block text-gray-700 font-semibold mb-2">
-                    Konfirmasi Password <span class="text-red-500">*</span>
+                    Confirm Password <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
                     <input :type="showPassword ? 'text' : 'password'" 
                            id="password_confirmation" 
                            name="password_confirmation"
                            autocomplete="new-password"
-                           placeholder="Ulangi password"
+                           placeholder="Repeat password"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pr-12"
                            required>
                     <button type="button" 
@@ -161,16 +161,16 @@
             <div class="bg-accent/50 border-l-4 border-yellow-500 p-4 rounded-lg mb-6">
                 <p class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
                     <i class="fas fa-info-circle text-yellow-600"></i>
-                    Ketentuan Password:
+                    Password Requirements:
                 </p>
                 <ul class="text-sm text-gray-600 space-y-1 ml-6">
                     <li class="flex items-center gap-2">
                         <i class="fas fa-check text-green-500"></i>
-                        Minimal 8 karakter
+                        Minimum 8 characters
                     </li>
                     <li class="flex items-center gap-2">
                         <i class="fas fa-check text-green-500"></i>
-                        Kombinasi huruf dan angka
+                        Combination of letters and numbers
                     </li>
                 </ul>
             </div>
@@ -180,12 +180,12 @@
                 <button type="submit" 
                         class="flex-1 bg-gradient-to-r from-primary to-blue-400 hover:from-blue-400 hover:to-primary text-white px-6 py-4 rounded-lg transition shadow-lg hover:shadow-xl font-semibold text-lg flex items-center justify-center gap-2">
                     <i class="fas fa-save"></i>
-                    Simpan Pemilik Wisata
+                    Save Tourism Owner
                 </button>
                 <a href="{{ route('admin.pemilik.index') }}" 
                    class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-4 rounded-lg transition shadow-lg hover:shadow-xl font-semibold text-lg flex items-center justify-center gap-2">
                     <i class="fas fa-times"></i>
-                    Batal
+                    Cancel
                 </a>
             </div>
         </form>

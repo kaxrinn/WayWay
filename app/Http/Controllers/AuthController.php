@@ -22,14 +22,14 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8',
         ], [
-            'password.min' => 'Kata sandi minimal harus 8 karakter',
+            'password.min' => 'Password must be at least 8 characters',
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        if (Auth::attempt($request->only('email','password'))) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
             $user = Auth::user();
 
@@ -42,7 +42,7 @@ class AuthController extends Controller
             }
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
+        return back()->withErrors(['email' => 'Incorrect email or password'])->withInput();
     }
 
     public function showRegister()
@@ -57,13 +57,13 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*[A-Za-z])(?=.*\d).+$/',
         ], [
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Kata sandi wajib diisi',
-            'password.min' => 'Kata sandi minimal harus 8 karakter',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok',
-            'password.regex' => 'Kata sandi harus mengandung huruf dan angka',
+            'email.required' => 'Email is required',
+            'email.email' => 'Invalid email format',
+            'email.unique' => 'Email is already registered',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be at least 8 characters',
+            'password.confirmed' => 'Password confirmation does not match',
+            'password.regex' => 'Password must contain letters and numbers',
         ]);
 
         if ($validator->fails()) {
@@ -78,7 +78,7 @@ class AuthController extends Controller
         ]);
 
         return redirect()->route('wisatawan.login')
-            ->with('success', 'Akun berhasil dibuat! Silakan login.');
+            ->with('success', 'Account created successfully! Please log in.');
     }
 
     public function redirectToGoogle()
@@ -113,7 +113,7 @@ class AuthController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->route('wisatawan.login')
-                ->with('error', 'Gagal login dengan Google.');
+                ->with('error', 'Failed to login with Google: ' . $e->getMessage());
         }
     }
 

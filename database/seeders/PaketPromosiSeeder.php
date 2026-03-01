@@ -18,10 +18,10 @@ class PaketPromosiSeeder extends Seeder
         // Basic Package - FREE
         PaketPromosi::create([
             'nama_paket' => 'Basic',
-            'deskripsi' => 'Paket gratis untuk memulai - Otomatis aktif saat registrasi',
+            'deskripsi' => 'Free package to get started - Automatically activated upon registration',
             'harga' => 0,
             'durasi_hari' => 0,
-            'fitur' => 'Terdaftar di WayWay,Muncul di pencarian,Halaman detail destinasi,Edit melalui request admin',
+            'fitur' => 'Listed on WayWay,Appears in search results,Destination detail page,Edit via admin request',
             'status' => 'active',
             'max_destinasi' => 1,
             'max_foto' => 3,
@@ -34,10 +34,10 @@ class PaketPromosiSeeder extends Seeder
         // Standard Package
         PaketPromosi::create([
             'nama_paket' => 'Standard',
-            'deskripsi' => 'Upgrade fleksibel untuk pemilik wisata kecil-menengah',
+            'deskripsi' => 'Flexible upgrade for small to medium tourism owners',
             'harga' => 49000,
             'durasi_hari' => 30,
-            'fitur' => 'Edit & hapus foto sendiri,Update info kapan saja,Posisi lebih tinggi di pencarian,Bebas update destinasi',
+            'fitur' => 'Edit & delete photos directly,Update info anytime,Higher position in search results,Unlimited destination updates',
             'status' => 'active',
             'max_destinasi' => 3,
             'max_foto' => 8,
@@ -50,10 +50,10 @@ class PaketPromosiSeeder extends Seeder
         // Premium Package
         PaketPromosi::create([
             'nama_paket' => 'Premium',
-            'deskripsi' => 'Promosi & exposure maksimal untuk wisata unggulan',
+            'deskripsi' => 'Maximum promotion & exposure for top destinations',
             'harga' => 149000,
             'durasi_hari' => 30,
-            'fitur' => 'Featured di homepage,Banner promosi khusus,Prioritas AI Recommendation,Prioritas AI Itinerary,Statistik performa lengkap,Label Rekomendasi WayWay',
+            'fitur' => 'Featured on homepage,Exclusive promotion banner,AI Recommendation priority,AI Itinerary priority,Full performance statistics,WayWay Recommended label',
             'status' => 'active',
             'max_destinasi' => 10,
             'max_foto' => 20,
@@ -63,6 +63,6 @@ class PaketPromosiSeeder extends Seeder
             'is_featured_allowed' => true,
         ]);
 
-        $this->command->info('✅ Paket Promosi berhasil di-seed!');
+        $this->command->info('✅ Paket Promosi seeded successfully!');
     }
 }

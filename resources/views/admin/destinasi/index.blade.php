@@ -1,22 +1,35 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Destinasi')
+@section('title', 'Manage Destinations')
 
 @section('content')
 <!-- Header -->
 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row 
+            sm:items-center sm:justify-between 
+            gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
                 <i class="fas fa-map-marked-alt text-primary"></i>
-                Kelola Destinasi
+                Manage Destinations
             </h1>
-            <p class="text-gray-500 mt-2">Manage destinasi wisata yang tersedia di platform</p>
+            <p class="text-gray-500 mt-2">Manage tourist destinations available on the platform</p>
         </div>
         <a href="{{ route('admin.destinasi.create') }}" 
-           class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-2">
+           class="bg-gradient-to-r from-green-500 to-green-600 
+       hover:from-green-600 hover:to-green-700 
+       text-white 
+       w-full sm:w-auto
+       text-sm sm:text-base
+       px-4 sm:px-6 
+       py-2 sm:py-3 
+       rounded-lg 
+       transition 
+       shadow-lg hover:shadow-xl 
+       transform hover:-translate-y-1 
+       flex items-center justify-center gap-2"
             <i class="fas fa-plus"></i>
-            Tambah Destinasi
+            Add Destination
         </a>
     </div>
 </div>
@@ -37,13 +50,13 @@
         <div class="relative">
             <input type="text" 
                    id="searchInput"
-                   placeholder="🔍 Cari destinasi..."
+                   placeholder="🔍 Search destinations..."
                    class="w-full px-6 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition pl-12">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
         </div>
         
         <select id="filterKategori" class="px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition">
-            <option value="">Semua Kategori</option>
+            <option value="">All Categories</option>
             @foreach(\App\Models\Kategori::all() as $kat)
                 <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
             @endforeach
@@ -51,7 +64,7 @@
     </div>
 </div>
 
-<!-- Destinasi Grid -->
+<!-- Destinations Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="destinasiGrid">
     @forelse($destinasi as $destinasi)
     <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-2 destinasi-card" 
@@ -61,8 +74,8 @@
             @if($destinasi->foto)
                 @php $foto = $destinasi->foto[0] ?? null; @endphp
                 <img src="{{ $destinasi->foto[0] ? Storage::url($destinasi->foto[0]) : asset('placeholder.jpg') }}" 
-     alt="{{ $destinasi->nama_destinasi }}"
-     class="w-full h-full object-cover">
+                     alt="{{ $destinasi->nama_destinasi }}"
+                     class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary to-blue-400">
                     <i class="fas fa-image text-white text-6xl opacity-50"></i>
@@ -104,13 +117,13 @@
                 </a>
                 <form method="POST" 
                       action="{{ route('admin.destinasi.destroy', $destinasi->id) }}"
-                      onsubmit="return confirm('Yakin ingin menghapus destinasi ini?')"
+                      onsubmit="return confirm('Are you sure you want to delete this destination?')"
                       class="flex-1">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 
                             class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition text-sm font-medium">
-                        <i class="fas fa-trash mr-1"></i> Hapus
+                        <i class="fas fa-trash mr-1"></i> Delete
                     </button>
                 </form>
             </div>
@@ -120,12 +133,12 @@
     <div class="col-span-3 py-20 px-6 text-center">
         <div class="flex flex-col items-center justify-center text-gray-400">
             <i class="fas fa-map-marked-alt text-7xl mb-5"></i>
-            <h3 class="text-2xl font-bold text-gray-600 mb-2">Belum Ada Destinasi</h3>
-            <p class="text-gray-500 mb-6">Klik tombol "Tambah Destinasi" untuk menambahkan destinasi baru</p>
+            <h3 class="text-2xl font-bold text-gray-600 mb-2">No Destinations Yet</h3>
+            <p class="text-gray-500 mb-6">Click the "Add Destination" button to create a new destination</p>
             <a href="{{ route('admin.destinasi.create') }}" 
                class="bg-gradient-to-r from-primary to-blue-400 text-white px-6 py-3 rounded-lg transition shadow-lg hover:shadow-xl flex items-center gap-2">
                 <i class="fas fa-plus"></i>
-                Tambah Destinasi
+                Add Destination
             </a>
         </div>
     </div>
@@ -146,7 +159,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     });
 });
 
-// Filter by kategori
+// Filter by category
 document.getElementById('filterKategori').addEventListener('change', function() {
     const kategoriId = this.value;
     const cards = document.querySelectorAll('.destinasi-card');

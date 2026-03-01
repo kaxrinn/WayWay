@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,18 +25,9 @@
             0%, 100% { opacity: 0.3; }
             50% { opacity: 0.6; }
         }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .animate-fadeInDown { animation: fadeInDown 0.8s ease; }
         .animate-fadeInUp { animation: fadeInUp 0.8s ease; }
         .animate-fadeIn { animation: fadeIn 1s ease; }
@@ -65,13 +56,13 @@
                 <span class="text-2xl font-bold tracking-[2px]">WAYWAY</span>
             </div>
             <h1 class="text-5xl lg:text-[56px] font-extrabold leading-tight mb-5 drop-shadow-lg animate-fadeInUp">
-                TEMUKAN<br>DESTINASIMU
+                FIND<br>YOUR DESTINATION
             </h1>
             <p class="text-xl font-light mb-2 opacity-95 animate-fadeInUp" style="animation-delay: 0.1s;">
-                Pilih destinasi terbaik sesuai minat<br>dan kebutuhan Anda.
+                Choose the best destination according to your interests<br>and needs.
             </p>
             <p class="text-sm opacity-85 leading-relaxed animate-fadeInUp" style="animation-delay: 0.2s;">
-                Jelajahi, temukan, <br>dan rencanakan perjalanan Anda dengan lebih mudah.
+                Explore, discover, <br>and plan your trip with ease.
             </p>
         </div>
 
@@ -84,21 +75,21 @@
             </div>
 
             <p class="text-sm font-medium text-white mb-5 text-center tracking-wide opacity-90">
-                Daftar Akun Baru
+                Create a New Account
             </p>
 
             <form method="POST" action="{{ route('wisatawan.registerPost') }}" id="registerForm">
                 @csrf
                 
-                <!-- Nama Lengkap Input -->
+                <!-- Full Name Input -->
                 <div class="mb-4">
-                    <label for="name" class="block text-[13px] font-medium text-white mb-2 opacity-90">Nama Lengkap</label>
+                    <label for="name" class="block text-[13px] font-medium text-white mb-2 opacity-90">Full Name</label>
                     <div class="relative">
                         <input 
                             type="text" 
                             id="name" 
                             name="name" 
-                            placeholder="Nama Lengkap" 
+                            placeholder="Full Name" 
                             required 
                             value="{{ old('name') }}"
                             class="w-full px-5 py-3 bg-white/90 border border-white/30 rounded-xl outline-none text-sm text-gray-800 placeholder-gray-400 transition-all duration-300 focus:bg-white focus:border-blue-400/50 focus:shadow-[0_0_0_3px_rgba(76,175,80,0.1)] focus:-translate-y-0.5">
@@ -128,7 +119,7 @@
 
                 <!-- Password Input -->
                 <div class="mb-4">
-                    <label for="password" class="block text-[13px] font-medium text-white mb-2 opacity-90">Kata Sandi</label>
+                    <label for="password" class="block text-[13px] font-medium text-white mb-2 opacity-90">Password</label>
                     <div class="relative">
                         <input 
                             type="password" 
@@ -146,7 +137,7 @@
 
                 <!-- Password Confirmation Input -->
                 <div class="mb-4">
-                    <label for="password_confirmation" class="block text-[13px] font-medium text-white mb-2 opacity-90">Konfirmasi Kata Sandi</label>
+                    <label for="password_confirmation" class="block text-[13px] font-medium text-white mb-2 opacity-90">Confirm Password</label>
                     <div class="relative">
                         <input 
                             type="password" 
@@ -162,19 +153,19 @@
                     @enderror
                 </div>
 
-                <!-- Submit Button with Brand Color -->
+                <!-- Submit Button -->
                 <button 
                     type="submit" 
                     class="w-full py-3.5 bg-brand hover:bg-[#8abecf] border-none rounded-xl text-white text-sm font-semibold tracking-wider cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 mt-2">
-                    DAFTAR
+                    REGISTER
                 </button>
             </form>
 
             <!-- Login Link -->
             <div class="text-center mt-5 text-[13px] text-white">
-                Sudah punya akun? 
+                Already have an account? 
                 <a href="{{ route('wisatawan.login') }}" class="text-white font-semibold border-b border-white hover:opacity-80 transition-opacity no-underline">
-                    Masuk
+                    Login
                 </a>
             </div>
         </div>

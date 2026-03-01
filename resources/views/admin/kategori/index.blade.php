@@ -1,22 +1,32 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Kategori')
+@section('title', 'Manage Categories')
 
 @section('content')
 <!-- Header -->
 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row 
+            sm:items-center sm:justify-between 
+            gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
                 <i class="fas fa-tags text-green-500"></i>
-                Kelola Kategori
+                Manage Categories
             </h1>
-            <p class="text-gray-500 mt-2">Mengelola kategori wisata yang tersedia di platform</p>
+            <p class="text-gray-500 mt-2">Manage tourism categories available on the platform</p>
         </div>
         <button onclick="openModal()" 
-                class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2">
+                class="bg-gradient-to-r from-green-500 to-green-600 
+       text-white 
+       w-full sm:w-auto
+       text-sm sm:text-base
+       px-4 sm:px-6 
+       py-2 sm:py-3 
+       rounded-lg 
+       shadow-lg 
+       flex items-center justify-center gap-2">
             <i class="fas fa-plus"></i>
-            Tambah Kategori
+            Add Category
         </button>
     </div>
 </div>
@@ -29,8 +39,8 @@
 </div>
 @endif
 
-<!-- Kategori Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<!-- Category Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
     @forelse($kategori as $item)
         <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition flex flex-col justify-between">
             
@@ -41,7 +51,7 @@
                         <i class="fas fa-tag text-white text-2xl"></i>
                     </div>
                     <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
-                        {{ $item->destinasi_count }} Destinasi
+                        {{ $item->destinasi_count }} Destinations
                     </span>
                 </div>
 
@@ -66,18 +76,18 @@
     @empty
         <div class="col-span-3 text-center py-20 text-gray-400">
             <i class="fas fa-tags text-6xl mb-4"></i>
-            <p>Belum ada kategori</p>
+            <p>No categories yet</p>
         </div>
     @endforelse
 </div>
 
-<!-- Filter Destinasi -->
+<!-- Filter Destinations -->
 <div class="bg-white rounded-xl shadow-lg p-6">
-    <h2 class="text-2xl font-bold mb-4">Filter Destinasi Berdasarkan Kategori</h2>
+    <h2 class="text-2xl font-bold mb-4">Filter Destinations by Category</h2>
 
     <select onchange="filterDestinasi(this.value)"
             class="w-full md:w-1/2 px-4 py-3 border-2 border-gray-300 rounded-lg">
-        <option value="">Semua Kategori</option>
+        <option value="">All Categories</option>
         @foreach($kategori as $item)
             <option value="{{ $item->id }}">
                 {{ $item->nama_kategori }} ({{ $item->destinasi_count }})
@@ -87,50 +97,50 @@
 
     <div id="destinasiList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
         <div class="col-span-3 text-center text-gray-400 py-10">
-            Pilih kategori untuk melihat destinasi
+            Select a category to view destinations
         </div>
     </div>
 </div>
 
-<!-- Modal Tambah Kategori -->
+<!-- Add Category Modal -->
 <div id="addKategoriModal"
      class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
     <div class="bg-white rounded-xl p-8 w-full max-w-md">
-        <h3 class="text-2xl font-bold mb-4">Tambah Kategori</h3>
+        <h3 class="text-2xl font-bold mb-4">Add Category</h3>
 
         <form method="POST" action="{{ route('admin.kategori.store') }}">
             @csrf
 
             <input type="text"
                    name="nama_kategori"
-                   placeholder="Nama kategori"
+                   placeholder="Category name"
                    class="w-full mb-4 px-4 py-3 border rounded-lg"
                    required>
 
             <textarea name="deskripsi_kategori"
-                      placeholder="Deskripsi"
+                      placeholder="Description"
                       class="w-full mb-4 px-4 py-3 border rounded-lg"></textarea>
 
             <div class="flex gap-2">
                 <button type="submit"
                         class="flex-1 bg-green-500 text-white py-2 rounded-lg">
-                    Simpan
+                    Save
                 </button>
                 <button type="button"
                         onclick="closeModal()"
                         class="flex-1 bg-gray-500 text-white py-2 rounded-lg">
-                    Batal
+                    Cancel
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-    <!-- Modal Edit Kategori -->
+<!-- Edit Category Modal -->
 <div id="editKategoriModal"
      class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
     <div class="bg-white rounded-xl p-8 w-full max-w-md">
-        <h3 class="text-2xl font-bold mb-4">Edit Kategori</h3>
+        <h3 class="text-2xl font-bold mb-4">Edit Category</h3>
 
         <form id="editKategoriForm" method="POST">
             @csrf
@@ -149,12 +159,12 @@
             <div class="flex gap-2">
                 <button type="submit"
                         class="flex-1 bg-green-500 text-white py-2 rounded-lg">
-                    Simpan
+                    Save
                 </button>
                 <button type="button"
                         onclick="closeEditModal()"
                         class="flex-1 bg-gray-500 text-white py-2 rounded-lg">
-                    Batal
+                    Cancel
                 </button>
             </div>
         </form>
@@ -164,14 +174,14 @@
 
 @push('scripts')
 <script>
-// ================= FILTER DESTINASI =================
+// ================= FILTER DESTINATIONS =================
 async function filterDestinasi(kategoriId) {
     const el = document.getElementById('destinasiList');
 
     if (!kategoriId) {
         el.innerHTML = `
             <div class="col-span-3 text-center text-gray-400 py-10">
-                Pilih kategori untuk melihat destinasi
+                Select a category to view destinations
             </div>`;
         return;
     }
@@ -183,7 +193,7 @@ async function filterDestinasi(kategoriId) {
         if (!data.length) {
             el.innerHTML = `
                 <div class="col-span-3 text-center text-gray-400 py-10">
-                    Tidak ada destinasi
+                    No destinations
                 </div>`;
             return;
         }
@@ -194,9 +204,9 @@ async function filterDestinasi(kategoriId) {
                     <thead>
                         <tr class="bg-gray-100 text-left">
                             <th class="px-4 py-2 border">No</th>
-                            <th class="px-4 py-2 border">Nama Destinasi</th>
-                            <th class="px-4 py-2 border">Deskripsi</th>
-                            <th class="px-4 py-2 border text-center">Aksi</th>
+                            <th class="px-4 py-2 border">Destination Name</th>
+                            <th class="px-4 py-2 border">Description</th>
+                            <th class="px-4 py-2 border text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -221,12 +231,12 @@ async function filterDestinasi(kategoriId) {
     } catch (err) {
         el.innerHTML = `
             <div class="col-span-3 text-center text-red-500 py-10">
-                Gagal memuat data destinasi
+                Failed to load destinations
             </div>`;
     }
 }
 
-// ================= MODAL TAMBAH KATEGORI =================
+// ================= MODAL ADD CATEGORY =================
 function openModal() {
     document.getElementById('addKategoriModal').classList.remove('hidden');
 }
@@ -235,16 +245,14 @@ function closeModal() {
     document.getElementById('addKategoriModal').classList.add('hidden');
 }
 
-// ================= MODAL EDIT KATEGORI =================
-
+// ================= MODAL EDIT CATEGORY =================
 function openEditModal(id) {
     fetch(`/admin/kategori/${id}/data`)
         .then(res => res.json())
         .then(data => {
             document.getElementById('editNamaKategori').value = data.nama_kategori;
             document.getElementById('editDeskripsiKategori').value = data.deskripsi_kategori ?? '';
-            document.getElementById('editKategoriForm').action =
-                `/admin/kategori/${id}`;
+            document.getElementById('editKategoriForm').action = `/admin/kategori/${id}`;
 
             document.getElementById('editKategoriModal').classList.remove('hidden');
         });
@@ -254,6 +262,4 @@ function closeEditModal() {
     document.getElementById('editKategoriModal').classList.add('hidden');
 }
 </script>
-
 @endpush
-

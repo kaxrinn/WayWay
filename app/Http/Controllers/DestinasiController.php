@@ -61,7 +61,7 @@ class DestinasiController extends Controller
 
         return redirect()
             ->route('admin.destinasi.index')
-            ->with('success', 'Destinasi berhasil ditambahkan!');
+            ->with('success', 'Destination created successfully!');
     }
 
     /**
@@ -119,7 +119,7 @@ class DestinasiController extends Controller
 
         return redirect()
             ->route('admin.destinasi.index')
-            ->with('success', 'Destinasi berhasil diupdate!');
+            ->with('success', 'Destination updated successfully!');
     }
 
     /**
@@ -145,6 +145,6 @@ class DestinasiController extends Controller
 
         return redirect()
             ->route('admin.destinasi.index')
-            ->with('success', 'Destinasi berhasil dihapus!');
+            ->with('success', 'Destination deleted successfully!');
     }
 }
