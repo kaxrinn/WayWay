@@ -68,7 +68,7 @@
                 FIND<br>YOUR DESTINATION
             </h1>
             <p class="text-xl font-light mb-2 opacity-95 animate-fadeInUp" style="animation-delay: 0.1s;">
-                Choose the best destinations based on your interests<br>and needs.
+                Choose the best destinations based on your interests and needs.
             </p>
             <p class="text-sm opacity-85 leading-relaxed animate-fadeInUp" style="animation-delay: 0.2s;">
                 Explore, discover, <br>and plan your trip with ease.
