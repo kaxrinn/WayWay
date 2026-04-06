@@ -20,5 +20,8 @@
 
     {{-- Footer --}}
     @include('wisatawan.components.footer')
+
+    <x-waybot />
+    
 </body>
 </html>

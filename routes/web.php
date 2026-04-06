@@ -13,7 +13,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\PemilikPromosiController;
-
+use App\Http\Controllers\WaybotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -385,3 +385,10 @@ Route::post('/wisatawan/reset-password', [PasswordResetController::class, 'reset
     ->name('wisatawan.password.update.alt');
 
 require __DIR__.'/auth.php';
+
+// Waybot Routes (tidak perlu login, tapi session-aware)
+Route::prefix('waybot')->name('waybot.')->group(function () {
+    Route::post('/chat',    [WaybotController::class, 'chat'])->name('chat');
+    Route::post('/reset',   [WaybotController::class, 'reset'])->name('reset');
+    Route::get('/history',  [WaybotController::class, 'history'])->name('history');
+});
