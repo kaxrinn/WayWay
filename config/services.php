@@ -44,6 +44,8 @@ return [
         'openai' => [
         'key' => env('OPENAI_API_KEY'),
     ],
-
-
+    'osrm' => [
+        'url'     => env('OSRM_URL', 'http://router.project-osrm.org'),
+        'enabled' => env('OSRM_ENABLED', true),
+    ],
 ];

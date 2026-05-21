@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\PemilikPromosiController;
 use App\Http\Controllers\WaybotController;
+use App\Http\Controllers\ItineraryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -392,3 +393,35 @@ Route::prefix('waybot')->name('waybot.')->group(function () {
     Route::post('/reset',   [WaybotController::class, 'reset'])->name('reset');
     Route::get('/history',  [WaybotController::class, 'history'])->name('history');
 });
+// ============================
+// Itinerary AI Planner Routes
+// ============================
+
+Route::prefix('itinerary')->name('itinerary.')->middleware(['auth'])->group(function () {
+ 
+    // 1. Halaman utama planner
+    Route::get('/', [ItineraryController::class, 'index'])->name('index');
+ 
+    // 2. Generate itinerary (AJAX POST → return JSON → frontend redirect ke show)
+    Route::post('/generate', [ItineraryController::class, 'generate'])->name('generate');
+ 
+    // 3. Halaman hasil itinerary — diakses setelah generate
+    //    GET /itinerary/show/{id}  →  show.blade.php
+    Route::get('/show/{id}', [ItineraryController::class, 'show'])->name('show');
+ 
+    // 4. Halaman daftar riwayat
+    //    GET /itinerary/history  →  history.blade.php
+    Route::get('/history', [ItineraryController::class, 'history'])->name('history');
+ 
+    // 5. Preview PDF di tab baru (stream) — tombol "Preview PDF" di show & history
+    //    GET /itinerary/history/{id}  →  historyShow() = PDF stream
+    Route::get('/history/{id}', [ItineraryController::class, 'historyShow'])->name('history.show');
+ 
+    // 6. Download PDF ke komputer — tombol "Download" di show & history
+    //    GET /itinerary/download/{id}  →  download()
+    Route::get('/download/{id}', [ItineraryController::class, 'download'])->name('download');
+ 
+    // 7. Hapus satu riwayat — tombol "Delete" di history
+    //    DELETE /itinerary/history/{id}  →  historyDelete()
+    Route::delete('/history/{id}', [ItineraryController::class, 'historyDelete'])->name('history.delete');
+ });

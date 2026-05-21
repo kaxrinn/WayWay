@@ -1,15 +1,3 @@
-{{--
-    =====================================================
-    WAYBOT CHAT COMPONENT
-    File: resources/views/components/waybot.blade.php
-    
-    Cara pakai: include di layout utama (app.blade.php)
-    sebelum tag </body>:
-    
-        <x-waybot />
-    =====================================================
---}}
-
 <div
     x-data="waybotApp()"
     x-init="init()"

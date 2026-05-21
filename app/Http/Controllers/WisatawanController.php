@@ -179,8 +179,9 @@ class WisatawanController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return back()->with('success', 'Pesan successfully sent!');
-    }
+    return redirect()->to(url()->previous() . '#kontak')
+        ->with('success', 'Pesan successfully sent!');
+}
 
     /**
      * FAVORIT: Toggle add/remove favorit

@@ -60,12 +60,17 @@
                            hover:bg-sky-100 hover:text-sky-600">
                     Contact
                 </a>
-
-                <a href="#"
-                   class="px-4 py-2 rounded-full font-semibold
-                          hover:bg-sky-100 hover:text-sky-600">
-                    Itinerary
-                </a>
+@auth
+<a href="{{ route('itinerary.index') }}"
+   class="px-4 py-2 rounded-full font-semibold hover:bg-sky-100 hover:text-sky-600">
+    Itinerary
+</a>
+@else
+<a href="{{ route('wisatawan.login') }}"
+   class="px-4 py-2 rounded-full font-semibold hover:bg-sky-100 hover:text-sky-600">
+    Itinerary
+</a>
+@endauth
 
                 <a href="#"
                    class="px-4 py-2 rounded-full font-semibold
@@ -335,7 +340,7 @@
 
         <!-- Itinerary -->
         @auth
-        <a href="#"
+        <a href="{{ route('itinerary.index') }}"
            class="flex flex-col items-center justify-center flex-1 text-xs font-medium text-gray-600 hover:text-[#5b9ac7]">
         @else
         <a href="{{ route('wisatawan.login') }}"
