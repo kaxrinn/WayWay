@@ -3,6 +3,7 @@
     x-init="init()"
     @keydown.escape.window="if(open) closeChat()"
     class="waybot-root"
+    x-cloak
 >
     {{-- ========== FAB TRIGGER BUTTON ========== --}}
     <button
@@ -35,6 +36,7 @@
     {{-- ========== CHAT WINDOW ========== --}}
     <div
         x-show="open"
+        x-cloak
         x-transition:enter="waybot-window-enter"
         x-transition:enter-start="waybot-window-enter-from"
         x-transition:enter-end="waybot-window-enter-to"
@@ -124,7 +126,7 @@
                             <div class="waybot-options-grid">
                                 <template x-for="opt in msg.options" :key="opt">
                                     <button
-                                        @click="selectOption(opt)"
+                                        @click="selectOption(opt, msg)"
                                         :disabled="msg.answered"
                                         :class="msg.answered && msg.selected === opt ? 'waybot-option--selected' : ''"
                                         class="waybot-option-chip"
@@ -209,6 +211,7 @@
 
 {{-- ========== STYLES ========== --}}
 <style>
+    [x-cloak] { display: none !important; }
     /* === ROOT & FAB === */
     .waybot-root {
         position: fixed;
@@ -277,28 +280,33 @@
     }
 
     /* === CHAT WINDOW === */
-    .waybot-window {
-        position: absolute;
-        bottom: 68px;
-        right: 0;
-        width: 380px;
-        max-height: 580px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0,0,0,0.08);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        border: 1px solid rgba(158, 204, 219, 0.3);
-    }
+.waybot-window {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    width: 380px;
+    height: 560px;
+    max-height: 560px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(158, 204, 219, 0.3);
+    top: auto !important;
+    z-index: 99998;
+}
 
-    @media (max-width: 440px) {
-        .waybot-window {
-            width: calc(100vw - 32px);
-            right: -8px;
-            max-height: 70vh;
-        }
+@media (max-width: 1023px) {
+    .waybot-window {
+        bottom: 100px;
+        right: 16px;
+        width: calc(100vw - 32px);
+        height: 65vh;
+        max-height: 65vh;
     }
+}
 
     /* Transitions */
     .waybot-window-enter { transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -751,6 +759,12 @@
 
 {{-- ========== ALPINE JS COMPONENT ========== --}}
 <script>
+// =============================================
+// PATCH untuk waybot.blade.php
+// Ganti fungsi waybotApp() yang lama dengan ini
+// Perubahan: tambah GPS support di sendMessage & selectOption
+// =============================================
+
 function waybotApp() {
     return {
         open: false,
@@ -759,10 +773,10 @@ function waybotApp() {
         isTyping: false,
         hasUnread: false,
         sessionToken: localStorage.getItem('waybot_session') || null,
-        currentOptions: null,
+        pendingGps: false,       // flag: menunggu user klik "Use my GPS location"
+        gpsCoords: null,         // simpan koordinat GPS kalau berhasil diambil
 
         init() {
-            // Tampilkan notif dot setelah beberapa detik
             setTimeout(() => { this.hasUnread = true; }, 3000);
         },
 
@@ -781,14 +795,26 @@ function waybotApp() {
             this.open = false;
         },
 
-        async sendMessage() {
+        async sendMessage(overrideGps = null) {
             const msg = this.inputMessage.trim();
             if (!msg || this.isTyping) return;
 
             this.addMessage('user', msg);
             this.inputMessage = '';
-            this.autoResizeInput();
             this.isTyping = true;
+
+            // Siapkan payload — sertakan GPS kalau ada
+            const payload = {
+                message: msg,
+                session_token: this.sessionToken,
+            };
+
+            const coords = overrideGps || this.gpsCoords;
+            if (coords) {
+                payload.gps_lat = coords.lat;
+                payload.gps_lng = coords.lng;
+                this.gpsCoords = null; // reset setelah dikirim
+            }
 
             try {
                 const resp = await fetch('{{ route("waybot.chat") }}', {
@@ -797,10 +823,7 @@ function waybotApp() {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                     },
-                    body: JSON.stringify({
-                        message: msg,
-                        session_token: this.sessionToken,
-                    }),
+                    body: JSON.stringify(payload),
                 });
 
                 const data = await resp.json();
@@ -816,14 +839,15 @@ function waybotApp() {
                     this.addMessage('assistant', data.message, {
                         options: data.options || null,
                         pref_key: data.pref_key || null,
+                        has_gps: data.has_gps || false,
                         destinasi_cards: data.destinasi_cards || null,
                     });
                 } else {
-                    this.addMessage('assistant', data.message || 'Maaf, ada error. Coba lagi ya! 🙏');
+                    this.addMessage('assistant', data.message || 'Oops, something went wrong. Try again! 🙏');
                 }
             } catch (err) {
                 this.isTyping = false;
-                this.addMessage('assistant', 'Koneksi bermasalah. Pastikan internet kamu stabil ya! 📡');
+                this.addMessage('assistant', 'Connection issue. Please check your internet! 📡');
             }
         },
 
@@ -832,17 +856,123 @@ function waybotApp() {
             this.sendMessage();
         },
 
-        selectOption(option) {
-            // Tandai pertanyaan sudah dijawab
-            const lastBotMsg = [...this.messages].reverse().find(m => m.role === 'assistant' && m.options);
-            if (lastBotMsg) {
-                lastBotMsg.answered = true;
-                lastBotMsg.selected = option;
+        // Dipanggil saat user klik salah satu opsi pilihan
+        async selectOption(option, msgObj) {
+    if (msgObj && msgObj.answered) return;
+    if (msgObj) {
+        msgObj.answered = true;
+        msgObj.selected = option;
+    }
+
+    // Handle GPS
+    if (option.includes('GPS') || option.toLowerCase().includes('gps')) {
+        this.addMessage('user', option);
+        this.isTyping = true;
+
+        // Cek dulu apakah browser support geolocation
+        if (!navigator.geolocation) {
+            this.isTyping = false;
+            this.addMessage('assistant', 
+                "GPS tidak tersedia di browser kamu. Pilih area secara manual ya! 📍"
+            );
+            return;
+        }
+
+        // Minta izin GPS dengan timeout yang jelas
+        try {
+            const coords = await Promise.race([
+                this.getGpsCoords(),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('GPS timeout')), 8000)
+                )
+            ]);
+
+            this.isTyping = true; // tetap loading sambil reverse geocode
+const locationName = await this.getLocationName(coords.lat, coords.lng);
+this.gpsCoords = coords;
+this.isTyping = false;
+this.inputMessage = `📍 ${locationName} (GPS)`;
+await this.sendMessage(coords);
+
+        } catch (err) {
+            this.isTyping = false;
+
+            // Pesan error yang jelas sesuai penyebabnya
+            let pesanError = "";
+            if (err.code === 1 || err.message === 'GPS timeout') {
+                pesanError = "Izin GPS ditolak atau tidak merespons. Tidak apa-apa, pilih area kamu dari pilihan di bawah ini ya! 😊";
+            } else {
+                pesanError = "GPS tidak bisa diakses sekarang. Pilih area kamu secara manual ya! 📍";
             }
 
-            this.inputMessage = option;
-            this.sendMessage();
-        },
+            this.addMessage('assistant', pesanError, {
+                options: [
+                    '📍 Batam Centre',
+                    '📍 Nagoya / Lubuk Baja',
+                    '📍 Nongsa',
+                    '📍 Batu Ampar',
+                    '📍 Sekupang',
+                    '📍 Not sure / Anywhere is fine',
+                ],
+                pref_key: 'location',
+                has_gps: false,
+            });
+        }
+        return;
+    }
+
+    // Opsi biasa (bukan GPS)
+    this.inputMessage = option;
+    this.sendMessage();
+},
+
+        // Ambil koordinat GPS dari browser
+        // Ambil koordinat GPS dari browser
+getGpsCoords() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error('Geolocation not supported'));
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => resolve({
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+            }),
+            (err) => {
+                console.error('GPS error:', err.code, err.message);
+                reject(err);
+            },
+            {
+                timeout: 10000,
+                enableHighAccuracy: false, // ← ubah ke false, lebih cepat di localhost
+                maximumAge: 60000,
+            }
+        );
+    });
+},
+
+// Reverse geocode pakai OpenStreetMap Nominatim 
+async getLocationName(lat, lng) {
+    try {
+        const resp = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+            { headers: { 'Accept-Language': 'id,en' } }
+        );
+        const data = await resp.json();
+        // Ambil nama area/suburb yang paling relevan
+        const area = data.address?.suburb
+            || data.address?.village
+            || data.address?.town
+            || data.address?.city_district
+            || data.address?.city
+            || 'GPS Location';
+        return area;
+    } catch {
+        return 'GPS Location';
+    }
+},
 
         addMessage(role, content, extra = {}) {
             const now = new Date();
@@ -854,6 +984,7 @@ function waybotApp() {
                 time,
                 options: extra.options || null,
                 pref_key: extra.pref_key || null,
+                has_gps: extra.has_gps || false,
                 destinasi_cards: extra.destinasi_cards || null,
                 answered: false,
                 selected: null,
@@ -864,25 +995,11 @@ function waybotApp() {
 
         scrollToBottom() {
             const container = this.$refs.messagesContainer;
-            if (container) {
-                container.scrollTop = container.scrollHeight;
-            }
+            if (container) container.scrollTop = container.scrollHeight;
         },
 
         handleEnter(event) {
-            if (!event.shiftKey) {
-                this.sendMessage();
-            }
-        },
-
-        autoResizeInput() {
-            this.$nextTick(() => {
-                const el = this.$refs.inputField;
-                if (el) {
-                    el.style.height = 'auto';
-                    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-                }
-            });
+            if (!event.shiftKey) this.sendMessage();
         },
 
         async resetChat() {
@@ -899,14 +1016,13 @@ function waybotApp() {
 
             this.messages = [];
             this.sessionToken = null;
+            this.gpsCoords = null;
             localStorage.removeItem('waybot_session');
         },
 
         formatMessage(text) {
             if (!text) return '';
-            // Bold: **text**
             text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            // Newlines
             text = text.replace(/\n/g, '<br>');
             return text;
         },
