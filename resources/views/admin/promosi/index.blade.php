@@ -24,16 +24,16 @@
                 <i class="fas fa-star text-purple-500 text-xl"></i>
             </div>
         </div>
-        
+
         <div class="mb-4">
             <p class="text-4xl font-bold text-purple-600">
                 Rp {{ number_format($paket->harga, 0, ',', '.') }}
             </p>
             <p class="text-sm text-gray-500">Per month</p>
         </div>
-        
+
         <p class="text-gray-600 text-sm mb-4">{{ $paket->deskripsi }}</p>
-        
+
         <div class="border-t border-gray-200 pt-4">
             <p class="text-xs font-semibold text-gray-700 mb-2">Features:</p>
             <div class="space-y-1">
@@ -53,6 +53,7 @@
                     <i class="fas fa-{{ $paket->can_edit_foto ? 'check' : 'times' }} text-{{ $paket->can_edit_foto ? 'green' : 'red' }}-500 mt-0.5"></i>
                     <span>{{ $paket->can_edit_foto ? 'Direct editing' : 'Admin approval required' }}</span>
                 </p>
+
                 @if($paket->is_featured_allowed)
                 <p class="text-xs text-gray-600 flex items-start gap-2">
                     <i class="fas fa-check text-green-500 mt-0.5"></i>
@@ -67,14 +68,17 @@
 
 <!-- Active Promotions Table -->
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+
     <div class="px-6 py-4 border-b border-gray-200">
         <h2 class="text-xl font-bold text-gray-800">Active Promotions</h2>
         <p class="text-sm text-gray-500 mt-1">Promotions currently running on the platform</p>
     </div>
-    
+
     @if($promosi->count() > 0)
+
     <div class="overflow-x-auto">
         <table class="w-full">
+
             <thead class="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
                 <tr>
                     <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
@@ -83,108 +87,207 @@
                     <th class="px-6 py-4 text-left text-sm font-semibold">Price</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Period</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                    <th class="px-6 py-4 text-center text-sm font-semibold">Action</th>
                 </tr>
             </thead>
+
             <tbody class="divide-y divide-gray-200">
+
                 @foreach($promosi as $item)
+
                 @php
                     $today = now();
                     $isExpired = $item->tanggal_selesai < $today;
                     $isActive = $item->tanggal_mulai <= $today && $item->tanggal_selesai >= $today;
                 @endphp
+
                 <tr class="hover:bg-accent/30 transition">
-                    <td class="px-6 py-4 text-sm font-medium text-gray-700">{{ $item->id }}</td>
+
+                    <!-- ID -->
+                    <td class="px-6 py-4 text-sm font-medium text-gray-700">
+                        {{ $item->id }}
+                    </td>
+
+                    <!-- User -->
                     <td class="px-6 py-4">
                         @if($item->user)
-                        <div class="font-semibold text-gray-800">{{ $item->user->name }}</div>
-                        <div class="text-xs text-gray-500">{{ $item->user->email }}</div>
+                            <div class="font-semibold text-gray-800">
+                                {{ $item->user->name }}
+                            </div>
+
+                            <div class="text-xs text-gray-500">
+                                {{ $item->user->email }}
+                            </div>
                         @else
-                        <span class="text-gray-400">-</span>
+                            <span class="text-gray-400">-</span>
                         @endif
                     </td>
+
+                    <!-- Package -->
                     <td class="px-6 py-4">
                         <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium">
                             {{ $item->paket->nama_paket }}
                         </span>
                     </td>
+
+                    <!-- Price -->
                     <td class="px-6 py-4 text-sm font-bold text-gray-700">
                         Rp {{ number_format($item->paket->harga, 0, ',', '.') }}
                     </td>
+
+                    <!-- Period -->
                     <td class="px-6 py-4 text-sm text-gray-600">
                         <div>{{ $item->tanggal_mulai->format('d M Y') }}</div>
-                        <div class="text-xs text-gray-500">to {{ $item->tanggal_selesai->format('d M Y') }}</div>
+                        <div class="text-xs text-gray-500">
+                            to {{ $item->tanggal_selesai->format('d M Y') }}
+                        </div>
                     </td>
+
+                    <!-- Status -->
                     <td class="px-6 py-4">
+
                         @if($isExpired)
+
                             <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium">
-                                <i class="fas fa-times-circle mr-1"></i>Expired
+                                <i class="fas fa-times-circle mr-1"></i>
+                                Expired
                             </span>
+
                         @elseif($isActive)
+
                             <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
-                                <i class="fas fa-check-circle mr-1"></i>Active
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Active
                             </span>
+
                         @else
+
                             <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">
-                                <i class="fas fa-clock mr-1"></i>Pending
+                                <i class="fas fa-clock mr-1"></i>
+                                Pending
                             </span>
+
                         @endif
+
                     </td>
+
+                    <!-- ACTION -->
+                    <td class="px-6 py-4">
+                        <div class="flex justify-center">
+
+                            <form action="{{ route('admin.promosi.destroy', $item->id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this promotion?')">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                        class="bg-red-50 hover:bg-red-100
+                                               text-red-600 p-2 rounded-lg transition">
+
+                                    <i class="fas fa-trash"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+
                 </tr>
+
                 @endforeach
+
             </tbody>
+
         </table>
     </div>
+
+    <!-- PAGINATION -->
+    @if($promosi->hasPages())
+    <div class="px-6 py-4">
+        {{ $promosi->links() }}
+    </div>
+    @endif
+
     @else
+
+    <!-- Empty State -->
     <div class="py-20 px-6 text-center">
         <div class="flex flex-col items-center justify-center text-gray-400">
             <i class="fas fa-bullhorn text-7xl mb-5"></i>
-            <h3 class="text-2xl font-bold text-gray-600 mb-2">No Promotions Yet</h3>
-            <p class="text-gray-500">There are currently no active promotions</p>
+
+            <h3 class="text-2xl font-bold text-gray-600 mb-2">
+                No Promotions Yet
+            </h3>
+
+            <p class="text-gray-500">
+                There are currently no active promotions
+            </p>
         </div>
     </div>
+
     @endif
+
 </div>
 
 <!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
+
             <div>
                 <p class="text-gray-500 text-sm mb-1">Total Promotions</p>
-                <h3 class="text-3xl font-bold text-purple-500">{{ $promosi->count() }}</h3>
+
+                <h3 class="text-3xl font-bold text-purple-500">
+                    {{ $promosi->total() }}
+                </h3>
             </div>
+
             <div class="bg-purple-100 p-4 rounded-full">
                 <i class="fas fa-bullhorn text-2xl text-purple-500"></i>
             </div>
+
         </div>
     </div>
-    
+
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
+
             <div>
                 <p class="text-gray-500 text-sm mb-1">Active Promotions</p>
+
                 <h3 class="text-3xl font-bold text-green-500">
                     {{ $promosi->filter(fn($p) => $p->tanggal_mulai <= now() && $p->tanggal_selesai >= now())->count() }}
                 </h3>
             </div>
+
             <div class="bg-green-100 p-4 rounded-full">
                 <i class="fas fa-check-circle text-2xl text-green-500"></i>
             </div>
+
         </div>
     </div>
-    
+
     <div class="bg-white rounded-xl p-6 shadow-lg">
         <div class="flex items-center justify-between">
+
             <div>
                 <p class="text-gray-500 text-sm mb-1">Expired Promotions</p>
+
                 <h3 class="text-3xl font-bold text-red-500">
                     {{ $promosi->filter(fn($p) => $p->tanggal_selesai < now())->count() }}
                 </h3>
             </div>
+
             <div class="bg-red-100 p-4 rounded-full">
                 <i class="fas fa-times-circle text-2xl text-red-500"></i>
             </div>
+
         </div>
     </div>
+
 </div>
 @endsection

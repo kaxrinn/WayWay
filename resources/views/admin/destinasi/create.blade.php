@@ -4,12 +4,6 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <!-- Back Button -->
-    <a href="{{ route('admin.destinasi.index') }}" 
-       class="inline-flex items-center text-gray-600 hover:text-primary transition mb-6">
-        <i class="fas fa-arrow-left mr-2"></i>
-        Back to List
-    </a>
     
     <!-- Form Card -->
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
@@ -177,18 +171,32 @@
             </div>
             
             <!-- Buttons -->
-            <div class="flex gap-4 mt-8">
-                <button type="submit" 
-                        class="flex-1 bg-gradient-to-r from-primary to-blue-400 hover:from-blue-400 hover:to-primary text-white px-6 py-4 rounded-lg transition shadow-lg hover:shadow-xl font-semibold text-lg flex items-center justify-center gap-2">
-                    <i class="fas fa-save"></i>
-                    Save Destination
-                </button>
-                <a href="{{ route('admin.destinasi.index') }}" 
-                   class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-4 rounded-lg transition shadow-lg hover:shadow-xl font-semibold text-lg flex items-center justify-center gap-2">
-                    <i class="fas fa-times"></i>
-                    Cancel
-                </a>
-            </div>
+<div class="flex flex-col sm:flex-row gap-4 mt-8">
+
+    <button type="submit"
+            class="w-full bg-gradient-to-r from-primary to-blue-400
+                   hover:from-blue-400 hover:to-primary
+                   text-white px-5 py-3 sm:px-6 sm:py-4
+                   rounded-lg transition shadow-lg hover:shadow-xl
+                   font-semibold text-sm sm:text-lg
+                   flex items-center justify-center gap-2">
+
+        <i class="fas fa-save"></i>
+        Save Destination
+    </button>
+
+    <a href="{{ route('admin.destinasi.index') }}"
+       class="w-full bg-gray-500 hover:bg-gray-600
+              text-white px-5 py-3 sm:px-6 sm:py-4
+              rounded-lg transition shadow-lg hover:shadow-xl
+              font-semibold text-sm sm:text-lg
+              flex items-center justify-center gap-2">
+
+        <i class="fas fa-times"></i>
+        Cancel
+    </a>
+
+</div>
         </form>
     </div>
 </div>

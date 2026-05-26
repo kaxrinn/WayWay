@@ -5,13 +5,6 @@
 @section('content')
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0">
 
-    <!-- Back Button -->
-    <a href="{{ route('pemilik.destinasi.index') }}" 
-       class="inline-flex items-center text-gray-600 hover:text-primary transition mb-6">
-        <i class="fas fa-arrow-left mr-2"></i>
-        Back to List
-    </a>
-
     <!-- Form Card -->
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
 

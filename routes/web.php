@@ -142,11 +142,29 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
         
         // Promosi Management
-        Route::get('/promosi', function () {
-            $promosi = \App\Models\Promosi::with(['destinasi.kategori', 'paket'])->latest()->get();
-            $paketPromosi = \App\Models\PaketPromosi::where('status', 'active')->orderBy('harga')->get();
-            return view('admin.promosi.index', compact('promosi', 'paketPromosi'));
-        })->name('promosi.index');
+Route::get('/promosi', function () {
+
+    $promosi = \App\Models\Promosi::with(['destinasi.kategori', 'paket'])
+        ->latest()
+        ->paginate(10);
+
+    $paketPromosi = \App\Models\PaketPromosi::where('status', 'active')
+        ->orderBy('harga')
+        ->get();
+
+    return view('admin.promosi.index', compact('promosi', 'paketPromosi'));
+
+})->name('promosi.index');
+
+
+// DELETE PROMOSI
+Route::delete('/promosi/{id}', function ($id) {
+
+    \App\Models\Promosi::findOrFail($id)->delete();
+
+    return back()->with('success', 'Promotion deleted successfully!');
+
+})->name('promosi.destroy');
         
         // Transaksi Management
         Route::get('/transaksi', function () {
@@ -289,6 +307,7 @@ Route::get('/paket/callback', [\App\Http\Controllers\PaketController::class, 'ca
     ->name('paket.callback');
 Route::post('/transaksi/{id}/confirm', [\App\Http\Controllers\PaketController::class, 'confirmPayment'])
     ->name('transaksi.confirm');
+
 
     
         

@@ -5,12 +5,6 @@
 @section('content')
 <div class="max-w-3xl mx-auto">
 
-    <!-- Back -->
-    <a href="{{ route('pemilik.promosi.index') }}"
-       class="inline-flex items-center text-gray-600 hover:text-yellow-600 transition mb-6 text-sm sm:text-base">
-        <i class="fas fa-arrow-left mr-2"></i> Back
-    </a>
-
     <!-- Form Card -->
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
         <!-- Header -->

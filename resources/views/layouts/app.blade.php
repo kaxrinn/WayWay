@@ -9,16 +9,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')          {{-- ← tambah ini --}}
 </head>
-<body class="font-sans">
+<body class="font-sans min-h-screen flex flex-col">
 
     @include('wisatawan.components.navbar')
 
-    @yield('content')
+    <main class="flex-1">
+        @yield('content')
+    </main>
 
-@include('wisatawan.components.footer')
+    @include('wisatawan.components.footer')
 
     <x-waybot />
-    @stack('scripts')         {{-- ← tambah ini --}}
+
+    @stack('scripts')
 
 </body>
 </html>

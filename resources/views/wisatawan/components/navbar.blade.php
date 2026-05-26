@@ -18,7 +18,7 @@
 
 <div x-data="{ profileModal: false, mobileProfile: false }">
 
-<header class="fixed top-4 w-full z-50">
+<header class="fixed top-4 w-full z-100000">
     <div class="max-w-[1200px] mx-auto px-4">
         <div class="bg-[#9ECCDB]/80 backdrop-blur
                     rounded-full
@@ -73,6 +73,7 @@
 @endauth
 
                 <a href="#"
+                   @click.prevent="window.dispatchEvent(new CustomEvent('open-waybot'))"
                    class="px-4 py-2 rounded-full font-semibold
                           hover:bg-sky-100 hover:text-sky-600">
                     Waybot
@@ -303,7 +304,7 @@
 @endif
 
 <!-- MOBILE BOTTOM NAVIGATION -->
-<nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-t border-sky-200 shadow-lg">
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 z-100000 bg-white/95 backdrop-blur border-t border-sky-200 shadow-lg">
     <div class="flex items-center justify-around h-16">
 
         <!-- Dashboard -->
@@ -355,6 +356,7 @@
 
         <!-- Waybot -->
         <a href="#"
+           @click.prevent="window.dispatchEvent(new CustomEvent('open-waybot'))"
            class="flex flex-col items-center justify-center flex-1 text-xs font-medium text-gray-600 hover:text-[#5b9ac7]">
             <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

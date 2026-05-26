@@ -4,12 +4,6 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto">
-    <!-- Back Button -->
-    <a href="{{ route('admin.destinasi.index') }}" 
-       class="inline-flex items-center text-gray-600 hover:text-primary transition mb-6">
-        <i class="fas fa-arrow-left mr-2"></i>
-        Back to List
-    </a>
     
     <!-- Form Card -->
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">

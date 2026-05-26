@@ -41,9 +41,14 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URL'),
     ],
 
-        'openai' => [
-        'key' => env('OPENAI_API_KEY'),
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
     ],
+
+    'groq' => [
+       'key' => env('GROQ_API_KEY'),
+    ],
+
     'osrm' => [
         'url'     => env('OSRM_URL', 'http://router.project-osrm.org'),
         'enabled' => env('OSRM_ENABLED', true),

@@ -8,7 +8,7 @@
      MY TRIPS — History page
      Shows a paginated table of all past itineraries
 =================================================== --}}
-<section class="max-w-5xl mx-auto px-6 py-30">
+<section class="max-w-5xl mx-auto px-6 pt-32 pb-10 min-h-screen">
 
     {{-- Header --}}
     <div class="flex items-center justify-between mb-8">

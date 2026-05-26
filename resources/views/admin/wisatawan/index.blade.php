@@ -78,7 +78,6 @@
                     <th class="px-6 py-4 text-left text-sm font-semibold">Email</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Phone</th>
                     <th class="px-6 py-4 text-left text-sm font-semibold">Registered</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -96,12 +95,6 @@
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $user->email }}</td>
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $user->no_telepon ?? '-' }}</td>
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $user->created_at->format('d M Y') }}</td>
-                    <td class="px-6 py-4">
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit">
-                            <i class="fas fa-check-circle"></i>
-                            Active
-                        </span>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>

@@ -567,6 +567,8 @@ Language rule:
 - If the user writes in Indonesian → reply in Indonesian
 - If the user writes in English → reply in English
 - Never mix languages in a single response
+- When in doubt → use English-switching:
+  "I see you're asking in Indonesian, but I want to make sure I understand correctly. Could you please clarify a bit more? Atau kamu bisa tanya dalam bahasa Inggris juga, aku bisa jawab kok!"
 
 You can help with:
 - Recommending exactly 3 tourism destinations in Batam based on preferences
@@ -583,17 +585,26 @@ PROMPT;
     }
 
     // =============================================
-    // GPT API CALL
+    // Gemini API CALL
     // =============================================
 
-    private function callGPT(ChatSession $session, string $userMessage, string $systemPrompt): string
+private function callGPT(ChatSession $session, string $userMessage, string $systemPrompt): string
 {
+    $apiKey = config('services.groq.key');
+
+    if (empty($apiKey)) {
+        return 'Waybot belum dikonfigurasi dengan benar.';
+    }
+
     $history = ChatMessage::where('session_id', $session->id)
         ->orderBy('id', 'desc')
-        ->take(6)           // ← kurangi dari 8 ke 6 biar prompt lebih pendek
+        ->take(6)
         ->get()
         ->reverse()
-        ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
+        ->map(fn($m) => [
+            'role'    => $m->role === 'assistant' ? 'assistant' : 'user',
+            'content' => $m->content,
+        ])
         ->values()
         ->toArray();
 
@@ -603,29 +614,50 @@ PROMPT;
         ['role' => 'user', 'content' => $userMessage],
     ];
 
-    $response = Http::withToken(config('services.openai.key'))
-        ->timeout(90)           // ← naikan dari 30 ke 90
-        ->connectTimeout(15)    // ← tambah ini
-        ->post('https://api.openai.com/v1/chat/completions', [
-            'model'       => 'gpt-4o-mini',
-            'messages'    => $messages,
-            'max_tokens'  => 600,   // ← kurangi dari 900 ke 600
-            'temperature' => 0.75,
-        ]);
+    $maxRetries = 3;
 
-    if (!$response->successful()) {
-        Log::error('OpenAI Chat error', [
-            'status' => $response->status(),
-            'body'   => $response->body()
-        ]);
-        return 'Oops, Waybot is having a little hiccup. Try again in a moment! 🙏';
+    for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+        try {
+            $response = Http::timeout(30)
+                ->withHeaders(['Authorization' => 'Bearer ' . $apiKey])
+                ->post('https://api.groq.com/openai/v1/chat/completions', [
+                    'model'       => 'llama-3.3-70b-versatile',
+                    'messages'    => $messages,
+                    'max_tokens'  => 900,
+                    'temperature' => 0.75,
+                ]);
+
+            if ($response->status() === 429) {
+                if ($attempt < $maxRetries) {
+                    sleep($attempt * 2);
+                    continue;
+                }
+                return 'Waybot sedang sibuk, coba lagi dalam beberapa detik ya! 🙏';
+            }
+
+            if (!$response->successful()) {
+                Log::error('Groq API Error', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+                return 'Oops, Waybot lagi ada gangguan. Coba lagi ya!';
+            }
+
+            return $response->json('choices.0.message.content')
+                ?? 'Oops, Waybot lagi ada gangguan. Coba lagi ya!';
+
+        } catch (\Exception $e) {
+            Log::error('Groq Exception', ['message' => $e->getMessage()]);
+            if ($attempt === $maxRetries) {
+                return 'Oops, Waybot tidak dapat menghubungi layanan AI sekarang.';
+            }
+            sleep($attempt);
+        }
     }
 
-    return $response->json(
-        'choices.0.message.content',
-        "Hmm, I didn't quite catch that. Could you rephrase your question?"
-    );
+    return 'Waybot tidak dapat merespons saat ini.';
 }
+    
 
     // =============================================
     // HELPERS
