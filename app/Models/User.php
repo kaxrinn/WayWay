@@ -140,6 +140,17 @@ class User extends Authenticatable
 
     return PaketPromosi::where('nama_paket', 'Basic')->first();
 }
+
+public function travelAgentPackages()
+{
+    return $this->hasMany(TravelPackage::class, 'travel_agent_id');
+}
+
+public function travelAgentTransactions()
+{
+    return $this->hasMany(TravelAgentSubscription::class, 'travel_agent_id');
+}
+
 public function favorit()
 {
     return $this->belongsToMany(

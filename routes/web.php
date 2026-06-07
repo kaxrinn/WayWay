@@ -15,6 +15,10 @@ use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\PemilikPromosiController;
 use App\Http\Controllers\WaybotController;
 use App\Http\Controllers\ItineraryController;
+use App\Http\Controllers\AdminTravelAgentController;
+use App\Http\Controllers\TravelAgentController;
+use App\Http\Controllers\AdminTravelSubscriptionController;
+use App\Http\Controllers\AdminTravelSubscriptionPackageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -209,7 +213,7 @@ Route::delete('/transaksi/{id}', function ($id) {
 
     $t->delete();
 
-    return back()->with('success', 'Transaksi berhasil dihapus!');
+    return back()->with('success', 'Transaction successfully deleted!');
 })->name('transaksi.destroy');
 
         
@@ -243,12 +247,12 @@ Route::delete('/transaksi/{id}', function ($id) {
             
             $message->update(['status' => $newStatus]);
             
-            return redirect()->route('admin.bantuan.index')->with('success', 'Status berhasil diupdate!');
+            return redirect()->route('admin.bantuan.index')->with('success', 'Status successfully updated!');
         })->name('bantuan.update-status');
 
         Route::delete('/bantuan/{id}', function ($id) {
             \App\Models\HubungiKami::findOrFail($id)->delete();
-            return back()->with('success', 'Pesan berhasil dihapus!');
+            return back()->with('success', 'Message successfully deleted!');
         })->name('bantuan.destroy');
 
         Route::delete('/bantuan/{id}', function ($id) {
@@ -256,7 +260,7 @@ Route::delete('/transaksi/{id}', function ($id) {
 
     return redirect()
         ->route('admin.bantuan.index')
-        ->with('success', 'Pesan berhasil dihapus');
+        ->with('success', 'Message successfully deleted');
 })->name('bantuan.destroy');
         
         // Edit Requests Management
@@ -270,14 +274,46 @@ Route::delete('/transaksi/{id}', function ($id) {
             ->name('edit-requests.reject');     
         Route::delete('/edit-requests/{id}', function ($id) {
     \App\Models\EditRequest::findOrFail($id)->delete();
-    return back()->with('success', 'Edit request berhasil dihapus!');
+    return back()->with('success', 'Edit request successfully deleted!');
 })->name('edit-requests.destroy');
 
-
-       // Admin Profile (PAKAI CONTROLLER)
+// Admin Profile (PAKAI CONTROLLER)
 Route::put('/profile', [AdminProfileController::class, 'updateProfile'])
     ->name('profile.update');
+
+     // Travel Agent Subscriptions Management
+        Route::prefix('travel-subscriptions')->name('travel-subscriptions.')->group(function () {
+            Route::get('/', [AdminTravelSubscriptionController::class, 'index'])->name('index');
+            Route::get('/{id}', [AdminTravelSubscriptionController::class, 'show'])->name('show');
+            
+            // ✅ APPROVE & REJECT (NEW!)
+            Route::post('/{id}/approve', [TravelAgentSubscriptionController::class, 'approve'])->name('approve');
+            Route::post('/{id}/reject', [TravelAgentSubscriptionController::class, 'reject'])->name('reject');
+        });
+
+// ============================================
+// ADMIN TRAVEL AGENTS MANAGEMENT
+// ============================================
+Route::prefix('travel-agents')
+    ->name('travel-agents.')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminTravelAgentController::class, 'index'])
+            ->name('index');
+        Route::get('/create', [\App\Http\Controllers\AdminTravelAgentController::class, 'create'])
+            ->name('create');
+        Route::post('/', [\App\Http\Controllers\AdminTravelAgentController::class, 'store'])
+            ->name('store');
+        Route::get('/{id}', [\App\Http\Controllers\AdminTravelAgentController::class, 'show'])
+            ->name('show');
+        Route::get('/{id}/edit', [\App\Http\Controllers\AdminTravelAgentController::class, 'edit'])
+            ->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\AdminTravelAgentController::class, 'update'])
+            ->name('update');
+        Route::delete('/{id}', [\App\Http\Controllers\AdminTravelAgentController::class, 'destroy'])
+            ->name('destroy');      
     });
+});
+
 /*
 |--------------------------------------------------------------------------
 | PEMILIK WISATA ROUTES
@@ -341,14 +377,14 @@ Route::post('/transaksi/{id}/confirm', [\App\Http\Controllers\PaketController::c
             
             if ($request->filled('password')) {
                 if (!\Hash::check($request->current_password, $user->password)) {
-                    return back()->withErrors(['current_password' => 'Password lama salah']);
+                    return back()->withErrors(['current_password' => 'Old password is incorrect']);
                 }
                 $user->password = bcrypt($request->password);
             }
             
             $user->save();
             
-            return back()->with('success', 'Profil berhasil diupdate!');
+            return back()->with('success', 'Profile successfully updated!');
         })->name('profile.update');
     });
 
@@ -444,3 +480,106 @@ Route::prefix('itinerary')->name('itinerary.')->middleware(['auth'])->group(func
     //    DELETE /itinerary/history/{id}  →  historyDelete()
     Route::delete('/history/{id}', [ItineraryController::class, 'historyDelete'])->name('history.delete');
  });
+
+// ============================================
+// ADMIN TRAVEL SUBSCRIPTIONS ROUTES
+// ============================================
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        
+        // Travel Agent Subscription Packages (paket yang ditawarkan)
+        Route::prefix('travel-subscriptions/packages')
+            ->name('travel-subscriptions.packages.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'index'])
+                    ->name('index');
+                Route::get('/create', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'create'])
+                    ->name('create');
+                Route::post('/', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'store'])
+                    ->name('store');
+                Route::get('/{id}/edit', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'edit'])
+                    ->name('edit');
+                Route::put('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'update'])
+                    ->name('update');
+                Route::delete('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'destroy'])
+                    ->name('destroy');
+                Route::post('/{id}/toggle-status', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'toggleStatus'])
+                    ->name('toggle-status');
+            });
+
+        // Travel Agent Subscriptions (transactions)
+        Route::prefix('travel-subscriptions')
+            ->name('travel-subscriptions.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'index'])
+                    ->name('index');
+                Route::get('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'show'])
+                    ->name('show');
+                Route::post('/{id}/approve', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'approve'])
+                    ->name('approve');
+                Route::post('/{id}/reject', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'reject'])
+                    ->name('reject');
+            });
+    });
+
+// ============================================
+// TRAVEL AGENT ROUTES
+// ============================================
+Route::middleware(['auth', 'role:travel_agent'])
+    ->prefix('travel-agent')
+    ->name('travel-agent.')
+    ->group(function () {
+        
+        // Dashboard
+        Route::get('/dashboard', [\App\Http\Controllers\TravelAgentController::class, 'dashboard'])
+            ->name('dashboard');
+            
+        Route::put('/profile', [\App\Http\Controllers\TravelAgentController::class, 'updateProfile'])
+            ->name('profile.update');
+
+        // Paket Wisata yang mereka upload
+        Route::prefix('packages')
+            ->name('packages.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\TravelAgentPackageController::class, 'index'])
+                    ->name('index');
+                Route::get('/create', [\App\Http\Controllers\TravelAgentPackageController::class, 'create'])
+                    ->name('create');
+                Route::post('/', [\App\Http\Controllers\TravelAgentPackageController::class, 'store'])
+                    ->name('store');
+                Route::get('/{id}', [\App\Http\Controllers\TravelAgentPackageController::class, 'show'])
+                    ->name('show');
+                Route::get('/{id}/edit', [\App\Http\Controllers\TravelAgentPackageController::class, 'edit'])
+                    ->name('edit');
+                Route::put('/{id}', [\App\Http\Controllers\TravelAgentPackageController::class, 'update'])
+                    ->name('update');
+                Route::delete('/{id}', [\App\Http\Controllers\TravelAgentPackageController::class, 'destroy'])
+                    ->name('destroy');
+            });
+
+        // Paket aktif mereka (subscription)
+        Route::prefix('subscriptions')
+            ->name('subscriptions.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\TravelAgentSubscriptionController::class, 'index'])
+                    ->name('index');
+                Route::get('/upgrade', [\App\Http\Controllers\TravelAgentSubscriptionController::class, 'upgrade'])
+                    ->name('upgrade');
+                Route::post('/checkout/{packageId}', [\App\Http\Controllers\TravelAgentSubscriptionController::class, 'checkout'])
+                    ->name('checkout');
+                Route::get('/callback', [\App\Http\Controllers\TravelAgentSubscriptionController::class, 'callback'])
+                    ->name('callback');
+            });
+
+        // Hubungi Admin
+        Route::get('/contact-admin', function() {
+            return view('travel-agent.contact-admin');
+        })->name('contact-admin');
+    });
+
+// ============================================
+// MIDTRANS WEBHOOK
+// ============================================
+Route::post('/api/travel-agent/notification', [\App\Http\Controllers\TravelAgentSubscriptionController::class, 'notification']);

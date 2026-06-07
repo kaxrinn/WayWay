@@ -200,28 +200,33 @@
         </a>
 
         <!-- Manage Users -->
-        <div x-data="{ openUsers: {{ request()->routeIs('admin.wisatawan.*') || request()->routeIs('admin.pemilik.*') ? 'true' : 'false' }} }">
-            <button @click="openUsers = !openUsers" 
-                    class="w-full flex items-center justify-between px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-100 transition">
-                <div class="flex items-center">
-                    <i class="fas fa-users w-5"></i>
-                    <span class="ml-3 truncate">Manage Users</span>
-                </div>
-                <i class="fas fa-chevron-down transition-transform" :class="openUsers ? 'rotate-180' : ''"></i>
-            </button>
-            <div x-show="openUsers" x-cloak class="ml-6 mt-2 space-y-1">
-                <a href="{{ route('admin.wisatawan.index') }}" 
-                   class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
-                   {{ request()->routeIs('admin.wisatawan.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
-                    Tourists
-                </a>
-                <a href="{{ route('admin.pemilik.index') }}" 
-                   class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
-                   {{ request()->routeIs('admin.pemilik.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
-                    Owners
-                </a>
-            </div>
+<div x-data="{ openUsers: {{ request()->routeIs('admin.wisatawan.*') || request()->routeIs('admin.pemilik.*') || request()->routeIs('admin.travel-agents.*') ? 'true' : 'false' }} }">
+    <button @click="openUsers = !openUsers" 
+            class="w-full flex items-center justify-between px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-100 transition">
+        <div class="flex items-center">
+            <i class="fas fa-users w-5"></i>
+            <span class="ml-3 truncate">Manage Users</span>
         </div>
+        <i class="fas fa-chevron-down transition-transform" :class="openUsers ? 'rotate-180' : ''"></i>
+    </button>
+    <div x-show="openUsers" x-cloak class="ml-6 mt-2 space-y-1">
+        <a href="{{ route('admin.wisatawan.index') }}" 
+           class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
+           {{ request()->routeIs('admin.wisatawan.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
+            <i class="fas fa-person mr-2"></i>Tourists
+        </a>
+        <a href="{{ route('admin.pemilik.index') }}" 
+           class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
+           {{ request()->routeIs('admin.pemilik.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
+            <i class="fas fa-store mr-2"></i>Owners
+        </a>
+        <a href="{{ route('admin.travel-agents.index') }}" 
+           class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
+           {{ request()->routeIs('admin.travel-agents.*') && !request()->routeIs('admin.travel-subscriptions.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
+            <i class="fas fa-plane mr-2"></i>Travel Agents
+        </a>
+    </div>
+</div>
 
         <!-- Manage Data -->
         <div x-data="{ openData: {{ request()->routeIs('admin.destinasi.*') || request()->routeIs('admin.kategori.*') ? 'true' : 'false' }} }">
@@ -267,6 +272,16 @@
                    class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
                    {{ request()->routeIs('admin.transaksi.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
                     Transactions
+                </a>
+                <a href="{{ route('admin.travel-subscriptions.packages.index') }}" 
+                   class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
+                   {{ request()->routeIs('admin.travel-subscriptions.packages.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
+                    Travel Agent Packages
+                </a>
+                <a href="{{ route('admin.travel-subscriptions.index') }}" 
+                   class="block px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-100 transition
+                   {{ request()->routeIs('admin.travel-subscriptions.*') ? 'bg-blue-50 font-medium text-blue-700' : '' }}">
+                    Travel Agent Subscriptions
                 </a>
             </div>
         </div>
