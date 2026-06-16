@@ -36,30 +36,30 @@ class ContentFilterService
      */
     public function adjustForCompanion(Collection $candidates, string $companion): Collection
     {
-        $companionWeights = [
-            'keluarga' => [
-                'preferred' => ['Taman', 'Pantai', 'Edukasi', 'Kuliner'],
-                'avoid'     => ['Nightlife', 'Bar'],
-            ],
-            'pasangan' => [
-                'preferred' => ['Pantai', 'Kuliner', 'Taman', 'Hiburan'],
-                'avoid'     => [],
-            ],
-            'solo' => [
-                'preferred' => ['Edukasi', 'Alam', 'Budaya', 'Kuliner'],
-                'avoid'     => [],
-            ],
-            'grup' => [
-                'preferred' => ['Hiburan', 'Taman', 'Pantai', 'Kuliner'],
-                'avoid'     => ['Spa', 'Relaksasi'],
-            ],
-        ];
+$companionWeights = [
+    'keluarga' => [
+        'preferred' => ['Beaches', 'Man-Made Attractions', 'Cultural & Heritage Sites', 'Restaurants', 'Local Eateries'],
+        'avoid'     => ['Nightlife'],
+    ],
+    'pasangan' => [
+        'preferred' => ['Beaches', 'Restaurants', 'Coffee Shops', 'Cultural & Heritage Sites', 'Salon & SPA'],
+        'avoid'     => [],
+    ],
+    'solo' => [
+        'preferred' => ['Cultural & Heritage Sites', 'Nature & Eco Tourism', 'Coffee Shops', 'Local Eateries', 'Religious Sites'],
+        'avoid'     => [],
+    ],
+    'grup' => [
+        'preferred' => ['Man-Made Attractions', 'Beaches', 'Shopping Mall', 'Restaurants', 'Cinemas'],
+        'avoid'     => ['Salon & SPA'],
+    ],
+];
 
         $weights = $companionWeights[$companion] ?? ['preferred' => [], 'avoid' => []];
 
         // Tandai destinasi dengan skor afinitas companion
         return $candidates->map(function ($dest) use ($weights) {
-            $kategoriNama = $dest->kategori->nama ?? '';
+            $kategoriNama = $dest->kategori->nama_kategori ?? '';
             $affinityBonus = 0;
 
             if (in_array($kategoriNama, $weights['preferred'])) {

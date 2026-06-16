@@ -23,12 +23,27 @@
             AI Travel Guide for Batam
         </p>
 
-        <a href="#destinasi"
-           class="inline-block mt-6 px-7 py-3 rounded-full
-                  bg-[#F4DBB4] text-black font-semibold
-                  hover:bg-[#f9d497] transition">
-            Explore Now
-        </a>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+
+    {{-- Explore Now --}}
+<a href="#destinasi"
+    class="inline-flex items-center gap-3 font-bold px-8 py-4 rounded-2xl text-base shadow-lg
+           bg-[#F4DBB4] text-[#1e293b] hover:bg-[#f9d497] transition">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+    </svg>
+    Explore Now
+</a>
+
+<a href="{{ route('mitra.form') }}"
+    class="inline-flex items-center gap-3 font-bold px-8 py-4 rounded-2xl text-base shadow-lg
+           bg-[#5B9AC7] text-white hover:bg-[#496d9e] transition">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+    </svg>
+    Partner with Us
+</a>
+</div>
     </div>
 
     <!-- FADE TO NEXT SECTION -->

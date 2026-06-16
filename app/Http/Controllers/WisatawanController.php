@@ -7,8 +7,10 @@ use App\Models\Kategori;
 use App\Models\HubungiKami;
 use App\Models\Favorit;
 use App\Models\Promosi;
+use App\Models\TravelPackage;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PartnerApplicationMail;
 class WisatawanController extends Controller
 {
     /**
@@ -18,6 +20,7 @@ class WisatawanController extends Controller
     {
         $user     = auth()->user();
         $kategori = Kategori::all();
+
 
         // Ambil maksimal 6 destinasi per kategori, lalu gabungkan
         $destinasiPopuler = collect();
@@ -33,7 +36,7 @@ class WisatawanController extends Controller
 
             $destinasiPopuler = $destinasiPopuler->merge($perKategori);
         }
-
+    
         // Hapus duplikat jika ada & re-index
         $destinasiPopuler = $destinasiPopuler->unique('id')->values();
 
@@ -51,12 +54,21 @@ class WisatawanController extends Controller
             ->latest()
             ->get();
 
+        // Ambil travel package aktif dan upcoming
+        // Ambil paket travel
+        $travelPackages = TravelPackage::with('travelAgent')
+            ->where('status', 'active')
+            ->whereDate('tanggal_keberangkatan', '>=', now())
+            ->latest()
+            ->take(6)
+            ->get();
         return view('wisatawan.beranda', compact(
             'user',
             'destinasiPopuler',
             'kategori',
             'favoritIds',
-            'iklanAktif'
+            'iklanAktif',
+            'travelPackages'
         ));
     }
 
@@ -251,5 +263,42 @@ class WisatawanController extends Controller
             ->toArray();
 
         return view('wisatawan.favorit.index', compact('destinasiFavorit', 'favoritIds'));
+    }
+   //paket dari agent travel 
+public function travel($id)
+{
+    $package = TravelPackage::with('travelAgent')->findOrFail($id);
+
+    return view(
+        'wisatawan.berandasection.detailtravel',
+        compact('package')
+    );
+}
+// form bermitra
+    public function form()
+    {
+        return view('wisatawan.berandasection.partner');
+    }
+ 
+    /**
+     * Validate, send the application email to admin, and redirect home.
+     */
+    public function submit(Request $request)
+    {
+        $validated = $request->validate([
+            'partner_type'  => 'required|in:Destination Owner,Travel Agent',
+            'name'          => 'required|string|max:255',
+            'business_name' => 'required|string|max:255',
+            'email'         => 'required|email|max:255',
+            'whatsapp'      => 'required|string|max:20',
+            'description'   => 'required|string|max:2000',
+            'link'          => 'nullable|string|max:255',
+        ]);
+ 
+        Mail::to('waywaypolibatam@gmail.com')->send(new PartnerApplicationMail($validated));
+ 
+        return redirect()
+            ->route('wisatawan.beranda')
+            ->with('success', 'Thank you! Your application has been sent. Our admin team will contact you via email soon.');
     }
 }

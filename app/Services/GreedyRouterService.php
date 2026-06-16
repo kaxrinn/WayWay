@@ -10,21 +10,24 @@ use Illuminate\Support\Collection;
  */
 class GreedyRouterService
 {
-    private array $visitDurationByCategory = [
-        'Beaches'        => 120,
-        'Pantai'         => 120,
-        'Taman'          => 90,
-        'Kuliner'        => 60,
-        'Cinema'         => 120,
-        'Shopping'       => 90,
-        'Shopping Mall'  => 90,
-        'Hiburan'        => 120,
-        'Edukasi'        => 90,
-        'Budaya'         => 75,
-        'Alam'           => 150,
-        'default'        => 90,
-    ];
-
+private array $visitDurationByCategory = [
+    'Beaches'                  => 120,
+    'Man-Made Attractions'     => 120,
+    'Cultural & Heritage Sites'=> 90,
+    'Restaurants'              => 60,
+    'Local Eateries'           => 60,
+    'Coffee Shops'             => 45,
+    'Religious Sites'          => 60,
+    'Hotels & Accommodation'   => 60,
+    'Shopping Mall'            => 90,
+    'Nature & Eco Tourism'     => 150,
+    'Transportation Hubs'      => 30,
+    'Fitness Centers'          => 90,
+    'Salon & SPA'              => 90,
+    'Cinemas'                  => 120,
+    'Nightlife'                => 120,
+    'default'                  => 90,
+];
     private HaversineService $haversine;
 
     public function __construct(HaversineService $haversine)
@@ -39,7 +42,7 @@ class GreedyRouterService
         int $maxDestinations = 6,
         int $availableMinutes = 480
     ): array {
-        $candidates = $rankedCandidates->take(min(30, $rankedCandidates->count()));
+        $candidates = $rankedCandidates->take(min(50, $rankedCandidates->count()));
 
         if ($candidates->isEmpty()) {
             return ['route' => [], 'total_distance' => 0, 'total_minutes' => 0];
@@ -59,7 +62,7 @@ class GreedyRouterService
         // Mulai dari destinasi skor tertinggi
         $first = $candidates->first();
         $visited[]   = $first->id;
-        $visitedCategories[] = $first->kategori->nama ?? 'default';
+        $visitedCategories[] = $first->kategori->nama_kategori ?? 'default';
 
         $distToFirst   = $this->haversine->distance($originLat, $originLon, (float)$first->latitude, (float)$first->longitude);
         $travelFirst   = $this->haversine->estimateTravelTime($distToFirst);
@@ -91,19 +94,19 @@ class GreedyRouterService
                 $travelTime = $this->haversine->estimateTravelTime($dist);
                 $visitTime  = $this->getVisitDuration($candidate);
 
-                if ($totalMinutes + $travelTime + $visitTime > $availableMinutes) continue;
-
+                if ($totalMinutes + $travelTime + $visitTime > $availableMinutes) {continue;
+                     }// skip destinasi ini
                 $distanceScore = max(0, 1 - ($dist / 50));
                 $bayesianScore = $candidate->bayesian_score ?? 0;
 
                 // Diversity bonus: kategori yang belum muncul dapat bonus
-                $kategoriNama  = $candidate->kategori->nama ?? 'default';
+                $kategoriNama  = $candidate->kategori->nama_kategori ?? 'default';
                 $categoryCount = count(array_filter($visitedCategories, fn($k) => $k === $kategoriNama));
-                $diversityBonus = $categoryCount === 0 ? 0.25 : ($categoryCount === 1 ? 0.05 : -0.10);
+                $diversityBonus = $categoryCount === 0 ? 0.50 : ($categoryCount === 1 ? 0.00 : -0.50);
 
-                $combinedScore = ($distanceScore * 0.30)
-                               + ($bayesianScore  * 0.50)
-                               + ($diversityBonus * 0.20);
+                $combinedScore = ($distanceScore * 0.25)
+                               + ($bayesianScore  * 0.35)
+                               + ($diversityBonus * 0.40);
 
                 if ($combinedScore > $bestScore) {
                     $bestScore    = $combinedScore;
@@ -118,7 +121,11 @@ class GreedyRouterService
             $visitMins  = $this->getVisitDuration($bestNext);
 
             $visited[]             = $bestNext->id;
-            $visitedCategories[]   = $bestNext->kategori->nama ?? 'default';
+            \Log::info('Stop ' . $stopNumber . ' dipilih: ' . $bestNext->nama_destinasi . 
+                ' | Kategori: ' . ($bestNext->kategori->nama_kategori ?? 'null') .
+                ' | Score: ' . round($bestScore, 3) .
+                ' | visitedCategories: ' . implode(', ', $visitedCategories));
+            $visitedCategories[]   = $bestNext->kategori->nama_kategori ?? 'default';
             $route[]               = $this->buildStop($bestNext, $stopNumber, $bestDistance, $travelMins);
 
             $totalDistance += $bestDistance;
@@ -150,7 +157,7 @@ class GreedyRouterService
             'order'              => $order,
             'id'                 => $dest->id,
             'nama'               => $dest->nama_destinasi,
-            'kategori'           => $dest->kategori->nama ?? 'Wisata',
+            'kategori'           => $dest->kategori->nama_kategori ?? 'Wisata',
             'latitude'           => (float) $dest->latitude,
             'longitude'          => (float) $dest->longitude,
             'harga'              => $dest->harga,
@@ -167,7 +174,7 @@ class GreedyRouterService
 
     private function getVisitDuration($dest): int
     {
-        $kategori = $dest->kategori->nama ?? 'default';
+        $kategori = $dest->kategori->nama_kategori ?? 'default';
         return $this->visitDurationByCategory[$kategori]
             ?? $this->visitDurationByCategory['default'];
     }

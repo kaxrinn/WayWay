@@ -261,12 +261,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     @php
-        $route  = $history->result['route']  ?? [];
-        $origin = $history->result['origin'] ?? ['lat' => 1.1296758, 'lon' => 104.0452254];
+        $route        = $history->result['route']         ?? [];
+        $origin       = $history->result['origin']        ?? ['lat' => 1.1296758, 'lon' => 104.0452254];
+        $osrmGeometry = $history->result['osrm_geometry'] ?? null;
+        $osrmValid    = $history->result['osrm_validated'] ?? false;
     @endphp
 
-    const route  = @json($route);
-    const origin = @json($origin);
+    const route        = @json($route);
+    const origin       = @json($origin);
+    const osrmGeometry = @json($osrmGeometry);
+    const osrmValid    = @json($osrmValid);
 
     if (!route.length) return;
 
@@ -276,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         attribution: '&copy; OpenStreetMap contributors', maxZoom: 18,
     }).addTo(map);
 
-    // Origin marker — pakai warna brand
+    // Origin marker
     const originIcon = L.divIcon({
         html: '<div style="width:36px;height:36px;background:white;border:3px solid #496d9e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px;color:#496d9e;box-shadow:0 3px 10px rgba(0,0,0,0.2)">S</div>',
         className: '', iconSize: [36,36], iconAnchor: [18,18],
@@ -298,7 +302,15 @@ document.addEventListener('DOMContentLoaded', function () {
         latlngs.push([stop.latitude, stop.longitude]);
     });
 
-    L.polyline(latlngs, { color: '#5B9AC7', weight: 3, opacity: 0.8, dashArray: '8,6' }).addTo(map);
+    // Gambar rute: pakai OSRM geometry jika tersedia, fallback ke garis lurus
+    if (osrmValid && osrmGeometry) {
+        L.geoJSON(osrmGeometry, {
+            style: { color: '#5B9AC7', weight: 3, opacity: 0.8, dashArray: '8,6' }
+        }).addTo(map);
+    } else {
+        L.polyline(latlngs, { color: '#5B9AC7', weight: 3, opacity: 0.8, dashArray: '8,6' }).addTo(map);
+    }
+
     map.fitBounds(L.latLngBounds(latlngs), { padding: [40,40] });
 });
 </script>

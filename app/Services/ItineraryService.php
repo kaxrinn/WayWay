@@ -68,8 +68,12 @@ class ItineraryService
             $ranked = $this->haversine->attachDistances($ranked, $originLat, $originLon);
 
             // === STEP 4: Greedy Route Building ===
-            $availableMinutes = (int) (($params['available_hours'] ?? 8) * 60);
-            $maxDest          = (int) ($params['max_destinations'] ?? 6);
+           $maxDest          = (int) ($params['max_destinations'] ?? 6);
+            $minRequired      = $maxDest * 120; // minimal 2 jam per stop
+            $availableMinutes = max(
+                (int) (($params['available_hours'] ?? 8) * 60),
+                $minRequired
+            );
 
             $routeData = $this->greedy->buildRoute(
                 $ranked,

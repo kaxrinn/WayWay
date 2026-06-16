@@ -281,15 +281,6 @@ Route::delete('/transaksi/{id}', function ($id) {
 Route::put('/profile', [AdminProfileController::class, 'updateProfile'])
     ->name('profile.update');
 
-     // Travel Agent Subscriptions Management
-        Route::prefix('travel-subscriptions')->name('travel-subscriptions.')->group(function () {
-            Route::get('/', [AdminTravelSubscriptionController::class, 'index'])->name('index');
-            Route::get('/{id}', [AdminTravelSubscriptionController::class, 'show'])->name('show');
-            
-            // ✅ APPROVE & REJECT (NEW!)
-            Route::post('/{id}/approve', [TravelAgentSubscriptionController::class, 'approve'])->name('approve');
-            Route::post('/{id}/reject', [TravelAgentSubscriptionController::class, 'reject'])->name('reject');
-        });
 
 // ============================================
 // ADMIN TRAVEL AGENTS MANAGEMENT
@@ -488,42 +479,34 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        
-        // Travel Agent Subscription Packages (paket yang ditawarkan)
-        Route::prefix('travel-subscriptions/packages')
-            ->name('travel-subscriptions.packages.')
-            ->group(function () {
-                Route::get('/', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'index'])
-                    ->name('index');
-                Route::get('/create', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'create'])
-                    ->name('create');
-                Route::post('/', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'store'])
-                    ->name('store');
-                Route::get('/{id}/edit', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'edit'])
-                    ->name('edit');
-                Route::put('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'update'])
-                    ->name('update');
-                Route::delete('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'destroy'])
-                    ->name('destroy');
-                Route::post('/{id}/toggle-status', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'toggleStatus'])
-                    ->name('toggle-status');
-            });
 
-        // Travel Agent Subscriptions (transactions)
         Route::prefix('travel-subscriptions')
             ->name('travel-subscriptions.')
             ->group(function () {
-                Route::get('/', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'index'])
-                    ->name('index');
-                Route::get('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'show'])
-                    ->name('show');
-                Route::post('/{id}/approve', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'approve'])
-                    ->name('approve');
-                Route::post('/{id}/reject', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'reject'])
-                    ->name('reject');
-            });
-    });
 
+                // ✅ Packages DULU sebelum /{id}
+                Route::prefix('packages')
+                    ->name('packages.')
+                    ->group(function () {
+                        Route::get('/', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'index'])->name('index');
+                        Route::get('/create', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'create'])->name('create');
+                        Route::post('/', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'store'])->name('store');
+                        Route::get('/{id}/edit', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'edit'])->name('edit');
+                        Route::put('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'update'])->name('update');
+                        Route::delete('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'destroy'])->name('destroy');
+                        Route::post('/{id}/toggle-status', [\App\Http\Controllers\AdminTravelSubscriptionPackageController::class, 'toggleStatus'])->name('toggle-status');
+                    });
+
+                // ✅ Transactions SETELAH packages
+                Route::get('/', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'index'])->name('index');
+                Route::get('/{id}', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'show'])->name('show');
+                Route::post('/{id}/approve', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'approve'])->name('approve');
+                Route::post('/{id}/reject', [\App\Http\Controllers\AdminTravelSubscriptionController::class, 'reject'])->name('reject');
+            });
+
+        // ... route admin lainnya tetap di sini
+    });
+ 
 // ============================================
 // TRAVEL AGENT ROUTES
 // ============================================
@@ -583,3 +566,17 @@ Route::middleware(['auth', 'role:travel_agent'])
 // MIDTRANS WEBHOOK
 // ============================================
 Route::post('/api/travel-agent/notification', [\App\Http\Controllers\TravelAgentSubscriptionController::class, 'notification']);
+
+// ============================================
+// WISATWAN AGEN TRAVEL
+// ============================================
+
+Route::get('/travel-packages/{id}', [WisatawanController::class, 'travel'])->name('travel-packages.travel');
+Route::get('/travel-packages/{id}', [WisatawanController::class, 'travel'])
+    ->name('travel-packages.travel');
+// ============================================
+// form mitra
+// ============================================
+
+Route::get('/partner', [WisatawanController::class, 'form'])->name('mitra.form');
+Route::post('/partner', [WisatawanController::class, 'submit'])->name('mitra.submit');
