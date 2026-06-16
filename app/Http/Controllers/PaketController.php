@@ -85,6 +85,7 @@ class PaketController extends Controller
         // Create transaksi
         $transaksi = TransaksiPromosi::create([
             'promosi_id' => $promosi->id,
+            'snap_token' => null,
             'user_id' => $user->id,
             'paket_id' => $paket->id,
             'total_harga' => $totalHarga,

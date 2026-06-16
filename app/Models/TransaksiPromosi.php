@@ -17,7 +17,8 @@ class TransaksiPromosi extends Model
         'metode_pembayaran',
         'status_pembayaran',
         'bukti_pembayaran',
-        'tanggal_transaksi'
+        'tanggal_transaksi',
+        'snap_token'
     ];
 
     protected $casts = [
