@@ -113,7 +113,7 @@ class OsrmService
         // Update total distance dengan data OSRM
         $routeData['total_distance']    = round($osrmRoute['distance'] / 1000, 2);
         $routeData['total_road_minutes'] = (int) ceil($osrmRoute['duration'] / 60);
-        $routeData['osrm_geometry']     = $osrmRoute['geometry'] ?? null; // GeoJSON polyline
+        $routeData['osrm_geometry'] = $osrmRoute['geometry'] ?? null; // GeoJSON polyline
         $routeData['osrm_validated']    = true;
 
         return $routeData;

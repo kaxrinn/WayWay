@@ -36,70 +36,73 @@ class ItineraryService
      *   available_hours: float,
      * }
      */
-    public function generate(array $params): array
-    {
-        $cacheKey = 'itinerary_' . md5(json_encode($params));
+public function generate(array $params): array
+{
+    $cacheKey = 'itinerary_' . md5(json_encode($params));
 
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($params) {
-            // === STEP 1: Content-Based Filtering ===
-            $candidates = $this->contentFilter->filter(
-                $params['kategori_ids'],
-                $params['budget'],
-                $params['tanggal']
-            );
+    return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($params) {
 
-            if ($candidates->isEmpty()) {
-                return ['error' => 'Tidak ada destinasi yang cocok dengan kriteria Anda.', 'route' => []];
-            }
+        // Definisikan origin sekali di atas, pakai di semua step
+        $originLat = (float) ($params['origin_lat'] ?? 1.1296758);
+        $originLon = (float) ($params['origin_lon'] ?? 104.0452254);
 
-            // Adjust untuk tipe companion
-            $candidates = $this->contentFilter->adjustForCompanion(
-                $candidates,
-                $params['companion']
-            );
+        // === STEP 1: Content-Based Filtering ===
+        $candidates = $this->contentFilter->filter(
+            $params['kategori_ids'],
+            $params['budget'],
+            $params['tanggal'],
+            $originLat,
+            $originLon,
+            10.0  // radius 10 km dari titik keberangkatan
+        );
 
-            // === STEP 2: Bayesian Scoring ===
-            $ranked = $this->bayesian->rankCandidates($candidates);
+        if ($candidates->isEmpty()) {
+            return ['error' => 'No destinations found within 10 km of your location.', 'route' => []];
+        }
 
-            // === STEP 3: Haversine - attach jarak dari origin ===
-            $originLat = (float) ($params['origin_lat'] ?? 1.1296758); // default: Batam Center
-            $originLon = (float) ($params['origin_lon'] ?? 104.0452254);
+        // Adjust untuk tipe companion
+        $candidates = $this->contentFilter->adjustForCompanion(
+            $candidates,
+            $params['companion']
+        );
 
-            $ranked = $this->haversine->attachDistances($ranked, $originLat, $originLon);
+        // === STEP 2: Bayesian Scoring ===
+        $ranked = $this->bayesian->rankCandidates($candidates);
 
-            // === STEP 4: Greedy Route Building ===
-           $maxDest          = (int) ($params['max_destinations'] ?? 6);
-            $minRequired      = $maxDest * 120; // minimal 2 jam per stop
-            $availableMinutes = max(
-                (int) (($params['available_hours'] ?? 8) * 60),
-                $minRequired
-            );
+        // === STEP 3: Haversine ===
+        $ranked = $this->haversine->attachDistances($ranked, $originLat, $originLon);
 
-            $routeData = $this->greedy->buildRoute(
-                $ranked,
-                $originLat,
-                $originLon,
-                $maxDest,
-                $availableMinutes
-            );
+        // === STEP 4: Greedy Route ===
+        $maxDest          = (int) ($params['max_destinations'] ?? 6);
+        $availableMinutes = max(
+            (int) (($params['available_hours'] ?? 8) * 60),
+            $maxDest * 120
+        );
 
-            // === STEP 5: OSRM Validation ===
-            $routeData = $this->osrm->validateRoute($routeData);
+        $routeData = $this->greedy->buildRoute(
+            $ranked,
+            $originLat,
+            $originLon,
+            $maxDest,
+            $availableMinutes
+        );
 
-            // Enrichment metadata
-            $routeData['meta'] = [
-                'total_candidates'  => $candidates->count(),
-                'total_ranked'      => $ranked->count(),
-                'generated_at'      => now()->toDateTimeString(),
-                'params'            => $params,
-                'osrm_validated'    => $routeData['osrm_validated'] ?? false,
-            ];
+        // === STEP 5: OSRM Validation ===
+        $routeData = $this->osrm->validateRoute($routeData);
 
-            $routeData['schedule'] = $this->buildDaySchedule($routeData['route']);
+        $routeData['meta'] = [
+            'total_candidates' => $candidates->count(),
+            'total_ranked'     => $ranked->count(),
+            'generated_at'     => now()->toDateTimeString(),
+            'params'           => $params,
+            'osrm_validated'   => $routeData['osrm_validated'] ?? false,
+        ];
 
-            return $routeData;
-        });
-    }
+        $routeData['schedule'] = $this->buildDaySchedule($routeData['route']);
+
+        return $routeData;
+    });
+}
 
     /**
      * Susun jadwal harian dengan estimasi waktu

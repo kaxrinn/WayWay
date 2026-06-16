@@ -96,7 +96,7 @@ private array $visitDurationByCategory = [
 
                 if ($totalMinutes + $travelTime + $visitTime > $availableMinutes) {continue;
                      }// skip destinasi ini
-                $distanceScore = max(0, 1 - ($dist / 50));
+                $distanceScore = max(0, 1 - ($dist / 15));
                 $bayesianScore = $candidate->bayesian_score ?? 0;
 
                 // Diversity bonus: kategori yang belum muncul dapat bonus
@@ -104,9 +104,9 @@ private array $visitDurationByCategory = [
                 $categoryCount = count(array_filter($visitedCategories, fn($k) => $k === $kategoriNama));
                 $diversityBonus = $categoryCount === 0 ? 0.50 : ($categoryCount === 1 ? 0.00 : -0.50);
 
-                $combinedScore = ($distanceScore * 0.25)
-                               + ($bayesianScore  * 0.35)
-                               + ($diversityBonus * 0.40);
+                $combinedScore = ($distanceScore * 0.35)
+                               + ($bayesianScore  * 0.30)
+                               + ($diversityBonus * 0.35);
 
                 if ($combinedScore > $bestScore) {
                     $bestScore    = $combinedScore;
