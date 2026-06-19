@@ -554,7 +554,7 @@ function waybotApp() {
                     const locationName = await this.getLocationName(coords.lat, coords.lng);
                     this.gpsCoords = coords;
                     this.isTyping = false;
-                    this.inputMessage = `📍 ${locationName} (GPS)`;
+                    this.inputMessage = `📍 ${locationName} (GPS Location)`;
                     await this.sendMessage(coords);
 
                 } catch (err) {
