@@ -39,6 +39,14 @@
 </div>
 @endif
 
+<!-- Error Alert -->
+@if(session('error'))
+<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6">
+    <i class="fas fa-exclamation-circle mr-2"></i>
+    {{ session('error') }}
+</div>
+@endif
+
 <!-- Category Grid -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
     @forelse($kategori as $item)
@@ -64,14 +72,24 @@
                 </p>
             </div>
 
-            <!-- Action -->
-            <div class="pt-4 border-t flex justify-end">
-                <button
-                     onclick="openEditModal({{ $item->id }})"
-                     class="bg-blue-500 text-white px-3 py-1 rounded">
-                       Edit
-                </button>
-            </div>
+            <<!-- Action -->
+<div class="pt-4 border-t flex justify-end gap-2">
+    <button
+         onclick="openEditModal({{ $item->id }})"
+         class="bg-blue-500 text-white px-3 py-1 rounded">
+           Edit
+    </button>
+
+    <form action="{{ route('admin.kategori.destroy', $item->id) }}"
+          method="POST"
+          onsubmit="return confirm('Are you sure you want to delete this category?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">
+            Delete
+        </button>
+    </form>
+</div>
         </div>
     @empty
         <div class="col-span-3 text-center py-20 text-gray-400">
@@ -119,7 +137,8 @@
 
             <textarea name="deskripsi_kategori"
                       placeholder="Description"
-                      class="w-full mb-4 px-4 py-3 border rounded-lg"></textarea>
+                      class="w-full mb-4 px-4 py-3 border rounded-lg"
+                      required></textarea>
 
             <div class="flex gap-2">
                 <button type="submit"
@@ -154,7 +173,8 @@
 
             <textarea name="deskripsi_kategori"
                       id="editDeskripsiKategori"
-                      class="w-full mb-4 px-4 py-3 border rounded-lg"></textarea>
+                      class="w-full mb-4 px-4 py-3 border rounded-lg"
+                      required></textarea>
 
             <div class="flex gap-2">
                 <button type="submit"

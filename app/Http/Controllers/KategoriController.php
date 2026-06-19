@@ -54,4 +54,20 @@ class KategoriController extends Controller
     {
         return response()->json($kategori);
     }
+
+    // Method untuk hapus kategori
+public function destroy(Kategori $kategori)
+{
+    // opsional: cegah hapus kalau masih ada destinasi terkait
+    if ($kategori->destinasi()->exists()) {
+        return redirect()->route('admin.kategori.index')
+            ->with('error', 'Category cannot be deleted because it still has destinations.');
+    }
+
+    $kategori->delete();
+
+    return redirect()->route('admin.kategori.index')
+        ->with('success', 'Category deleted successfully!');
+}
+
 }

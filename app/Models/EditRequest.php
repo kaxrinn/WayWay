@@ -17,6 +17,7 @@ class EditRequest extends Model
     'keterangan',
     'status',
     'approved_by',
+    'approved_at',
     'admin_notes'
 ];
 

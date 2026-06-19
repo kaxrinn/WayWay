@@ -28,7 +28,7 @@ class WaybotService
             'question' => "What's your budget per destination?",
             'options'  => [
                 '💸 Free only',
-                '🪙 Under Rp 50,000',
+                '💰 Under Rp 50,000',
                 '💰 Rp 50,000 – 200,000',
                 '💎 Above Rp 200,000',
             ],
@@ -237,22 +237,14 @@ class WaybotService
             $this->systemPrompt() . "\n\n" . $this->fewShotPrompt($destinasi, $prefs)
         );
 
-        return [
-            'message'           => $reply,
-            'type'              => 'recommendation',
-            'context_destinasi' => $destinasi->pluck('id')->toArray(),
-            'destinasi_cards'   => $destinasi->take(3)->map(fn($d) => [
-                'id'     => $d->id,
-                'nama'   => $d->nama_destinasi,
-                'harga'  => $d->harga,
-                'foto'   => $d->foto ? ($d->foto[0] ?? null) : null,
-                'lat'    => $d->latitude,
-                'lng'    => $d->longitude,
-                'rating' => $d->avg_rating,
-                'review' => $d->review_count,
-                'jarak'  => $d->jarak_km,
-            ])->toArray(),
-        ];
+        $destinasiCards = $this->buildDestinationCards($reply, $destinasi);
+
+return [
+    'message'           => $reply,
+    'type'              => 'recommendation',
+    'context_destinasi' => $destinasi->pluck('id')->toArray(),
+    'destinasi_cards'   => $destinasiCards,
+];
     }
 
     private function handleGeneral(ChatSession $session, string $userMessage): array
@@ -293,9 +285,9 @@ class WaybotService
         ];
     }
 
-    // =============================================
+    // ================
     // SQL FILTER
-    // =============================================
+    // ================
 
     private function fetchDestinasiBySqlFilter(array $prefs): \Illuminate\Support\Collection
     {
@@ -407,7 +399,7 @@ class WaybotService
     }
 
     // =============================================
-    // FEW-SHOT PROMPT (dalam bahasa Inggris)
+    // FEW-SHOT PROMPT CONSTRUCTION
     // =============================================
 
     private function fewShotPrompt(\Illuminate\Support\Collection $destinasi, array $prefs): string
@@ -581,21 +573,21 @@ What you do NOT do:
 - Make up information not found in the provided data
 - Give fewer or more than 3 recommendations when asked for recommendations
 - Give long, rambling answers without useful content
+- Write destination names as Markdown links like [name](url) — just use **bold** format
 PROMPT;
     }
 
-    // =============================================
-    // Gemini API CALL
-    // =============================================
+
+// =============================================
+// AI API CALL
+// Primary  : Google Gemini Flash
+// Fallback : Groq (LLaMA 3.3 70B)
+// Auto-switch kalau Gemini gagal atau rate limit
+// =============================================
 
 private function callGPT(ChatSession $session, string $userMessage, string $systemPrompt): string
 {
-    $apiKey = config('services.groq.key');
-
-    if (empty($apiKey)) {
-        return 'Waybot belum dikonfigurasi dengan benar.';
-    }
-
+    // Ambil 6 pesan terakhir sebagai history percakapan
     $history = ChatMessage::where('session_id', $session->id)
         ->orderBy('id', 'desc')
         ->take(6)
@@ -607,6 +599,92 @@ private function callGPT(ChatSession $session, string $userMessage, string $syst
         ])
         ->values()
         ->toArray();
+
+    // Coba Gemini Flash dulu (primary)
+    $geminiResult = $this->callGemini($systemPrompt, $history, $userMessage);
+    if ($geminiResult !== null) {
+        return $geminiResult;
+    }
+
+    // Kalau Gemini gagal, auto-switch ke Groq (fallback)
+    Log::warning('Gemini gagal, beralih ke Groq sebagai fallback');
+    return $this->callGroq($systemPrompt, $history, $userMessage);
+}
+
+// ── GEMINI FLASH ─────────────────────────────────────────────
+// Mengembalikan null kalau gagal supaya bisa di-fallback ke Groq
+
+private function callGemini(string $systemPrompt, array $history, string $userMessage): ?string
+{
+    $apiKey = config('services.gemini.key');
+
+    if (empty($apiKey)) {
+        Log::warning('Gemini API key tidak dikonfigurasi');
+        return null;
+    }
+
+
+    // system prompt gemini digabung ke dalam teks percakapan
+    $fullPrompt = $systemPrompt . "\n\n";
+    foreach ($history as $msg) {
+        $role = $msg['role'] === 'assistant' ? 'Waybot' : 'User';
+        $fullPrompt .= "{$role}: {$msg['content']}\n";
+    }
+    $fullPrompt .= "User: {$userMessage}\nWaybot:";
+
+    try {
+        $response = Http::timeout(30)
+            ->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
+                'contents' => [
+                    ['parts' => [['text' => $fullPrompt]]]
+                ],
+                'generationConfig' => [
+                    'maxOutputTokens' => 900,
+                    'temperature'     => 0.75,
+                ]
+            ]);
+
+        // Rate limit atau quota habis → fallback ke Groq
+        if ($response->status() === 429 || $response->status() === 503) {
+            Log::warning('Gemini rate limit / quota habis', ['status' => $response->status()]);
+            return null;
+        }
+
+        if (!$response->successful()) {
+            Log::error('Gemini API Error', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
+            ]);
+            return null;
+        }
+
+        $result = $response->json('candidates.0.content.parts.0.text');
+
+        // Kalau respons kosong, anggap gagal dan fallback
+        if (empty($result)) {
+            Log::warning('Gemini mengembalikan respons kosong');
+            return null;
+        }
+
+        return $result;
+
+    } catch (\Exception $e) {
+        Log::error('Gemini Exception', ['message' => $e->getMessage()]);
+        return null; // null = fallback ke Groq
+    }
+}
+
+// ── GROQ (LLAMA 3.3 70B) ─────────────────────────────────────
+// Fallback kalau Gemini gagal, rate limit, atau quota habis
+
+private function callGroq(string $systemPrompt, array $history, string $userMessage): string
+{
+    $apiKey = config('services.groq.key');
+
+    if (empty($apiKey)) {
+        Log::error('Groq API key juga tidak dikonfigurasi');
+        return 'Waybot sedang tidak tersedia. Coba lagi nanti ya! 🙏';
+    }
 
     $messages = [
         ['role' => 'system', 'content' => $systemPrompt],
@@ -627,6 +705,7 @@ private function callGPT(ChatSession $session, string $userMessage, string $syst
                     'temperature' => 0.75,
                 ]);
 
+            // Rate limit → tunggu sebentar lalu retry
             if ($response->status() === 429) {
                 if ($attempt < $maxRetries) {
                     sleep($attempt * 2);
@@ -640,16 +719,16 @@ private function callGPT(ChatSession $session, string $userMessage, string $syst
                     'status' => $response->status(),
                     'body'   => $response->body(),
                 ]);
-                return 'Oops, Waybot lagi ada gangguan. Coba lagi ya!';
+                return 'Oops, Waybot lagi ada gangguan. Coba lagi ya! 🙏';
             }
 
             return $response->json('choices.0.message.content')
-                ?? 'Oops, Waybot lagi ada gangguan. Coba lagi ya!';
+                ?? 'Oops, Waybot lagi ada gangguan. Coba lagi ya! 🙏';
 
         } catch (\Exception $e) {
             Log::error('Groq Exception', ['message' => $e->getMessage()]);
             if ($attempt === $maxRetries) {
-                return 'Oops, Waybot tidak dapat menghubungi layanan AI sekarang.';
+                return 'Oops, Waybot tidak dapat menghubungi layanan AI sekarang. 🙏';
             }
             sleep($attempt);
         }
@@ -658,7 +737,6 @@ private function callGPT(ChatSession $session, string $userMessage, string $syst
     return 'Waybot tidak dapat merespons saat ini.';
 }
     
-
     // =============================================
     // HELPERS
     // =============================================
@@ -700,6 +778,74 @@ private function callGPT(ChatSession $session, string $userMessage, string $syst
     // Tidak ada match → simpan raw input user
     $currentPrefs[$prefKey] = $userMessage;
     return $currentPrefs;
+}
+   
+   // =============================================
+// BUILD DESTINATION CARDS
+// 3 card = yang disebut Waybot di teks respons
+// 2 card = featured acak yang belum masuk 3 di atas
+// Total maksimal 5 card
+// =============================================
+
+private function buildDestinationCards(
+    string $reply,
+    \Illuminate\Support\Collection $destinasi
+): array {
+    $replyLower = strtolower($reply);
+
+    // ── Step 1: Cari destinasi yang namanya disebut di teks respons ──
+    $mentioned = collect();
+
+    foreach ($destinasi as $dest) {
+        $namaWords = explode(' ', strtolower($dest->nama_destinasi));
+        $matchCount = 0;
+
+        foreach ($namaWords as $word) {
+            // Hanya cek kata yang panjangnya lebih dari 3 huruf
+            // supaya kata pendek seperti "di", "ke", "dan" tidak salah match
+            if (strlen($word) > 3 && str_contains($replyLower, $word)) {
+                $matchCount++;
+            }
+        }
+
+        if ($matchCount > 0) {
+            $mentioned->push($dest);
+        }
+    }
+
+    // Batasi maksimal 3 dari yang disebut
+    $mentioned = $mentioned->take(3);
+
+    // ── Step 2: Ambil featured yang belum masuk ke $mentioned ──
+    $mentionedIds = $mentioned->pluck('id')->toArray();
+
+    $featuredExtra = $destinasi
+        ->filter(fn($d) => $d->is_featured)
+        ->filter(fn($d) => !in_array($d->id, $mentionedIds))
+        ->shuffle() // acak supaya tidak selalu sama
+        ->take(2);
+
+    // ── Step 3: Gabungkan, mentioned dulu baru featured extra ──
+    $combined = $mentioned->merge($featuredExtra);
+
+    // Kalau mentioned kosong sama sekali, fallback ke top 3 Bayesian
+    if ($combined->isEmpty()) {
+        $combined = $destinasi->take(3);
+    }
+
+    // Format jadi array untuk dikirim ke frontend
+    return $combined->values()->map(fn($d) => [
+        'id'       => $d->id,
+        'nama'     => $d->nama_destinasi,
+        'harga'    => $d->harga,
+        'foto'     => $d->foto ? ($d->foto[0] ?? null) : null,
+        'lat'      => $d->latitude,
+        'lng'      => $d->longitude,
+        'rating'   => $d->avg_rating,
+        'review'   => $d->review_count,
+        'jarak'    => $d->jarak_km,
+        'featured' => (bool) $d->is_featured,
+    ])->toArray();
 }
 
     private function extractKeyword(string $message): string

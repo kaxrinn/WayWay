@@ -144,6 +144,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
         Route::get('/kategori/{kategori}/data', [KategoriController::class, 'getData'])->name('kategori.getData');
         Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
+        Route::delete('/kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
         
         // Promosi Management
 Route::get('/promosi', function () {

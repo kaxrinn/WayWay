@@ -100,17 +100,19 @@ class WisatawanController extends Controller
         $kategori  = Kategori::all();
         $destinasi = Destinasi::with('kategori')->where('status', 'active');
 
+
         // SEARCH
-        if ($request->filled('q')) {
-            $q = $request->q;
-            $destinasi->where(function ($query) use ($q) {
-                $query->where('nama_destinasi', 'like', "%$q%")
-                      ->orWhere('deskripsi', 'like', "%$q%")
-                      ->orWhereHas('kategori', function ($kat) use ($q) {
-                          $kat->where('nama_kategori', 'like', "%$q%");
-                      });
-            });
-        }
+    if ($request->filled('q')) {
+        $q = $request->q;
+        $destinasi->where(function ($query) use ($q) {
+            $query->where('nama_destinasi', 'like', "%$q%")
+                ->orWhere('deskripsi', 'like', "%$q%")
+                ->orWhereHas('kategori', function ($kat) use ($q) {
+                    $kat->where('nama_kategori', 'like', "%$q%");
+                });
+        })
+        ->orderByRaw("CASE WHEN nama_destinasi LIKE ? THEN 0 ELSE 1 END", ["%$q%"]);
+    }
 
         // FILTER kategori
         if ($request->filled('kategori') && $request->kategori !== 'all') {

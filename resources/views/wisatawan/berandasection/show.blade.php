@@ -105,7 +105,7 @@
                         </svg>
                     </button>
                 @else
-                    <a href="{{ route('login') }}"
+                    <a href="{{ route('wisatawan.login') }}"
                        class="mt-1 p-2 bg-white border border-gray-200 shadow-sm
                               hover:bg-red-50 rounded-xl transition">
 
@@ -270,7 +270,7 @@
             @else
             <div class="pt-6 border-t border-gray-200 text-center">
                 <p class="text-gray-600 mb-3 text-sm">Login to leave a review</p>
-                <a href="{{ route('login') }}"
+                <a href="{{ route('wisatawan.login') }}"
                    class="inline-flex items-center gap-2 px-6 py-2 bg-[#5b9ac7] hover:bg-[#496d9e]
                           text-white font-medium rounded-xl transition text-sm">
                     Login Now

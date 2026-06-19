@@ -168,8 +168,18 @@ class PemilikDestinasiController extends Controller
         $limits = $user->getPaketLimits();
         $destinasi = Destinasi::where('user_id', $user->id)->findOrFail($id);
         
+        $canEdit = $limits['can_edit_foto'] ?? false;
+        
+        if (!$canEdit) {
+            $canEdit = \App\Models\EditRequest::where('user_id', $user->id)
+                ->where('destinasi_id', $destinasi->id)
+                ->where('status', 'approved')
+                ->where('approved_at', '>=', now()->subDays(7))
+                ->exists();
+        }
+        
         // Check apakah bisa edit foto langsung
-        if (!$limits['can_edit_foto']) {
+        if (!$canEdit) {
             return redirect()->route('pemilik.edit-request.create', ['destinasi_id' => $id])
                 ->with('info', 'Paket Basic tidak bisa edit langsung. Silakan ajukan request edit.');
         }
@@ -188,8 +198,18 @@ class PemilikDestinasiController extends Controller
         $limits = $user->getPaketLimits();
         $destinasi = Destinasi::where('user_id', $user->id)->findOrFail($id);
         
+        $canEdit = $limits['can_edit_foto'] ?? false;
+        
+        if (!$canEdit) {
+            $canEdit = \App\Models\EditRequest::where('user_id', $user->id)
+                ->where('destinasi_id', $destinasi->id)
+                ->where('status', 'approved')
+                ->where('approved_at', '>=', now()->subDays(7))
+                ->exists();
+        }
+
         // Check permission
-        if (!$limits['can_edit_foto']) {
+        if (!$canEdit) {
             return back()->with('error', 'Paket Basic tidak bisa edit langsung!');
         }
         

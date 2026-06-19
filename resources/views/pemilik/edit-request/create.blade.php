@@ -4,10 +4,6 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto px-4 sm:px-0">
-    <a href="{{ route('pemilik.edit-request.index') }}" 
-       class="inline-flex items-center text-gray-600 hover:text-primary mb-6 transition">
-        <i class="fas fa-arrow-left mr-2"></i> Back
-    </a>
     
     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
         <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 sm:px-8 py-5 sm:py-6">

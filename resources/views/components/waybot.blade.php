@@ -100,7 +100,7 @@
                         </svg>
                     </div>
                     <div class="waybot-msg-group">
-                        <div :class="msg.role === 'user' ? 'waybot-bubble--user' : 'waybot-bubble--bot'" class="waybot-bubble" x-html="formatMessage(msg.content)"></div>
+                        <div :class="msg.role === 'user' ? 'waybot-bubble--user' : 'waybot-bubble--bot'" class="waybot-bubble" x-html="formatMessage(msg.content, msg.destinasi_cards)"></div>
 
                         {{-- Option chips --}}
                         <template x-if="msg.options && msg.options.length > 0 && !msg.answered">
@@ -127,15 +127,27 @@
                             <div class="waybot-cards-scroll">
                                 <template x-for="card in msg.destinasi_cards" :key="card.id">
                                     <a :href="'/destinasi/' + card.id" target="_blank" class="waybot-dest-card">
-                                        <div class="waybot-dest-card-img">
-                                            <img x-show="card.foto" :src="'/storage/' + card.foto" :alt="card.nama" loading="lazy">
-                                            <div x-show="!card.foto" class="waybot-dest-card-placeholder">🗺️</div>
-                                        </div>
-                                        <div class="waybot-dest-card-body">
-                                            <p class="waybot-dest-card-name" x-text="card.nama"></p>
-                                            <p class="waybot-dest-card-price" x-text="card.harga > 0 ? 'Rp ' + formatRupiah(card.harga) : 'Gratis'"></p>
-                                        </div>
-                                    </a>
+    <div class="waybot-dest-card-img" style="position:relative;">
+        <img
+            x-show="card.foto"
+            :src="'/storage/' + card.foto"
+            :alt="card.nama"
+            loading="lazy"
+        >
+        <div x-show="!card.foto" class="waybot-dest-card-placeholder">🗺️</div>
+        {{-- Badge featured muncul kalau destinasinya featured --}}
+        <span
+            x-show="card.featured"
+            class="waybot-dest-card-featured"
+        >⭐ Featured</span>
+    </div>
+    <div class="waybot-dest-card-body">
+        <p class="waybot-dest-card-name" x-text="card.nama"></p>
+        <p class="waybot-dest-card-price"
+           x-text="card.harga > 0 ? 'Rp ' + formatRupiah(card.harga) : 'Gratis'">
+        </p>
+    </div>
+</a>
                                 </template>
                             </div>
                         </template>
@@ -392,6 +404,36 @@
 .waybot-send-btn:hover:not(:disabled) { transform: scale(1.05); }
 .waybot-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .waybot-footer-text { text-align: center; font-size: 0.63rem; color: #cbd5e1; margin: 7px 0 0; }
+
+/* Link destinasi yang bisa diklik di dalam teks respons Waybot */
+.waybot-dest-link {
+    color: #1d4ed8;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.waybot-dest-link:hover {
+    color: #1e40af;
+    text-decoration-style: solid;
+}
+
+/* Badge featured di flash card */
+.waybot-dest-card-featured {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+}
+
 </style>
 
 <script>
@@ -600,12 +642,32 @@ function waybotApp() {
             localStorage.removeItem('waybot_session');
         },
 
-        formatMessage(text) {
-            if (!text) return '';
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            text = text.replace(/\n/g, '<br>');
-            return text;
-        },
+        formatMessage(text, destinasiCards) {
+    if (!text) return '';
+     
+    text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+    // Ubah **nama** jadi link kalau nama itu ada di destinasi cards
+    text = text.replace(/\*\*(.*?)\*\*/g, (match, nama) => {
+        if (destinasiCards && destinasiCards.length > 0) {
+            const found = destinasiCards.find(card => {
+                const cardNama = card.nama.toLowerCase();
+                const targetNama = nama.toLowerCase();
+                // Cek dua arah supaya partial match juga ketangkap
+                return cardNama.includes(targetNama) ||
+                       targetNama.includes(cardNama);
+            });
+
+            if (found) {
+                return `<a href="/destinasi/${found.id}" target="_blank" class="waybot-dest-link"><strong>${nama}</strong></a>`;
+            }
+        }
+        // Kalau tidak ketemu di cards, tetap bold biasa
+        return `<strong>${nama}</strong>`;
+    });
+
+    text = text.replace(/\n/g, '<br>');
+    return text;
+},
 
         formatRupiah(num) {
             return new Intl.NumberFormat('id-ID').format(num);
