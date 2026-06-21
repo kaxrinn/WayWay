@@ -1,0 +1,5 @@
+$kind: collection
+name: '🧳 Travel Agent'
+description: |-
+  Endpoints for Travel Agent role.
+  Login as Travel Agent first before using these endpoints.

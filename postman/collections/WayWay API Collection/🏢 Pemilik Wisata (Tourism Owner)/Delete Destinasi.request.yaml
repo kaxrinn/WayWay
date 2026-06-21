@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Delete Destinasi'
+method: DELETE
+url: '{{base_url}}/pemilik/destinasi/{{destinasi_id}}'
+order: 5000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Destinasi deleted", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302]);
+      });

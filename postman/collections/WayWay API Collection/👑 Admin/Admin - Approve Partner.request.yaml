@@ -1,0 +1,25 @@
+$kind: http-request
+name: 'Admin - Approve Partner'
+method: POST
+url: '{{base_url}}/admin/users/{{destinasi_id}}/approve-partner'
+order: 3000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "role": "pemilik_wisata"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Partner approved", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

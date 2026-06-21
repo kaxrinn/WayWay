@@ -1,0 +1,32 @@
+$kind: http-request
+name: 'Update Itinerary'
+method: PUT
+url: '{{base_url}}/itinerary/{{itinerary_history_id}}'
+order: 4000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "nama_itinerary": "Liburan Batam 3 Hari (Updated)",
+      "tanggal_mulai": "2025-08-01",
+      "tanggal_selesai": "2025-08-03",
+      "catatan": "Perjalanan wisata keluarga - diperbarui",
+      "destinasi": [
+        {"destinasi_id": 1, "hari": 1, "urutan": 1, "catatan": "Pagi hari"},
+        {"destinasi_id": 2, "hari": 2, "urutan": 1, "catatan": "Siang hari"}
+      ]
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Itinerary updated", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

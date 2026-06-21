@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Get Itinerary Detail'
+method: GET
+url: '{{base_url}}/itinerary/{{itinerary_history_id}}'
+order: 3000
+headers:
+  - key: Accept
+    value: 'application/json'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Itinerary detail returns 200 or 404", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 404]);
+      });

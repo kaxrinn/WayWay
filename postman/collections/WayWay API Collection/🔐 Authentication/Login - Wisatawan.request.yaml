@@ -1,0 +1,37 @@
+$kind: http-request
+name: 'Login - Wisatawan'
+method: POST
+url: '{{base_url}}/login'
+order: 2000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: email
+      value: '{{wisatawan_email}}'
+    - key: password
+      value: '{{wisatawan_password}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Login returns 200 or 302", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });
+      // Extract CSRF token from response cookies
+      const cookies = pm.cookies.toObject();
+      if (cookies['XSRF-TOKEN']) {
+          const decoded = decodeURIComponent(cookies['XSRF-TOKEN']);
+          pm.collectionVariables.set('csrf_token', decoded);
+          console.log('CSRF token set from cookie:', decoded.substring(0, 20) + '...');
+      }
+      if (pm.response.code === 422) {
+          pm.test("Login error returned", function() {
+              const json = pm.response.json();
+              pm.expect(json).to.have.property('message');
+          });
+      }

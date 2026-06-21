@@ -1,0 +1,45 @@
+$kind: http-request
+name: 'Update Travel Package'
+method: POST
+url: '{{base_url}}/travel-agent/packages/{{travel_package_id}}'
+order: 4000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: formdata
+  content:
+    - key: _method
+      type: text
+      value: 'PUT'
+    - key: nama_paket
+      type: text
+      value: 'Paket Wisata Batam 3 Hari 2 Malam (Updated)'
+    - key: deskripsi
+      type: text
+      value: 'Paket wisata lengkap menjelajahi keindahan Batam - diperbarui'
+    - key: harga
+      type: text
+      value: '1750000'
+    - key: durasi_hari
+      type: text
+      value: '3'
+    - key: min_peserta
+      type: text
+      value: '2'
+    - key: max_peserta
+      type: text
+      value: '25'
+    - key: include
+      type: text
+      value: 'Hotel Bintang 3, Transport AC, Makan 3x sehari, Guide, Snorkeling'
+    - key: exclude
+      type: text
+      value: 'Tiket pesawat, Pengeluaran pribadi'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Travel package updated", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

@@ -1,0 +1,34 @@
+$kind: http-request
+name: 'Save Itinerary from Waybot'
+method: POST
+url: '{{base_url}}/itinerary/save-from-waybot'
+order: 6000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "session_token": "{{waybot_session_token}}",
+      "nama_itinerary": "Itinerary dari Waybot",
+      "tanggal_mulai": "2025-08-01",
+      "tanggal_selesai": "2025-08-03"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Itinerary saved from Waybot", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });
+      if (pm.response.code === 200 || pm.response.code === 201) {
+          const json = pm.response.json();
+          if (json && json.id) {
+              pm.collectionVariables.set("itinerary_history_id", json.id);
+          }
+      }

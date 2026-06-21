@@ -1,0 +1,28 @@
+$kind: http-request
+name: 'Kirim Pesan (Contact)'
+method: POST
+url: '{{base_url}}/kontak'
+order: 6000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: nama
+      value: 'Test Wisatawan'
+    - key: email
+      value: '{{wisatawan_email}}'
+    - key: subjek
+      value: 'Pertanyaan tentang destinasi wisata'
+    - key: pesan
+      value: 'Saya ingin mengetahui lebih lanjut tentang destinasi wisata di Batam'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Contact message sent", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

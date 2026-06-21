@@ -1,0 +1,36 @@
+$kind: http-request
+name: 'Submit Edit Request'
+method: POST
+url: '{{base_url}}/pemilik/edit-requests'
+order: 10000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: formdata
+  content:
+    - key: destinasi_id
+      type: text
+      value: '{{destinasi_id}}'
+    - key: field_name
+      type: text
+      value: 'deskripsi'
+    - key: new_value
+      type: text
+      value: 'Deskripsi baru yang lebih lengkap dan informatif'
+    - key: alasan
+      type: text
+      value: 'Memperbarui informasi destinasi'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Edit request submitted", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });
+      if (pm.response.code === 200 || pm.response.code === 201) {
+          const json = pm.response.json();
+          if (json && json.id) {
+              pm.collectionVariables.set("edit_request_id", json.id);
+          }
+      }

@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Favorit List'
+method: GET
+url: '{{base_url}}/wisatawan/favorit'
+order: 5000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Favorit list loads", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

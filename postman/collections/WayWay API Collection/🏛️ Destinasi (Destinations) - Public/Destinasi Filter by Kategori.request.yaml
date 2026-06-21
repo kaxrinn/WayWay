@@ -1,0 +1,18 @@
+$kind: http-request
+name: 'Destinasi Filter by Kategori'
+method: GET
+url: '{{base_url}}/destinasi'
+order: 3000
+queryParams:
+  - key: kategori
+    value: '{{kategori_id}}'
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Filter by kategori returns 200", function() {
+          pm.expect(pm.response.code).to.equal(200);
+      });

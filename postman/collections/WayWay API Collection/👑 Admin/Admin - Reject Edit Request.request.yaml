@@ -1,0 +1,25 @@
+$kind: http-request
+name: 'Admin - Reject Edit Request'
+method: POST
+url: '{{base_url}}/admin/edit-requests/{{edit_request_id}}/reject'
+order: 9000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "alasan": "Perubahan tidak sesuai dengan kebijakan platform"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Edit request rejected", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

@@ -1,0 +1,32 @@
+$kind: http-request
+name: 'Submit Partner Application'
+method: POST
+url: '{{base_url}}/partner'
+order: 9000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: nama_usaha
+      value: 'Wisata Batam Indah'
+    - key: jenis_partner
+      value: 'pemilik_wisata'
+    - key: deskripsi
+      value: 'Usaha wisata yang bergerak di bidang pariwisata Batam'
+    - key: alamat
+      value: 'Jl. Batam Center, Batam'
+    - key: no_telepon
+      value: '081234567890'
+    - key: email_usaha
+      value: '{{pemilik_email}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Partner application submitted", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });

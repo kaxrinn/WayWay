@@ -1,0 +1,37 @@
+$kind: http-request
+name: 'Midtrans Payment Notification'
+method: POST
+url: '{{base_url}}/webhooks/midtrans'
+order: 1000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "transaction_time": "2025-07-01 10:00:00",
+      "transaction_status": "settlement",
+      "transaction_id": "{{transaksi_id}}",
+      "status_message": "midtrans payment notification",
+      "status_code": "200",
+      "signature_key": "{{midtrans_signature}}",
+      "payment_type": "bank_transfer",
+      "order_id": "WAYWAY-{{transaksi_id}}",
+      "merchant_id": "G123456789",
+      "gross_amount": "1500000.00",
+      "fraud_status": "accept",
+      "currency": "IDR"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Webhook received", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 204]);
+      });
+      pm.test("Response is OK", function() {
+          pm.expect(pm.response.code).to.not.equal(500);
+      });

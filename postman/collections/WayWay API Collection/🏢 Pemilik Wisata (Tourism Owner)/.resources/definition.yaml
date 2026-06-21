@@ -1,0 +1,5 @@
+$kind: collection
+name: '🏢 Pemilik Wisata (Tourism Owner)'
+description: |-
+  Endpoints for Pemilik Wisata (Tourism Owner) role.
+  Login as Pemilik Wisata first before using these endpoints.

@@ -1,0 +1,17 @@
+$kind: http-request
+name: 'Admin - Approve Travel Agent'
+method: POST
+url: '{{base_url}}/admin/travel-agents/{{travel_package_id}}/approve'
+order: 14500
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Travel agent approved", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

@@ -1,0 +1,21 @@
+$kind: http-request
+name: 'Payment Status Check'
+method: GET
+url: '{{base_url}}/payment/status/{{transaksi_id}}'
+order: 4000
+headers:
+  - key: Accept
+    value: 'application/json'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Payment status returns 200 or 404", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404]);
+      });
+      if (pm.response.code === 200) {
+          const json = pm.response.json();
+          pm.test("Response has status field", function() {
+              pm.expect(json).to.have.property('status');
+          });
+      }

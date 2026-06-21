@@ -1,0 +1,38 @@
+$kind: http-request
+name: 'Admin - Create Subscription Package'
+method: POST
+url: '{{base_url}}/admin/subscription-packages'
+order: 12500
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: nama
+      value: 'Paket Premium'
+    - key: deskripsi
+      value: 'Paket berlangganan premium dengan fitur lengkap'
+    - key: harga
+      value: '299000'
+    - key: durasi_bulan
+      value: '1'
+    - key: max_destinasi
+      value: '10'
+    - key: fitur
+      value: 'Unlimited destinasi, Priority support, Analytics'
+    - key: role_target
+      value: 'pemilik_wisata'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Subscription package created", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });
+      if (pm.response.code === 200 || pm.response.code === 201) {
+          const json = pm.response.json();
+          if (json && json.id) {
+              pm.collectionVariables.set("subscription_package_id", json.id);
+          }
+      }

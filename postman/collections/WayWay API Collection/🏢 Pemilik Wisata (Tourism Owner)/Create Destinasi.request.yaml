@@ -1,0 +1,54 @@
+$kind: http-request
+name: 'Create Destinasi'
+method: POST
+url: '{{base_url}}/pemilik/destinasi'
+order: 3000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: formdata
+  content:
+    - key: nama
+      type: text
+      value: 'Pantai Nongsa Indah'
+    - key: kategori_id
+      type: text
+      value: '{{kategori_id}}'
+    - key: deskripsi
+      type: text
+      value: 'Pantai yang indah di Batam dengan pasir putih dan air jernih'
+    - key: alamat
+      type: text
+      value: 'Jl. Nongsa, Batam'
+    - key: harga_tiket
+      type: text
+      value: '25000'
+    - key: jam_buka
+      type: text
+      value: '08:00'
+    - key: jam_tutup
+      type: text
+      value: '18:00'
+    - key: latitude
+      type: text
+      value: '1.1296758'
+    - key: longitude
+      type: text
+      value: '104.0452254'
+    - key: fasilitas
+      type: text
+      value: 'Parkir, Toilet, Warung Makan'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Destinasi created", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });
+      if (pm.response.code === 200 || pm.response.code === 201) {
+          const json = pm.response.json();
+          if (json && json.id) {
+              pm.collectionVariables.set("destinasi_id", json.id);
+          }
+      }

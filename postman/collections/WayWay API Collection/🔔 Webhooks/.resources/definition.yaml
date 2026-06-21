@@ -1,0 +1,6 @@
+$kind: collection
+name: '🔔 Webhooks'
+description: |-
+  Webhook endpoints for payment notifications and callbacks.
+  These endpoints are called by Midtrans payment gateway.
+  The signature_key must be valid for the webhook to be processed.

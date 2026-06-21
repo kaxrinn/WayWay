@@ -32,7 +32,7 @@
 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full">
-            <thead class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+            <thead class="bg-gradient-to-r from-primary to-blue-400 text-white">
                 <tr>
                     <th class="px-6 py-3 text-left text-sm font-semibold">No</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold">Package</th>

@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Admin Dashboard'
+method: GET
+url: '{{base_url}}/admin/dashboard'
+order: 1000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Admin dashboard loads", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

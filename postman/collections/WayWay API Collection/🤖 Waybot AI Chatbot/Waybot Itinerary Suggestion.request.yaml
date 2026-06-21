@@ -1,0 +1,32 @@
+$kind: http-request
+name: 'Waybot Itinerary Suggestion'
+method: POST
+url: '{{base_url}}/waybot/itinerary'
+order: 5000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "session_token": "{{waybot_session_token}}",
+      "destinasi_ids": [1, 2, 3],
+      "durasi_hari": 3,
+      "preferensi": "wisata alam dan kuliner"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Itinerary suggestion returns 200", function() {
+          pm.expect(pm.response.code).to.equal(200);
+      });
+      pm.test("Response has itinerary data", function() {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property('success');
+      });

@@ -1,0 +1,30 @@
+$kind: http-request
+name: 'Admin - Create Kategori'
+method: POST
+url: '{{base_url}}/admin/kategori'
+order: 11000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: nama
+      value: 'Wisata Bahari'
+    - key: deskripsi
+      value: 'Destinasi wisata yang berhubungan dengan laut dan pantai'
+    - key: icon
+      value: 'fa-water'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Kategori created", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });
+      if (pm.response.code === 200 || pm.response.code === 201) {
+          const json = pm.response.json();
+          if (json && json.id) {
+              pm.collectionVariables.set("kategori_id", json.id);
+          }
+      }

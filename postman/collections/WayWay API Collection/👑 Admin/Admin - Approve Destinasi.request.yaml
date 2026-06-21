@@ -1,0 +1,17 @@
+$kind: http-request
+name: 'Admin - Approve Destinasi'
+method: POST
+url: '{{base_url}}/admin/destinasi/{{destinasi_id}}/approve'
+order: 5000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Destinasi approved", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

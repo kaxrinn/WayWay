@@ -1,0 +1,26 @@
+$kind: http-request
+name: 'Admin - Update Kategori'
+method: POST
+url: '{{base_url}}/admin/kategori/{{kategori_id}}'
+order: 11500
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: _method
+      value: 'PUT'
+    - key: nama
+      value: 'Wisata Bahari (Updated)'
+    - key: deskripsi
+      value: 'Destinasi wisata bahari yang diperbarui'
+    - key: icon
+      value: 'fa-water'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Kategori updated", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

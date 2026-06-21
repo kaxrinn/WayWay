@@ -1,0 +1,39 @@
+$kind: http-request
+name: 'Create Itinerary'
+method: POST
+url: '{{base_url}}/itinerary'
+order: 2000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+  - key: Content-Type
+    value: 'application/json'
+body:
+  type: json
+  content: |-
+    {
+      "nama_itinerary": "Liburan Batam 3 Hari",
+      "tanggal_mulai": "2025-08-01",
+      "tanggal_selesai": "2025-08-03",
+      "catatan": "Perjalanan wisata keluarga",
+      "destinasi": [
+        {"destinasi_id": 1, "hari": 1, "urutan": 1, "catatan": "Pagi hari"},
+        {"destinasi_id": 2, "hari": 1, "urutan": 2, "catatan": "Siang hari"},
+        {"destinasi_id": 3, "hari": 2, "urutan": 1, "catatan": "Pagi hari"}
+      ]
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Itinerary created", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+      });
+      if (pm.response.code === 200 || pm.response.code === 201) {
+          const json = pm.response.json();
+          if (json && json.id) {
+              pm.collectionVariables.set("itinerary_history_id", json.id);
+          }
+      }

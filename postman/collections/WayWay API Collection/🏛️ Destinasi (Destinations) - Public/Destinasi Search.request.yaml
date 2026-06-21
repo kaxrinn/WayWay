@@ -1,0 +1,18 @@
+$kind: http-request
+name: 'Destinasi Search'
+method: GET
+url: '{{base_url}}/destinasi'
+order: 2000
+queryParams:
+  - key: q
+    value: 'pantai'
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Search returns 200", function() {
+          pm.expect(pm.response.code).to.equal(200);
+      });

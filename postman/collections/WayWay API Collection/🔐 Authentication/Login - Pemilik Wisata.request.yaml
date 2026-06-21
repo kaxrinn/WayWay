@@ -1,0 +1,30 @@
+$kind: http-request
+name: 'Login - Pemilik Wisata'
+method: POST
+url: '{{base_url}}/login'
+order: 4000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: email
+      value: '{{pemilik_email}}'
+    - key: password
+      value: '{{pemilik_password}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Pemilik login returns 200 or 302", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });
+      const cookies = pm.cookies.toObject();
+      if (cookies['XSRF-TOKEN']) {
+          const decoded = decodeURIComponent(cookies['XSRF-TOKEN']);
+          pm.collectionVariables.set('csrf_token', decoded);
+          console.log('Pemilik CSRF token set:', decoded.substring(0, 20) + '...');
+      }

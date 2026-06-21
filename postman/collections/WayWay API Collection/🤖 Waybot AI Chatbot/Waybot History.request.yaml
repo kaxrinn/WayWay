@@ -1,0 +1,23 @@
+$kind: http-request
+name: 'Waybot History'
+method: GET
+url: '{{base_url}}/waybot/history'
+order: 3000
+headers:
+  - key: Accept
+    value: 'application/json'
+queryParams:
+  - key: session_token
+    value: '{{waybot_session_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("History returns 200", function() {
+          pm.expect(pm.response.code).to.equal(200);
+      });
+      pm.test("Response has messages array", function() {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property('messages');
+          pm.expect(json.messages).to.be.an('array');
+      });

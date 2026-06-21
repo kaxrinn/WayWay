@@ -1,0 +1,12 @@
+$kind: http-request
+name: 'Destinasi Detail'
+method: GET
+url: '{{base_url}}/destinasi/{{destinasi_id}}'
+order: 4000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Destinasi detail loads", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 404]);
+      });

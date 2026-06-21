@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Pemilik Dashboard'
+method: GET
+url: '{{base_url}}/pemilik/dashboard'
+order: 1000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Dashboard loads", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

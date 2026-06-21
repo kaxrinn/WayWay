@@ -1,0 +1,30 @@
+$kind: http-request
+name: 'Update Wisatawan Profile'
+method: POST
+url: '{{base_url}}/wisatawan/profil'
+order: 3000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: formdata
+  content:
+    - key: _method
+      type: text
+      value: 'PUT'
+    - key: name
+      type: text
+      value: 'Test Wisatawan Updated'
+    - key: phone
+      type: text
+      value: '081234567890'
+    - key: bio
+      type: text
+      value: 'Saya suka berwisata ke tempat-tempat indah'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Profile updated", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

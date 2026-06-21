@@ -1,0 +1,22 @@
+$kind: http-request
+name: 'Payment Callback (Return URL)'
+method: GET
+url: '{{base_url}}/payment/callback'
+order: 5000
+queryParams:
+  - key: order_id
+    value: 'WAYWAY-{{transaksi_id}}'
+  - key: status_code
+    value: '200'
+  - key: transaction_status
+    value: 'settlement'
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Payment callback handled", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

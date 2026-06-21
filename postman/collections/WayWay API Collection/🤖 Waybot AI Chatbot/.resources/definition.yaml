@@ -1,0 +1,6 @@
+$kind: collection
+name: '🤖 Waybot AI Chatbot'
+description: |-
+  Endpoints for the Waybot AI chatbot feature.
+  Waybot provides AI-powered tourism recommendations and itinerary suggestions.
+  The session_token is automatically saved after the first chat request.

@@ -1,0 +1,31 @@
+$kind: http-request
+name: 'Login'
+method: POST
+url: '{{base_url}}/login'
+order: 2000
+headers:
+  - key: Accept
+    value: 'text/html,application/json'
+body:
+  type: urlencoded
+  content:
+    - key: email
+      value: '{{wisatawan_email}}'
+    - key: password
+      value: '{{wisatawan_password}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Login successful - redirect or 200", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });
+      pm.test("Response time < 2000ms", function() {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
+      // Extract CSRF token if present
+      const responseText = pm.response.text();
+      const csrfMatch = responseText.match(/name="_token" value="([^"]+)"/);
+      if (csrfMatch) {
+          pm.collectionVariables.set("csrf_token", csrfMatch[1]);
+      }

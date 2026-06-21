@@ -1,0 +1,19 @@
+$kind: http-request
+name: 'Logout'
+method: POST
+url: '{{base_url}}/logout'
+order: 6000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Logout returns 200 or 302", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });
+      // Clear CSRF token after logout
+      pm.collectionVariables.set('csrf_token', '');

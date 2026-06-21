@@ -1,0 +1,18 @@
+$kind: http-request
+name: 'Beranda (Home)'
+method: GET
+url: '{{base_url}}/wisatawan/beranda'
+order: 1000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Beranda loads successfully", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });
+      pm.test("Response is HTML", function() {
+          pm.expect(pm.response.headers.get('Content-Type')).to.include('text/html');
+      });

@@ -1,0 +1,6 @@
+$kind: collection
+name: '🗺️ Itinerary Planner'
+description: |-
+  Endpoints for the Itinerary Planner feature.
+  Wisatawan can create, view, update, and delete travel itineraries.
+  Itineraries can also be saved from Waybot AI suggestions.

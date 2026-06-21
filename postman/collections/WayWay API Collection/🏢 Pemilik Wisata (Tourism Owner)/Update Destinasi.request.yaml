@@ -1,0 +1,51 @@
+$kind: http-request
+name: 'Update Destinasi'
+method: POST
+url: '{{base_url}}/pemilik/destinasi/{{destinasi_id}}'
+order: 4000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: formdata
+  content:
+    - key: _method
+      type: text
+      value: 'PUT'
+    - key: nama
+      type: text
+      value: 'Pantai Nongsa Indah (Updated)'
+    - key: kategori_id
+      type: text
+      value: '{{kategori_id}}'
+    - key: deskripsi
+      type: text
+      value: 'Pantai yang indah di Batam - diperbarui'
+    - key: alamat
+      type: text
+      value: 'Jl. Nongsa, Batam'
+    - key: harga_tiket
+      type: text
+      value: '30000'
+    - key: jam_buka
+      type: text
+      value: '07:00'
+    - key: jam_tutup
+      type: text
+      value: '19:00'
+    - key: latitude
+      type: text
+      value: '1.1296758'
+    - key: longitude
+      type: text
+      value: '104.0452254'
+    - key: fasilitas
+      type: text
+      value: 'Parkir, Toilet, Warung Makan, Gazebo'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Destinasi updated", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });

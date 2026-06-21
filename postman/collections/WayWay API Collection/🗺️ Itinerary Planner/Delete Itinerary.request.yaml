@@ -1,0 +1,17 @@
+$kind: http-request
+name: 'Delete Itinerary'
+method: DELETE
+url: '{{base_url}}/itinerary/{{itinerary_history_id}}'
+order: 5000
+headers:
+  - key: Accept
+    value: 'application/json'
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Itinerary deleted", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302]);
+      });

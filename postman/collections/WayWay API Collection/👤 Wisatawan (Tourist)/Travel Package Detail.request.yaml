@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Travel Package Detail'
+method: GET
+url: '{{base_url}}/travel-packages/{{travel_package_id}}'
+order: 7000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Travel package detail loads", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404]);
+      });

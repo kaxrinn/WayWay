@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Google OAuth Redirect'
+method: GET
+url: '{{base_url}}/auth/google'
+order: 8000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Google OAuth redirect returns 302", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

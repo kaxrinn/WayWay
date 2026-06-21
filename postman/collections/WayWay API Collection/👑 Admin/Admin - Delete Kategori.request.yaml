@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Admin - Delete Kategori'
+method: DELETE
+url: '{{base_url}}/admin/kategori/{{kategori_id}}'
+order: 12000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Kategori deleted", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302]);
+      });

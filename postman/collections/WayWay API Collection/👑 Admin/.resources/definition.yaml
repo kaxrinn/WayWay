@@ -1,0 +1,6 @@
+$kind: collection
+name: '👑 Admin'
+description: |-
+  Endpoints for Admin role.
+  Login as Admin first before using these endpoints.
+  Admin has full access to all platform management features.

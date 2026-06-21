@@ -72,7 +72,7 @@
                 </p>
             </div>
 
-            <<!-- Action -->
+            <!-- Action -->
 <div class="pt-4 border-t flex justify-end gap-2">
     <button
          onclick="openEditModal({{ $item->id }})"

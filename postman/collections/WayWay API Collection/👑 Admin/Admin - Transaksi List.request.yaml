@@ -1,0 +1,15 @@
+$kind: http-request
+name: 'Admin - Transaksi List'
+method: GET
+url: '{{base_url}}/admin/transaksi'
+order: 13000
+headers:
+  - key: Accept
+    value: 'text/html'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Transaksi list loads", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+      });

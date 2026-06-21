@@ -1,0 +1,24 @@
+$kind: http-request
+name: 'Submit Ulasan (Review)'
+method: POST
+url: '{{base_url}}/ulasan'
+order: 6000
+headers:
+  - key: X-CSRF-TOKEN
+    value: '{{csrf_token}}'
+body:
+  type: urlencoded
+  content:
+    - key: destinasi_id
+      value: '{{destinasi_id}}'
+    - key: rating
+      value: '5'
+    - key: komentar
+      value: 'Tempat yang sangat indah!'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Review submitted", function() {
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+      });
