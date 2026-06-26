@@ -151,6 +151,7 @@
             <!-- Google Login Button -->
             <a 
                 href="{{ route('auth.google') }}" 
+                onclick="WayWayLoading.show('login')"
                 class="w-full py-3.5 bg-white/90 border border-white/30 rounded-xl flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 text-sm font-medium text-gray-800 hover:bg-white hover:-translate-y-0.5 hover:shadow-lg no-underline">
                 <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google" class="w-[18px] h-[18px]">
                 Log in with Google
@@ -197,5 +198,11 @@ function closeModal(){
 }
 </script>
 @endif
-
+<script>
+// Trigger setelah form login di-submit
+document.querySelector('form').addEventListener('submit', function() {
+    WayWayLoading.show('login');
+});
+</script>
+   @include('wisatawan.components.loading-screen')
 </html>

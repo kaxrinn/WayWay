@@ -20,7 +20,7 @@
 
 <header class="fixed top-4 w-full z-100000">
     <div class="max-w-[1200px] mx-auto px-4">
-        <div class="bg-[#9ECCDB]/80 backdrop-blur
+        <div class="bg-[#5CA6BC]/80 backdrop-blur
                     rounded-full
                     border border-sky-200
                     px-6 h-16
@@ -30,9 +30,9 @@
             <div class="flex items-center gap-2">
                 <img src="{{ asset('assets/logo/logoo.png') }}"
                      class="h-10" alt="WayWay">
-                <span class="font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#c6c4c9] via-[#415c7f] to-[#c6c4c9]">
-                    WayWay
-                </span>
+<span class="font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#6EE7FF] via-[#244774] to-[#F2C17E] ">
+    WayWay
+</span>
             </div>
 
             <!-- DESKTOP MENU -->
@@ -159,7 +159,7 @@
 
                         <hr class="my-1">
 
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" onsubmit="WayWayLoading.show('logout')">
                             @csrf
                             <button type="submit"
                                 class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm
@@ -391,7 +391,7 @@
                     Edit Profile
                 </button>
 
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" onsubmit="WayWayLoading.show('logout')">
                     @csrf
                     <button type="submit"
                         class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">
@@ -437,3 +437,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+   @include('wisatawan.components.loading-screen')
+
+</body>

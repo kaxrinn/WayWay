@@ -133,11 +133,6 @@
                                 {{ $stop['order'] }}
                             </span>
                             <h4 class="font-bold text-slate-800 text-sm truncate">{{ $stop['nama'] }}</h4>
-                            @if(!empty($stop['is_featured']))
-                            <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
-                                Recommended
-                            </span>
-                            @endif
                         </div>
                         <div class="flex flex-wrap gap-2 text-xs text-slate-500 mb-2">
                             <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-medium">{{ $stop['kategori'] }}</span>

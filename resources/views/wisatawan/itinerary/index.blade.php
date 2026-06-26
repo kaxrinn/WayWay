@@ -105,40 +105,91 @@
 </section>
 
 {{-- ===================================================
-     LOADING OVERLAY
-     Full screen loading while generating
-=================================================== --}}
+ {{-- LOADING OVERLAY — WayWay style --}}
 <div x-show="isLoading"
-     class="fixed inset-0 z-50 flex items-center justify-center"
-     style="background: rgba(15,23,42,0.7); backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4">
-        <p class="text-base font-bold text-slate-700 mb-6 text-center">Building your itinerary...</p>
+     class="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+     style="background: rgba(27,58,92,0.75); backdrop-filter: blur(8px);">
+
+    {{-- Card putih --}}
+    <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-sm mx-4 flex flex-col items-center gap-5 relative overflow-hidden">
+
+        {{-- Kompas + Waybot --}}
+        <div class="relative w-36 h-36 flex items-center justify-center">
+            {{-- Ring luar --}}
+            <div class="absolute w-36 h-36 rounded-full"
+                 style="border:2.5px solid transparent; border-top-color:#4BA8C8; border-right-color:#E8C98A; animation:ww-spin 2s linear infinite;"></div>
+            {{-- Ring dalam dashed --}}
+            <div class="absolute w-28 h-28 rounded-full"
+                 style="border:1.5px dashed rgba(91,200,212,0.4); animation:ww-spin-r 3.5s linear infinite;"></div>
+            {{-- Titik kompas --}}
+            <div class="absolute top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full" style="background:#E8C98A;"></div>
+            <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full" style="background:#5BC8D4;"></div>
+            <div class="absolute left-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style="background:#2B7FA8;"></div>
+            <div class="absolute right-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full" style="background:#2B7FA8;"></div>
+
+            {{-- Waybot --}}
+            <div style="animation:ww-pulse 2.5s ease-in-out infinite; position:relative; z-index:2;">
+                <div style="position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:3px; height:10px; background:#1B3A5C; border-radius:2px;">
+                    <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:8px; height:8px; border-radius:50%; background:#4BA8C8; border:1.5px solid #2B7FA8;"></div>
+                </div>
+                <div style="width:68px; height:58px; background:white; border:2.5px solid #1B3A5C; border-radius:16px; display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 2px 12px rgba(43,127,168,0.15);">
+                    <div style="position:absolute; left:-8px; top:50%; transform:translateY(-50%); width:9px; height:16px; background:#DCE8EF; border:2px solid #1B3A5C; border-radius:3px;"></div>
+                    <div style="position:absolute; right:-8px; top:50%; transform:translateY(-50%); width:9px; height:16px; background:#DCE8EF; border:2px solid #1B3A5C; border-radius:3px;"></div>
+                    <div style="width:48px; height:26px; background:#1B3A5C; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:9px;">
+                        <div style="width:13px; height:11px; border:2.5px solid #5BC8D4; border-bottom:none; border-radius:7px 7px 0 0; animation:ww-blink 4s ease-in-out infinite; transform-origin:center bottom;"></div>
+                        <div style="width:13px; height:11px; border:2.5px solid #5BC8D4; border-bottom:none; border-left:none; border-radius:0 7px 0 0; animation:ww-blink 4s ease-in-out infinite 0.15s; transform-origin:center bottom;"></div>
+                    </div>
+                    <div style="position:absolute; bottom:-9px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:9px solid #1B3A5C;"></div>
+                    <div style="position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:7px solid white;"></div>
+                </div>
+                <span style="position:absolute; top:6px; right:-18px; color:#E8C98A; font-size:10px; animation:ww-float 2s ease-in-out infinite;">✦</span>
+                <span style="position:absolute; top:24px; left:-20px; color:#4BA8C8; font-size:7px; animation:ww-float 2.5s ease-in-out infinite 0.4s;">✦</span>
+            </div>
+        </div>
+
+        {{-- Brand --}}
+        <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full" style="background:#5BC8D4;"></div>
+            <span class="font-semibold text-base" style="color:#1B3A5C;">WayWay</span>
+        </div>
 
         {{-- Pipeline steps --}}
-        <div class="flex items-start gap-1 mb-6">
+        <div class="flex items-center gap-1 w-full">
             <template x-for="(step, i) in pipeline" :key="i">
                 <div class="flex items-center gap-1 flex-1">
-                    <div class="flex flex-col items-center gap-1.5 flex-shrink-0">
+                    <div class="flex flex-col items-center gap-1 flex-shrink-0">
                         <div :class="pipelineStep > i
-                            ? 'w-9 h-9 rounded-full flex items-center justify-center text-sm bg-blue-500 text-white shadow-md'
+                            ? 'w-8 h-8 rounded-full flex items-center justify-center text-xs text-white'
                             : pipelineStep === i
-                                ? 'w-9 h-9 rounded-full flex items-center justify-center text-sm bg-blue-100 text-blue-600 ring-2 ring-blue-400 animate-pulse'
-                                : 'w-9 h-9 rounded-full flex items-center justify-center text-sm bg-slate-100 text-slate-400'">
+                                ? 'w-8 h-8 rounded-full flex items-center justify-center text-xs ring-2 animate-pulse'
+                                : 'w-8 h-8 rounded-full flex items-center justify-center text-xs'"
+                             :style="pipelineStep > i
+                                ? 'background:#2B7FA8;'
+                                : pipelineStep === i
+                                    ? 'background:#EAF6FA; color:#2B7FA8; ring-color:#4BA8C8;'
+                                    : 'background:#f1f5f9; color:#94a3b8;'">
                             <span x-text="pipelineStep > i ? '✓' : step.icon"></span>
                         </div>
-                        <span class="text-xs text-slate-500 whitespace-nowrap" x-text="step.label"></span>
+                        <span class="text-xs whitespace-nowrap" style="color:#64748b;" x-text="step.label"></span>
                     </div>
                     <div x-show="i < pipeline.length - 1"
-                        :class="pipelineStep > i ? 'flex-1 h-0.5 bg-blue-400 mb-4' : 'flex-1 h-0.5 bg-slate-200 mb-4'">
+                         :style="pipelineStep > i ? 'flex:1; height:2px; background:#4BA8C8; margin-bottom:16px;' : 'flex:1; height:2px; background:#e2e8f0; margin-bottom:16px;'">
                     </div>
                 </div>
             </template>
         </div>
 
-        <p class="text-center text-blue-600 font-medium text-sm animate-pulse" x-text="loadingLabel"></p>
+        {{-- Pesan loading --}}
+        <p class="text-sm font-medium animate-pulse" style="color:#2B7FA8;" x-text="loadingLabel"></p>
+
+        {{-- Ombak bawah --}}
+        <div class="absolute bottom-0 left-0 right-0 h-12 overflow-hidden pointer-events-none">
+            <svg style="width:200%; animation:ww-wave 4s linear infinite;" viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 30 Q100 10 200 30 Q300 50 400 30 Q500 10 600 30 Q700 50 800 30 Q900 10 1000 30 Q1100 50 1200 30 Q1300 10 1400 30 Q1500 50 1600 30 L1600 50 L0 50 Z" fill="rgba(91,200,212,0.12)"/>
+            </svg>
+        </div>
     </div>
 </div>
-
 {{-- ===================================================
      MODAL STEPPER
      5 steps: Interests → Location → Companion → Date & Budget → Confirm
@@ -204,25 +255,38 @@
             <div x-show="currentStep === 1" class="space-y-3">
                 <p class="text-sm text-slate-500">Search for your starting point in Batam:</p>
                 <div class="relative">
-                    <div class="relative">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        <input type="text"
-                            x-model="locationQuery"
-                            @input.debounce.500ms="searchLocation()"
-                            @keydown.escape="locationResults = []"
-                            placeholder="e.g. Nagoya Hill, Hotel XYZ..."
-                            class="w-full pl-9 pr-10 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
-                        <button type="button" @click="useCurrentLocation()"
-                            class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg transition" title="Use GPS">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div x-show="locationResults.length > 0"
+                    <div class="relative flex items-center">
+
+    <svg class="absolute left-5 w-5 h-5 text-slate-400"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+
+    <input type="text"
+        x-model="locationQuery"
+        @input.debounce.500ms="searchLocation()"
+        @keydown.escape="locationResults = []"
+        placeholder="e.g. Nagoya Hill, Hotel XYZ..."
+        class="w-full h-14 pl-14 pr-16 rounded-xl border border-slate-200 
+        text-sm leading-none focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+    <button type="button"
+        @click="useCurrentLocation()"
+        class="absolute right-4 w-10 h-10 flex items-center justify-center
+        bg-blue-50 hover:bg-blue-100 rounded-lg">
+
+        <svg class="w-5 h-5 text-blue-600"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+
+    </button>
+
+</div>                    <div x-show="locationResults.length > 0"
                          class="search-dropdown absolute w-full bg-white border border-slate-200 rounded-xl mt-1 z-10">
                         <template x-for="(loc, i) in locationResults" :key="i">
                             <button type="button" @click="selectLocation(loc)"
@@ -289,10 +353,11 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-600 mb-2">Budget per Person (entrance fees)</label>
                     <div class="relative mb-3">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">Rp</span>
-                        <input type="number" x-model="form.budget" min="0" step="10000"
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
-                    </div>
+                        <span class="absolute left-5 top-[14px] text-slate-400 text-sm">Rp</span>
+<input type="text"
+    x-model="formattedBudget"
+    @input="form.budget = parseInt($event.target.value.replace(/\./g, '')) || 0"
+    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
                     <div class="flex gap-2 flex-wrap">
                         @foreach($budgetOptions as $val => $label)
                         <button type="button" @click="form.budget = {{ $val }}"
@@ -444,8 +509,16 @@ function itineraryApp() {
         get today() {
             return new Date().toISOString().split('T')[0];
         },
+        get formattedBudget() {
+            return this.form.budget
+                ? Number(this.form.budget).toLocaleString('id-ID')
+                : '';
+        },
 
-        get companionLabel() {
+        set formattedBudget(val) {
+            this.form.budget = parseInt(val.replace(/\./g, '')) || 0;
+        },
+                get companionLabel() {
             return { solo:'Solo', pasangan:'Couple', keluarga:'Family', grup:'Group' }[this.form.companion] || this.form.companion;
         },
 
@@ -585,4 +658,5 @@ function itineraryApp() {
     };
 }
 </script>
+
 @endpush

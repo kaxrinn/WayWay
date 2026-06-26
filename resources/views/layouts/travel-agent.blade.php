@@ -73,7 +73,7 @@
                     <i class="fas fa-bars text-xl"></i>
                 </button>
                 <div class="flex items-center ml-4 lg:ml-0">
-                    <img src="{{ asset('assets/Logo/logo.png') }}" alt="WayWay Logo" class="h-10 w-10">
+                    <img src="{{ asset('assets/Logo/logoo.png') }}" alt="WayWay Logo" class="h-10 ">
                     <span class="ml-3 font-bold text-transparent bg-clip-text bg-gradient-to-br from-[#c6c4c9] via-[#415c7f] to-[#c6c4c9]">
                         WayWay
                     </span>
@@ -102,7 +102,7 @@
                             class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-accent transition">
                         <i class="fas fa-user-edit mr-2"></i> Edit Profile
                     </button>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" onsubmit="WayWayLoading.show('logout')">
                         @csrf
                         <button type="submit"
                                 class="w-full text-left px-4 py-2 text-gray-700 hover:bg-accent transition">
@@ -271,6 +271,6 @@
         });
     }
 </script>
-
+@include('wisatawan.components.loading-screen')
 </body>
 </html>

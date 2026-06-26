@@ -80,7 +80,11 @@
 
             <template x-if="messages.length === 0">
                 <div class="waybot-welcome">
-                    <div class="waybot-welcome-emoji">🗺️</div>
+                    <div class="waybot-welcome-emoji flex justify-center">
+    <img src="{{ asset('assets/logo/waybot1.PNG') }}" 
+         alt="WayWay Logo"
+         class="w-30 object-contain">
+</div>
                     <p class="waybot-welcome-title">Hello! I'm Waybot</p>
                     <p class="waybot-welcome-sub">Your smart travel assistant in Batam. Ask anything — recommendations, prices, or best routes!</p>
                     <div class="waybot-suggestions">

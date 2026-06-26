@@ -59,8 +59,17 @@ private array $visitDurationByCategory = [
         $currentLon       = $originLon;
         $currentId        = null;
 
-        // Mulai dari destinasi skor tertinggi
-        $first = $candidates->first();
+        // Ganti $first = $candidates->first(); dengan:
+$first = $candidates->map(function ($dest) use ($originLat, $originLon) {
+    $dist = $this->haversine->distance(
+        $originLat, $originLon,
+        (float) $dest->latitude,
+        (float) $dest->longitude
+    );
+    $distScore = max(0, 1 - ($dist / 15));
+    $dest->first_score = ($dest->bayesian_score * 0.50) + ($distScore * 0.50);
+    return $dest;
+})->sortByDesc('first_score')->first();
         $visited[]   = $first->id;
         $visitedCategories[] = $first->kategori->nama_kategori ?? 'default';
 

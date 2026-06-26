@@ -22,6 +22,6 @@
     <x-waybot />
 
     @stack('scripts')
-
+@include('wisatawan.components.loading-screen')
 </body>
 </html>

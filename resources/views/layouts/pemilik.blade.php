@@ -42,9 +42,9 @@
                     
                     <div class="flex items-center gap-3">
                         <div class="p-2 rounded-lg">
-                            <img src="{{ asset('assets/Logo/logo.png')}}" 
+                            <img src="{{ asset('assets/Logo/logoo.png')}}" 
                                  alt="Logo" 
-                                 class="w-8 h-8 object-contain">
+                                 class="h-10 object-contain">
                         </div>
                         
                         <div>
@@ -87,7 +87,7 @@
                             <i class="fas fa-box mr-2"></i> Upgrade Package
                         </a>
                         <hr class="my-2">
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" onsubmit="WayWayLoading.show('logout')">
                             @csrf
                             <button type="submit" 
                                     class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition">
@@ -197,5 +197,6 @@
     </main>
     
     @stack('scripts')
+    @include('wisatawan.components.loading-screen')
 </body>
 </html>
