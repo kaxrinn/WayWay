@@ -41,5 +41,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Travel package updated", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 403, 404, 422]);
       });

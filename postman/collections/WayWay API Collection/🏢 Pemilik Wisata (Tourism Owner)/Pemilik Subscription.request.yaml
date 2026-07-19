@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Pemilik Subscription'
 method: GET
-url: '{{base_url}}/pemilik/subscription'
+url: '{{base_url}}/pemilik/paket'
 order: 7000
 headers:
   - key: Accept

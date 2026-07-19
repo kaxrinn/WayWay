@@ -30,7 +30,7 @@
                            id="nama_destinasi" 
                            name="nama_destinasi" 
                            value="{{ old('nama_destinasi') }}"
-                           placeholder="Example: Kuta Beach Bali"
+                           placeholder="Example: Bale Bale Beach"
                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 transition @error('nama_destinasi') border-red-500 @enderror"
                            required>
                     @error('nama_destinasi')

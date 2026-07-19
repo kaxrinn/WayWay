@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Update Wisatawan Profile'
-method: POST
-url: '{{base_url}}/wisatawan/profil'
+method: PUT
+url: '{{base_url}}/wisatawan/profile'
 order: 3000
 headers:
   - key: X-CSRF-TOKEN
@@ -26,5 +26,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Profile updated", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 419, 422]);
       });

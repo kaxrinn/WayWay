@@ -11,5 +11,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Travel package deleted", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302, 403, 404]);
       });

@@ -6,18 +6,9 @@ description: |-
   Complete API collection for the WayWay Laravel-based tourism platform.
   Covers all roles: Wisatawan (Tourist), Pemilik Wisata (Tourism Owner), Travel Agent, and Admin.
 
-  ## Roles
-  - **Wisatawan** — Browse destinations, manage favorites, create itineraries, chat with Waybot AI
-  - **Pemilik Wisata** — Manage tourism destinations, submit edit requests, manage subscriptions
-  - **Travel Agent** — Create and manage travel packages, manage subscriptions
-  - **Admin** — Full platform management: users, destinations, categories, subscriptions, transactions
-
   ## Authentication
   This platform uses Laravel session-based authentication with CSRF token protection.
-  Run the Login request first to obtain a session cookie and CSRF token.
-
-  ## Variables
-  Set `base_url` to your local or production server URL.
+  Run "Get CSRF Token" first, then Login requests before calling protected endpoints.
 
 variables:
   - key: base_url
@@ -69,7 +60,7 @@ scripts:
       const cookies = pm.cookies.toObject();
       if (cookies['XSRF-TOKEN']) {
           const decoded = decodeURIComponent(cookies['XSRF-TOKEN']);
-          pm.collectionVariables.set('csrf_token', decoded);
+          pm.environment.set('csrf_token', decoded);
           pm.request.headers.upsert({
               key: 'X-CSRF-TOKEN',
               value: decoded

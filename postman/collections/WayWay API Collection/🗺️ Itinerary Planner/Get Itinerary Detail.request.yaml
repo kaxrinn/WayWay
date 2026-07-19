@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Get Itinerary Detail'
 method: GET
-url: '{{base_url}}/itinerary/{{itinerary_history_id}}'
+url: '{{base_url}}/itinerary/history/{{itinerary_history_id}}'
 order: 3000
 headers:
   - key: Accept

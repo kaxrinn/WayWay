@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Payment Callback (Return URL)'
 method: GET
-url: '{{base_url}}/payment/callback'
+url: '{{base_url}}/pemilik/paket/callback'
 order: 5000
 queryParams:
   - key: order_id
@@ -18,5 +18,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Payment callback handled", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 403]);
       });

@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Pemilik Profil'
 method: GET
-url: '{{base_url}}/pemilik/profil'
+url: '{{base_url}}/pemilik/profile'
 order: 6000
 headers:
   - key: Accept

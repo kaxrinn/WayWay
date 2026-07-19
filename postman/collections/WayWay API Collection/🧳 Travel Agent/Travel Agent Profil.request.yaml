@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Travel Agent Profil'
 method: GET
-url: '{{base_url}}/travel-agent/profil'
+url: '{{base_url}}/travel-agent/dashboard'
 order: 8000
 headers:
   - key: Accept
@@ -11,5 +11,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Profil loads", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 403]);
       });

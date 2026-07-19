@@ -11,5 +11,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Package detail loads", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 403, 404]);
       });

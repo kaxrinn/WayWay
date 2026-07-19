@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Admin - User List'
 method: GET
-url: '{{base_url}}/admin/users'
+url: '{{base_url}}/admin/wisatawan'
 order: 2000
 headers:
   - key: Accept

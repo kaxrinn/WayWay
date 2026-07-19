@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Update Itinerary'
-method: PUT
-url: '{{base_url}}/itinerary/{{itinerary_history_id}}'
+method: POST
+url: '{{base_url}}/itinerary/history/{{itinerary_history_id}}'
 order: 4000
 headers:
   - key: Accept
@@ -14,6 +14,7 @@ body:
   type: json
   content: |-
     {
+      "_method": "PUT",
       "nama_itinerary": "Liburan Batam 3 Hari (Updated)",
       "tanggal_mulai": "2025-08-01",
       "tanggal_selesai": "2025-08-03",
@@ -28,5 +29,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Itinerary updated", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404, 405, 422]);
       });

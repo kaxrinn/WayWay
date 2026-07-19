@@ -2,7 +2,7 @@ $kind: http-request
 name: 'Logout'
 method: POST
 url: '{{base_url}}/logout'
-order: 6000
+order: 10000
 headers:
   - key: Accept
     value: 'application/json'
@@ -16,4 +16,4 @@ scripts:
           pm.expect(pm.response.code).to.be.oneOf([200, 302]);
       });
       // Clear CSRF token after logout
-      pm.collectionVariables.set('csrf_token', '');
+      pm.environment.set('csrf_token', '');

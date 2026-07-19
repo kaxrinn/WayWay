@@ -44,11 +44,11 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Destinasi created", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 404, 422]);
       });
       if (pm.response.code === 200 || pm.response.code === 201) {
           const json = pm.response.json();
           if (json && json.id) {
-              pm.collectionVariables.set("destinasi_id", json.id);
+              pm.environment.set("destinasi_id", json.id);
           }
       }

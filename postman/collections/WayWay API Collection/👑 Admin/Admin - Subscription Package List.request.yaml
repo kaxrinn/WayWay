@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Admin - Subscription Package List'
 method: GET
-url: '{{base_url}}/admin/subscription-packages'
+url: '{{base_url}}/admin/travel-subscriptions/packages'
 order: 12000
 headers:
   - key: Accept

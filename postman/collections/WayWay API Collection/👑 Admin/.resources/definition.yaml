@@ -1,5 +1,5 @@
 $kind: collection
-name: '👑 Admin'
+name: 👑 Admin
 description: |-
   Endpoints for Admin role.
   Login as Admin first before using these endpoints.

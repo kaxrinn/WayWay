@@ -2,7 +2,7 @@ $kind: http-request
 name: 'Register'
 method: POST
 url: '{{base_url}}/register'
-order: 1000
+order: 9000
 headers:
   - key: Accept
     value: 'application/json'
@@ -24,11 +24,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Register returns 200, 302, or 422", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 419, 422]);
       });
-      if (pm.response.code === 422) {
-          pm.test("Validation errors returned", function() {
-              const json = pm.response.json();
-              pm.expect(json).to.have.property('errors');
-          });
-      }

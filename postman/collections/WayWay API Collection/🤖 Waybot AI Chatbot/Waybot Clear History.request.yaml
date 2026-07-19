@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Waybot Clear History'
-method: DELETE
-url: '{{base_url}}/waybot/history'
+method: POST
+url: '{{base_url}}/waybot/reset'
 order: 4000
 headers:
   - key: Accept

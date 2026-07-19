@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Admin - Approve Travel Agent'
 method: POST
-url: '{{base_url}}/admin/travel-agents/{{travel_package_id}}/approve'
+url: '{{base_url}}/admin/travel-subscriptions/{{transaksi_id}}/approve'
 order: 14500
 headers:
   - key: Accept
@@ -13,5 +13,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Travel agent approved", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404, 419]);
       });

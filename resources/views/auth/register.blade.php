@@ -71,7 +71,7 @@
             
             <!-- Logo for Mobile Only -->
             <div class="flex justify-center mb-6 lg:hidden">
-                <img src="{{ asset('assets/Logo/logodnnama.png') }}" alt="Logo" class="h-20">
+                <img src="{{ asset('assets/Logo/logoo.png') }}" alt="Logo" class="h-20">
             </div>
 
             <p class="text-sm font-medium text-white mb-5 text-center tracking-wide opacity-90">

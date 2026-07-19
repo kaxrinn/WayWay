@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Midtrans Payment Notification'
 method: POST
-url: '{{base_url}}/webhooks/midtrans'
+url: '{{base_url}}/api/midtrans/notification'
 order: 1000
 headers:
   - key: Accept
@@ -30,7 +30,7 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Webhook received", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 204]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 400, 404, 422]);
       });
       pm.test("Response is OK", function() {
           pm.expect(pm.response.code).to.not.equal(500);

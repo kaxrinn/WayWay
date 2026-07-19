@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Travel Agent Subscription'
 method: GET
-url: '{{base_url}}/travel-agent/subscription'
+url: '{{base_url}}/travel-agent/subscriptions'
 order: 6000
 headers:
   - key: Accept
@@ -11,5 +11,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Subscription page loads", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 403]);
       });

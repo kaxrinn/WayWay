@@ -2,105 +2,53 @@ name: WayWay Local Environment
 values:
   - key: base_url
     value: 'http://127.0.0.1:8000'
-    type: default
-    enabled: true
   - key: wisatawan_email
-    value: 'wisatawan@test.com'
-    type: default
-    enabled: true
+    value: wisatawan@test.com
   - key: wisatawan_password
-    value: 'Password123'
-    type: secret
-    enabled: true
+    value: Password123
   - key: admin_email
-    value: 'admin@wayway.com'
-    type: default
-    enabled: true
+    value: admin@wayway.com
   - key: admin_password
-    value: 'Password123'
-    type: secret
-    enabled: true
+    value: Password123
   - key: pemilik_email
-    value: 'pemilik@test.com'
-    type: default
-    enabled: true
+    value: pemilik@test.com
   - key: pemilik_password
-    value: 'Password123'
-    type: secret
-    enabled: true
+    value: Password123
   - key: travel_agent_email
-    value: 'agent@test.com'
-    type: default
-    enabled: true
+    value: agent@test.com
   - key: travel_agent_password
-    value: 'Password123'
-    type: secret
-    enabled: true
+    value: Password123
   - key: csrf_token
     value: ''
-    type: default
-    enabled: true
   - key: waybot_session_token
     value: ''
-    type: default
-    enabled: true
   - key: destinasi_id
     value: '1'
-    type: default
-    enabled: true
   - key: kategori_id
     value: '1'
-    type: default
-    enabled: true
   - key: paket_id
     value: '2'
-    type: default
-    enabled: true
   - key: transaksi_id
     value: '1'
-    type: default
-    enabled: true
   - key: edit_request_id
     value: '1'
-    type: default
-    enabled: true
   - key: itinerary_history_id
     value: '1'
-    type: default
-    enabled: true
   - key: travel_package_id
     value: '1'
-    type: default
-    enabled: true
   - key: subscription_package_id
     value: '1'
-    type: default
-    enabled: true
   - key: midtrans_server_key
-    value: 'YOUR_MIDTRANS_SERVER_KEY'
-    type: secret
-    enabled: true
+    value: YOUR_MIDTRANS_SERVER_KEY
   - key: midtrans_client_key
-    value: 'YOUR_MIDTRANS_CLIENT_KEY'
-    type: secret
-    enabled: true
+    value: YOUR_MIDTRANS_CLIENT_KEY
   - key: midtrans_signature
     value: ''
-    type: default
-    enabled: true
   - key: user_lat
     value: '1.1296758'
-    type: default
-    enabled: true
   - key: user_lng
     value: '104.0452254'
-    type: default
-    enabled: true
   - key: app_name
-    value: 'WayWay'
-    type: default
-    enabled: true
+    value: WayWay
   - key: app_env
-    value: 'local'
-    type: default
-    enabled: true
+    value: local

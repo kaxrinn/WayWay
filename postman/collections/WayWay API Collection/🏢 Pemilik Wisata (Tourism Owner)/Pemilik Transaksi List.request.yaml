@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Pemilik Transaksi List'
 method: GET
-url: '{{base_url}}/pemilik/transaksi'
+url: '{{base_url}}/pemilik/paket'
 order: 11000
 headers:
   - key: Accept

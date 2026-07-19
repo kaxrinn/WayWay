@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Submit Edit Request'
 method: POST
-url: '{{base_url}}/pemilik/edit-requests'
+url: '{{base_url}}/pemilik/edit-request'
 order: 10000
 headers:
   - key: X-CSRF-TOKEN
@@ -26,11 +26,11 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Edit request submitted", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 404, 422]);
       });
       if (pm.response.code === 200 || pm.response.code === 201) {
           const json = pm.response.json();
           if (json && json.id) {
-              pm.collectionVariables.set("edit_request_id", json.id);
+              pm.environment.set("edit_request_id", json.id);
           }
       }

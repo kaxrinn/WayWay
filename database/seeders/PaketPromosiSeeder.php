@@ -35,7 +35,7 @@ class PaketPromosiSeeder extends Seeder
         PaketPromosi::create([
             'nama_paket' => 'Standard',
             'deskripsi' => 'Flexible upgrade for small to medium tourism owners',
-            'harga' => 49000,
+            'harga' => 79000,
             'durasi_hari' => 30,
             'fitur' => 'Edit & delete photos directly,Update info anytime,Higher position in search results,Unlimited destination updates',
             'status' => 'active',
@@ -51,7 +51,7 @@ class PaketPromosiSeeder extends Seeder
         PaketPromosi::create([
             'nama_paket' => 'Premium',
             'deskripsi' => 'Maximum promotion & exposure for top destinations',
-            'harga' => 149000,
+            'harga' => 169000,
             'durasi_hari' => 30,
             'fitur' => 'Featured on homepage,Exclusive promotion banner,AI Recommendation priority,AI Itinerary priority,Full performance statistics,WayWay Recommended label',
             'status' => 'active',

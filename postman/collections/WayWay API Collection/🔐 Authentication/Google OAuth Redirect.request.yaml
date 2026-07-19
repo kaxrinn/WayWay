@@ -2,7 +2,7 @@ $kind: http-request
 name: 'Google OAuth Redirect'
 method: GET
 url: '{{base_url}}/auth/google'
-order: 8000
+order: 9800
 headers:
   - key: Accept
     value: 'text/html'

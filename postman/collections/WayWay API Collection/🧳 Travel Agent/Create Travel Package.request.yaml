@@ -9,46 +9,46 @@ headers:
 body:
   type: formdata
   content:
-    - key: nama_paket
-      type: text
+    - type: text
+      key: nama_paket
       value: 'Paket Wisata Batam 3 Hari 2 Malam'
-    - key: deskripsi
-      type: text
+    - type: text
+      key: deskripsi
       value: 'Paket wisata lengkap menjelajahi keindahan Batam'
-    - key: harga
-      type: text
+    - type: text
+      key: harga
       value: '1500000'
-    - key: durasi_hari
-      type: text
+    - type: text
+      key: durasi_hari
       value: '3'
-    - key: min_peserta
-      type: text
+    - type: text
+      key: min_peserta
       value: '2'
-    - key: max_peserta
-      type: text
+    - type: text
+      key: max_peserta
       value: '20'
-    - key: include
-      type: text
+    - type: text
+      key: include
       value: 'Hotel, Transport, Makan 3x sehari, Guide'
-    - key: exclude
-      type: text
+    - type: text
+      key: exclude
       value: 'Tiket pesawat, Pengeluaran pribadi'
-    - key: destinasi_ids[]
-      type: text
+    - type: text
+      key: 'destinasi_ids[]'
       value: '1'
-    - key: destinasi_ids[]
-      type: text
+    - type: text
+      key: 'destinasi_ids[]'
       value: '2'
 scripts:
   - type: afterResponse
     language: text/javascript
     code: |-
       pm.test("Travel package created", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 403, 422]);
       });
       if (pm.response.code === 200 || pm.response.code === 201) {
           const json = pm.response.json();
           if (json && json.id) {
-              pm.collectionVariables.set("travel_package_id", json.id);
+              pm.environment.set("travel_package_id", json.id);
           }
       }

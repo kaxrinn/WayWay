@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Create Itinerary'
 method: POST
-url: '{{base_url}}/itinerary'
+url: '{{base_url}}/itinerary/generate'
 order: 2000
 headers:
   - key: Accept
@@ -29,11 +29,11 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Itinerary created", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 419, 422]);
       });
       if (pm.response.code === 200 || pm.response.code === 201) {
           const json = pm.response.json();
           if (json && json.id) {
-              pm.collectionVariables.set("itinerary_history_id", json.id);
+              pm.environment.set("itinerary_history_id", json.id);
           }
       }

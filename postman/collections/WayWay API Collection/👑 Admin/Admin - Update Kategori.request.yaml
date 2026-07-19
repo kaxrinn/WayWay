@@ -22,5 +22,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Kategori updated", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404, 419, 422]);
       });

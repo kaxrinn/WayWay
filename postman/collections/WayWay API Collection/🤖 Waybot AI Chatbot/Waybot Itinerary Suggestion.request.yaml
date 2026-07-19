@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Waybot Itinerary Suggestion'
 method: POST
-url: '{{base_url}}/waybot/itinerary'
+url: '{{base_url}}/waybot/chat'
 order: 5000
 headers:
   - key: Accept

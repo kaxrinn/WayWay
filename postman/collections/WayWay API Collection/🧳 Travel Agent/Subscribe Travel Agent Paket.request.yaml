@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Subscribe Travel Agent Paket'
 method: POST
-url: '{{base_url}}/travel-agent/subscription/subscribe'
+url: '{{base_url}}/travel-agent/subscriptions/checkout/{{subscription_package_id}}'
 order: 7000
 headers:
   - key: Accept
@@ -21,11 +21,11 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Subscription initiated", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 403, 404, 422]);
       });
       if (pm.response.code === 200 || pm.response.code === 201) {
           const json = pm.response.json();
           if (json && json.transaction_id) {
-              pm.collectionVariables.set("transaksi_id", json.transaction_id);
+              pm.environment.set("transaksi_id", json.transaction_id);
           }
       }

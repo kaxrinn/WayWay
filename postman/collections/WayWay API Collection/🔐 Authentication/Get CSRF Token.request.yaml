@@ -2,7 +2,7 @@ $kind: http-request
 name: 'Get CSRF Token (Login Page)'
 method: GET
 url: '{{base_url}}/login'
-order: 1500
+order: 500
 headers:
   - key: Accept
     value: 'text/html'
@@ -17,12 +17,12 @@ scripts:
       const responseText = pm.response.text();
       const csrfMatch = responseText.match(/name="_token" value="([^"]+)"/);
       if (csrfMatch) {
-          pm.collectionVariables.set("csrf_token", csrfMatch[1]);
+          pm.environment.set("csrf_token", csrfMatch[1]);
           console.log('CSRF token extracted from page:', csrfMatch[1].substring(0, 20) + '...');
       }
       // Also try to get CSRF from cookie
       const cookies = pm.cookies.toObject();
       if (cookies['XSRF-TOKEN']) {
           const decoded = decodeURIComponent(cookies['XSRF-TOKEN']);
-          pm.collectionVariables.set('csrf_token', decoded);
+          pm.environment.set('csrf_token', decoded);
       }

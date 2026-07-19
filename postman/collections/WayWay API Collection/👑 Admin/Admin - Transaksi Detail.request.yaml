@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Admin - Transaksi Detail'
 method: GET
-url: '{{base_url}}/admin/transaksi/{{transaksi_id}}'
+url: '{{base_url}}/admin/transaksi'
 order: 13500
 headers:
   - key: Accept

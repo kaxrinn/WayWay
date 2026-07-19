@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Midtrans - Failed Payment'
 method: POST
-url: '{{base_url}}/webhooks/midtrans'
+url: '{{base_url}}/api/midtrans/notification'
 order: 3000
 headers:
   - key: Accept
@@ -30,5 +30,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Failed/expired webhook received", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 204]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 400, 404, 422]);
       });

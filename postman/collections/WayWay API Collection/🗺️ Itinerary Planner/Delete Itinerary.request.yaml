@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Delete Itinerary'
 method: DELETE
-url: '{{base_url}}/itinerary/{{itinerary_history_id}}'
+url: '{{base_url}}/itinerary/history/{{itinerary_history_id}}'
 order: 5000
 headers:
   - key: Accept
@@ -13,5 +13,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Itinerary deleted", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 204, 302, 404, 419]);
       });

@@ -1,7 +1,4 @@
-{{--
-    waybot.blade.php
-    Taruh sebelum </body> di layout utama
---}}
+
 <style>[x-cloak]{display:none!important}</style>
 
 <div
@@ -131,27 +128,27 @@
                             <div class="waybot-cards-scroll">
                                 <template x-for="card in msg.destinasi_cards" :key="card.id">
                                     <a :href="'/destinasi/' + card.id" target="_blank" class="waybot-dest-card">
-    <div class="waybot-dest-card-img" style="position:relative;">
-        <img
-            x-show="card.foto"
-            :src="'/storage/' + card.foto"
-            :alt="card.nama"
-            loading="lazy"
-        >
-        <div x-show="!card.foto" class="waybot-dest-card-placeholder">🗺️</div>
-        {{-- Badge featured muncul kalau destinasinya featured --}}
-        <span
-            x-show="card.featured"
-            class="waybot-dest-card-featured"
-        >⭐ Featured</span>
-    </div>
-    <div class="waybot-dest-card-body">
-        <p class="waybot-dest-card-name" x-text="card.nama"></p>
-        <p class="waybot-dest-card-price"
-           x-text="card.harga > 0 ? 'Rp ' + formatRupiah(card.harga) : 'Gratis'">
-        </p>
-    </div>
-</a>
+                                 <div class="waybot-dest-card-img" style="position:relative;">
+                                     <img
+                                         x-show="card.foto"
+                                         :src="'/storage/' + card.foto"
+                                         :alt="card.nama"
+                                         loading="lazy"
+                                     >
+                                     <div x-show="!card.foto" class="waybot-dest-card-placeholder">🗺️</div>
+                                     {{-- Badge featured muncul kalau destinasinya featured --}}
+                                     <span
+                                         x-show="card.featured"
+                                         class="waybot-dest-card-featured"
+                                     >⭐ Featured</span>
+                                 </div>
+                                 <div class="waybot-dest-card-body">
+                                     <p class="waybot-dest-card-name" x-text="card.nama"></p>
+                                     <p class="waybot-dest-card-price"
+                                        x-text="card.harga > 0 ? 'Rp ' + formatRupiah(card.harga) : 'Gratis'">
+                                     </p>
+                                 </div>
+                             </a>
                                 </template>
                             </div>
                         </template>
@@ -453,6 +450,7 @@ function waybotApp() {
 
         init() {
             setTimeout(() => { this.hasUnread = true; }, 3000);
+            this.$nextTick(() => this.scrollToBottom());
         },
 
         toggleChat() {
@@ -476,6 +474,7 @@ function waybotApp() {
             this.addMessage('user', msg);
             this.inputMessage = '';
             this.isTyping = true;
+            this.$nextTick(() => this.scrollToBottom());
 
             const payload = {
                 message: msg,
@@ -507,6 +506,7 @@ function waybotApp() {
                 }
 
                 this.isTyping = false;
+                this.$nextTick(() => this.scrollToBottom());
 
                 if (data.success) {
                     this.addMessage('assistant', data.message, {
@@ -518,6 +518,7 @@ function waybotApp() {
                 }
             } catch (err) {
                 this.isTyping = false;
+                this.$nextTick(() => this.scrollToBottom());
                 this.addMessage('assistant', 'Oops, there was an issue. Please try again! 🙏');
             }
         },
@@ -619,12 +620,22 @@ function waybotApp() {
                 answered: false,
                 selected: null,
             });
-            this.$nextTick(() => this.scrollToBottom());
+            this.$nextTick(() => {
+                requestAnimationFrame(() => {
+                    this.scrollToBottom();
+                    setTimeout(() => this.scrollToBottom(), 120);
+                });
+            });
         },
 
         scrollToBottom() {
             const c = this.$refs.messagesContainer;
-            if (c) c.scrollTop = c.scrollHeight;
+            if (!c) return;
+
+            c.scrollTop = c.scrollHeight;
+            requestAnimationFrame(() => {
+                c.scrollTop = c.scrollHeight;
+            });
         },
 
         handleEnter(e) { if (!e.shiftKey) this.sendMessage(); },

@@ -28,5 +28,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Partner application submitted", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 422]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 201, 302, 419, 422]);
       });

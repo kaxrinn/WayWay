@@ -1,5 +1,5 @@
 $kind: collection
-name: '👤 Wisatawan (Tourist)'
+name: 👤 Wisatawan (Tourist)
 description: |-
   Endpoints for Wisatawan (Tourist) role.
   Login as Wisatawan first before using these endpoints.

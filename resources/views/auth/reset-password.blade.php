@@ -56,7 +56,7 @@
 
         <!-- Logo -->
         <div class="flex justify-center mb-6">
-            <img src="{{ asset('assets/Logo/logodnnama.png') }}" alt="Logo" class="h-20">
+            <img src="{{ asset('assets/Logo/logoo.png') }}" alt="Logo" class="h-20">
         </div>
 
         <h2 class="text-2xl font-bold text-white text-center mb-3">Reset Password</h2>

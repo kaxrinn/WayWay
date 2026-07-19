@@ -1,7 +1,7 @@
 $kind: http-request
 name: 'Pemilik Edit Request List'
 method: GET
-url: '{{base_url}}/pemilik/edit-requests'
+url: '{{base_url}}/pemilik/edit-request'
 order: 9000
 headers:
   - key: Accept

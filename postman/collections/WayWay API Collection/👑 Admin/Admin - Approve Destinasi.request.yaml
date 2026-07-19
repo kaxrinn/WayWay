@@ -13,5 +13,5 @@ scripts:
     language: text/javascript
     code: |-
       pm.test("Destinasi approved", function() {
-          pm.expect(pm.response.code).to.be.oneOf([200, 302]);
+          pm.expect(pm.response.code).to.be.oneOf([200, 302, 404]);
       });

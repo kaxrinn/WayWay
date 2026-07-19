@@ -163,26 +163,23 @@
                         
                         <!-- Duration Selection -->
                         <div class="mb-4">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Select Duration:</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="durasi" value="monthly" x-model="durasi" class="hidden peer">
-                                    <div class="border-2 border-gray-300 peer-checked:border-{{ $color['bg'] }}-500 peer-checked:bg-{{ $color['bg'] }}-50 rounded-lg p-2 sm:p-3 text-center transition">
-                                        <p class="font-bold text-sm">Monthly</p>
-                                        <p class="text-xs text-gray-600">Rp {{ number_format($paket->harga, 0, ',', '.') }}</p>
-                                    </div>
-                                </label>
-                                
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="durasi" value="yearly" x-model="durasi" class="hidden peer">
-                                    <div class="border-2 border-gray-300 peer-checked:border-{{ $color['bg'] }}-500 peer-checked:bg-{{ $color['bg'] }}-50 rounded-lg p-2 sm:p-3 text-center transition relative">
-                                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">-10%</span>
-                                        <p class="font-bold text-sm">Yearly</p>
-                                        <p class="text-xs text-gray-600">Rp {{ number_format($paket->harga * 12 * 0.9, 0, ',', '.') }}</p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
+    <label class="block text-sm font-semibold text-gray-700 mb-2">
+        Select Duration:
+    </label>
+
+    <div class="flex justify-center">
+        <label class="cursor-pointer w-full max-w-xs">
+            <input type="radio" name="durasi" value="monthly" x-model="durasi" class="hidden peer">
+
+            <div class="border-2 border-gray-300 peer-checked:border-{{ $color['bg'] }}-500 peer-checked:bg-{{ $color['bg'] }}-50 rounded-lg p-2 sm:p-3 text-center transition">
+                <p class="font-bold text-sm">Monthly</p>
+                <p class="text-xs text-gray-600">
+                    Rp {{ number_format($paket->harga, 0, ',', '.') }}
+                </p>
+            </div>
+        </label>
+    </div>
+</div>
                         
                         <button type="submit" 
                                 class="w-full bg-gradient-to-r from-{{ $color['bg'] }}-500 to-{{ $color['bg'] }}-600 hover:from-{{ $color['bg'] }}-600 hover:to-{{ $color['bg'] }}-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg hover:shadow-xl text-sm sm:text-base">
@@ -288,7 +285,7 @@
                 <i class="fas fa-chevron-down transition flex-shrink-0" :class="open === 1 ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open === 1" x-cloak class="px-4 sm:px-6 py-4 bg-gray-50 text-gray-600 text-sm sm:text-base">
-                <p>Select the desired package, choose a duration (monthly/yearly), then click "Upgrade Now". You will be redirected to the payment page.</p>
+                <p>Select the desired package, choose a duration (monthly), then click "Upgrade Now". You will be redirected to the payment page.</p>
             </div>
         </div>
         
@@ -302,17 +299,7 @@
                 <p>If your package expires, your account will automatically be downgraded to the Basic plan. Destinations that exceed the Basic limit will become inactive until you upgrade again.</p>
             </div>
         </div>
-        
-        <div class="border border-gray-200 rounded-lg">
-            <button @click="open = open === 3 ? null : 3" 
-                    class="w-full px-4 sm:px-6 py-4 text-left font-semibold text-gray-800 hover:bg-gray-50 transition flex items-center justify-between gap-3 text-sm sm:text-base">
-                <span>Is there a discount for yearly billing?</span>
-                <i class="fas fa-chevron-down transition flex-shrink-0" :class="open === 3 ? 'rotate-180' : ''"></i>
-            </button>
-            <div x-show="open === 3" x-cloak class="px-4 sm:px-6 py-4 bg-gray-50 text-gray-600 text-sm sm:text-base">
-                <p>Yes! Yearly billing gets a 10% discount off the total price. Example: Standard Rp 49K/month x 12 = Rp 588K, with discount it becomes Rp 529K/year.</p>
-            </div>
-        </div>
+
     </div>
 </div>
 @endsection
