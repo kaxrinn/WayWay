@@ -3,7 +3,13 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test:all": "php artisan test --env=testing",
+        "test:unit": "php artisan test --env=testing --testsuite=Unit",
+        "test:feature": "php artisan test --env=testing --testsuite=Feature",
+        "test:system": "php artisan test --env=testing --filter=SystemTest",
+        "test:uat": "php artisan test --env=testing --filter=UserAcceptanceTest",
+        "test:perf": "npx artillery run load-test.yml"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.11",
