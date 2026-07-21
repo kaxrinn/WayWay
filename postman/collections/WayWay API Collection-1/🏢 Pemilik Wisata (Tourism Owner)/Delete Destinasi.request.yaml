@@ -1,0 +1,7 @@
+$kind: http-request
+url: ""
+method: DELETE
+headers:
+  X-CSRF-TOKEN: "{{csrf_token}}"
+settings: {}
+order: 2000

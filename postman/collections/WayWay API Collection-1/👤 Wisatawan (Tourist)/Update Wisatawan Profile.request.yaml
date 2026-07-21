@@ -1,0 +1,7 @@
+$kind: http-request
+url: ""
+method: PUT
+headers:
+  X-CSRF-TOKEN: "{{csrf_token}}"
+settings: {}
+order: 8000

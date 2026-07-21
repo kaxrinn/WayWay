@@ -1,0 +1,7 @@
+$kind: http-request
+url: ""
+method: GET
+headers:
+  Accept: text/html
+settings: {}
+order: 1000

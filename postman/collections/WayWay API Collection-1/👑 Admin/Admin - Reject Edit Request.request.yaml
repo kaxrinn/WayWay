@@ -1,0 +1,9 @@
+$kind: http-request
+url: ""
+method: POST
+headers:
+  Accept: application/json
+  X-CSRF-TOKEN: "{{csrf_token}}"
+  Content-Type: application/json
+settings: {}
+order: 12000

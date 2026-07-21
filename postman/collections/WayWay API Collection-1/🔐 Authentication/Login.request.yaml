@@ -1,0 +1,7 @@
+$kind: http-request
+url: ""
+method: POST
+headers:
+  Accept: text/html,application/json
+settings: {}
+order: 8000

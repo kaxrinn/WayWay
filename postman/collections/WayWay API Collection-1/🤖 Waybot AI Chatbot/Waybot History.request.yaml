@@ -1,0 +1,7 @@
+$kind: http-request
+url: ""
+method: GET
+headers:
+  Accept: application/json
+settings: {}
+order: 4000

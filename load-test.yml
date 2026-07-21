@@ -1,14 +1,12 @@
 config:
-  target: 'http://127.0.0.1:8000'
+  target: 'https://wayway.exploreperjalanan.com'
   phases:
     - duration: 10
-      arrivalRate: 10
-      name: "Simulasi 10 wisatawan per detik selama 10 detik"
+      arrivalRate: 100
+      name: "Simulasi 100 wisatawan per detik selama 10 detik"
 
 scenarios:
-  - name: "Buka Beranda dan Cari Destinasi"
+  - name: "Buka Beranda"
     flow:
       - get:
           url: "/"
-      - get:
-          url: "/destinasi"
